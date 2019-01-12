@@ -3,7 +3,7 @@ package main
 import "fmt"
 
 // Like pointer receiver
-func pointerRecevicer(value *int) {
+func pointerReceiver(value *int) {
 	*value += 2
 }
 
@@ -12,24 +12,34 @@ func valueReceiver(value int) {
 	value += 2
 }
 
+func printHeader(text string) {
+	fmt.Println()
+	fmt.Println("*** " + text + " ***")
+	fmt.Println()
+}
+
 func main() {
 
-	// STRING //
+	printHeader("String Types")
 
 	// Go provides two ways to declaring string types (inline)
 
-	// UTF8
-	message := "It is 42\u00B0 F outside!"
-	fmt.Println(message)
+	// UTF8: Use standard double quotes ""
+	unicode := "It is 42\u00B0 F outside!"
+	fmt.Println(unicode)
 
-	// ASCII
+	// ASCII: Use standard single quotes ``
+	// Value \u00B0 is not recognized as unicode character anymore
 	multiline := `
-	It is 42 \u00B0 F 
+	It is 42\u00B0 F 
 	outside!
 	`
 	fmt.Println(multiline)
 
-	// INTEGER //
+	line := `It is 42\u00B0 F outside!`
+	fmt.Println(line)
+
+	printHeader("Integer Types")
 
 	// Go has several types, with different internal sizes, that can be used to store integer values as listed below:
 
@@ -45,11 +55,11 @@ func main() {
 
 	// Use specific type during it declaration
 	var lInt32 int32 = -1234
-	var lbyte uint8 = 3
+	var lByte uint8 = 3
 	var lUint32 uint32 = 1234
 
 	fmt.Printf("%T\n", lInt32)
-	fmt.Printf("%T\n", lbyte)
+	fmt.Printf("%T\n", lByte)
 	fmt.Printf("%T\n", lUint32)
 
 	// Uninitialized, integral types have a zero value of 0.
@@ -63,17 +73,21 @@ func main() {
 	fmt.Printf("%T\n", count)
 
 	// Casting object (floating-point number -> integer)
-	var n = 1.1
-	var m = int64(n)
-	fmt.Println(m)
+	var lFloat64 = 1.1
+	var lInt64 = int64(lFloat64)
 
-	// BOOLEAN //
+	fmt.Println(lFloat64)
+	fmt.Printf("%T\n", lFloat64)
+	fmt.Println(lInt64)
+	fmt.Printf("%T\n", lInt64)
 
-	var myerror = true
-	fmt.Println(myerror)
-	fmt.Printf("%T\n", myerror)
+	printHeader("Boolean Types")
 
-	// POINTER
+	var error = true
+	fmt.Println(error)
+	fmt.Printf("%T\n", error)
+
+	printHeader("Pointer Types")
 
 	var pointer *int
 	var number = 34
@@ -91,14 +105,14 @@ func main() {
 
 	// Pointer receiver vs Value receiver
 
-	// Pointer Receicer (Passed By Value)
+	// Pointer Receiver (Passed By Value)
 	value1 := 2
 	valueReceiver(value1)
 	fmt.Printf("valueReceiver = %d\n", value1)
 
-	// Pointer Receicer (Passed By Reference)
+	// Pointer Receiver (Passed By Reference)
 	value2 := 2
-	pointerRecevicer(&value2)
-	fmt.Printf("pointerRecevicer = %d\n", value2)
+	pointerReceiver(&value2)
+	fmt.Printf("pointerReceiver = %d\n", value2)
 
 }
