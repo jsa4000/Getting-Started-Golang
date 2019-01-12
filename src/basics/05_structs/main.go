@@ -6,8 +6,24 @@ import (
 	"fmt"
 )
 
-// It must be exported all the structs, fields and functions (capitalized) to be used externally
+// Public/Private = Exported/Un-exported
+// It must be 'exported' all the structs, fields and functions (capitalized) to be used externally
 // Every exported (capitalized) name in a program should have a doc comment.
+
+// Person Basic struct (exported)
+type Person struct {
+	// Embedded from other type (similar to inherit)
+	string // uuid
+	// contains filtered or non-exported fields
+	Name string
+	Age  int
+}
+
+// Child inherits from struct Person (exported)
+type Child struct {
+	Person
+	Parent string
+}
 
 // Role struct
 type Role struct {
@@ -20,14 +36,15 @@ type User struct {
 	ID    string `json:"id"`
 	Name  string `json:"name"`
 	Email string `json:"email"`
-	Age   int32  `json:"age"`
-	Roles []Role `json:"roles"`
+	Age   int32  `json:"age,omitempty"`
+	Roles []Role `json:"roles,omitempty"`
 }
 
 // App struct
 type App struct {
-	ID    string `json:"id"`
-	Title string `json:"title"`
+	ID          string `json:"id"`
+	Title       string `json:"title"`
+	Description string `json:"description,omitempty"`
 }
 
 // SerializeUser function
@@ -54,8 +71,45 @@ func DeserializeUser(user User) ([]byte, error) {
 	return bytes, nil
 }
 
+func printHeader(text string) {
+	fmt.Println()
+	fmt.Println("*** " + text + " ***")
+	fmt.Println()
+}
+
 func main() {
 
+	printHeader("Structures basics and inheritance (kind-of)")
+
+	// Exported structures can be accessed from other modules
+	// The embedded type van be passed through constructor
+	parent := Person{
+		string: "6651dbeb-7a59-49b9-9771-e27043cb0e56",
+		Name:   "Manuel García",
+		Age:    32,
+	}
+	// Print default structure stdout
+	fmt.Println(parent)
+
+	// Create a child from previous struct (specialization)
+	child := Child{
+		Person: Person{
+			string: "e540d544-61d3-4267-baf5-4b68df859c9b",
+			Name:   "Aitor García",
+			Age:    12,
+		},
+		Parent: parent.string,
+	}
+	// Print default structure stdout
+	fmt.Println(child)
+
+	printHeader("Add methods to Structs (Classes)")
+
+	printHeader("Interfaces")
+
+	printHeader("Structs Tags and Serialize/Deserialize (JSON)")
+
+	// Create raw JSON to Serialize to a User struct
 	data := []byte(`
       {
          "id": "1234",
