@@ -40,6 +40,37 @@ type User struct {
 	Roles []Role `json:"roles,omitempty"`
 }
 
+// String method to override the stdout of the struct
+// In this case we use pointers for the methos so: 'user := $User{}' -> user.String()
+func (u *User) String() string {
+	return fmt.Sprintf("{Id:%s, Name:%s, Email:%s, Age:%d}", u.ID, u.Name, u.Email, u.Age)
+}
+
+// IsAdult returns if the user is greater than 18 years old.
+// We can use  (u *User) or (u User)
+func (u *User) IsAdult() bool {
+	return u.Age >= 18
+}
+
+// SendEmail send an email to the user
+func (u *User) SendEmail(text string) error {
+	if u.Email == "" {
+		return errors.New("The user has not configured the email Address")
+	}
+	fmt.Printf("Sent email to %s\n", u.Email)
+	return nil
+}
+
+// EmailService Interface
+type EmailService interface {
+	SendEmail(text string) error
+}
+
+// SendEmail using the service interface
+func SendEmail(service EmailService, text string) error {
+	return service.SendEmail(text)
+}
+
 // App struct
 type App struct {
 	ID          string `json:"id"`
@@ -105,7 +136,48 @@ func main() {
 
 	printHeader("Add methods to Structs (Classes)")
 
+	user := &User{
+		ID:    "1234",
+		Name:  "Javier",
+		Email: "javier@gmail.com",
+		Age:   35,
+	}
+	fmt.Println(user)
+	// Same output, since we have overridden String() method.
+	fmt.Println(user.String())
+	// Return if the user is adult (age>18)
+	fmt.Printf("IsAdult: %t\n", user.IsAdult())
+
+	if err := user.SendEmail("This is a content"); err != nil {
+		fmt.Println(err)
+	}
+
+	// Modify the current content of the struct
+	// Note: Structs must be immutable
+	user.Email = ""
+	if err := user.SendEmail("This is a content"); err != nil {
+		fmt.Println(err)
+	}
+
 	printHeader("Interfaces")
+
+	sender := &User{
+		ID:    "4321",
+		Name:  "Peter García",
+		Email: "peter.garcia@gmail.com",
+		Age:   23,
+	}
+	fmt.Println(sender)
+
+	// Send email using directly the method from User
+	if err := sender.SendEmail("This is a content"); err != nil {
+		fmt.Println(err)
+	}
+
+	//Send email using the EmailService interface (explicitly)
+	if err := SendEmail(sender, "This is a content"); err != nil {
+		fmt.Println(err)
+	}
 
 	printHeader("Structs Tags and Serialize/Deserialize (JSON)")
 

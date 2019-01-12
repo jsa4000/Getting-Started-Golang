@@ -8,6 +8,25 @@ func printHeader(text string) {
 	fmt.Println()
 }
 
+// Queue a item to the end of the collection.
+func Queue(queue []string, item string) []string {
+	return append(queue, item)
+}
+
+// Dequeue the first item from a collections
+func Dequeue(queue []string) ([]string, string) {
+	if len(queue) == 0 {
+		fmt.Println("Queue is empty")
+		return queue, ""
+	}
+
+	if len(queue) == 1 {
+		return queue[:0], queue[0]
+	}
+
+	return queue[1:], queue[0]
+}
+
 func main() {
 
 	printHeader("Array")
@@ -62,6 +81,33 @@ func main() {
 	var inlineslide = []string{"First", "Second", "Third", "Fourth"}
 	fmt.Println(len(inlineslide))
 	fmt.Println(inlineslide)
+
+	printHeader("Custom Queue")
+
+	// In go there in no default implementations for FIFO, LIFO, etc..
+	// Also, current go version 1.11.4, there is no generics to implements fancy collections.
+
+	var queue []string
+	fmt.Println(len(queue))
+	fmt.Println(queue)
+
+	// Queue items
+	queue = Queue(queue, "item1")
+	queue = Queue(queue, "item2")
+	fmt.Println(len(queue))
+	fmt.Println(queue)
+
+	//Dequeue items
+	var item1, item2, item3 string
+	queue, item1 = Dequeue(queue)
+	queue, item2 = Dequeue(queue)
+	queue, item3 = Dequeue(queue)
+	fmt.Println(len(queue))
+	fmt.Println(queue)
+
+	fmt.Println(item1)
+	fmt.Println(item2)
+	fmt.Println(item3)
 
 	printHeader("Fancy indexing")
 
