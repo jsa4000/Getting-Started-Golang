@@ -70,6 +70,15 @@ func main() {
 	var b, c int = 1, 2
 	fmt.Println(b, c)
 
+	// Use var () to declare mutliple variables and types (bulk)
+	var (
+		x, z   int
+		value1 = "value1"
+		value2 = "value2"
+	)
+	fmt.Println(x, z)
+	fmt.Println("value1:", value1, ",value2:", value2)
+
 	// Go will infer the type of initialized variables.
 	var d = true
 	fmt.Println(d)
