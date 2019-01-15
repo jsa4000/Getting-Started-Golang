@@ -238,6 +238,37 @@ func main() {
 
 	printHeader("Select and channels")
 
+
+	sc1 := make(chan string)
+	sc2 := make(chan string)
+	sc3 := make(chan string)
+	// Create a lambda function (command)
+	selfunc := func (c chan string, index int, delay int) {
+		time.Sleep(delay)
+		c <-fmt.Sprintf("%d : %d\n", index, delay)
+	}
+
+	// Execute the goroutines
+	go selfunc(sc1, 1, 500)
+	go selfunc(sc2, 2, 1000)
+	go selfunc(sc3, 3, 200)
+
+	select {
+	case m := <-sc1:
+		fmt.Println("First channel executes: ", m)
+	case m := <-sc2:
+		fmt.Println("First channel executes: ", m)
+	case m := <-sc3:
+		fmt.Println("First channel executes: ", m)
+	default:
+		fmt.Println("Witing for messages")
+	}
+
+	// CLose the channel
+	close(sc1)
+	close(sc2)
+	close(sc3)
+
 	printHeader("Context")
 
 	//ctx = context.Background()
