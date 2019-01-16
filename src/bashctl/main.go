@@ -12,6 +12,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+// Example: go run main.go -c ls -v=true --a=-ls,/etc
 func main() {
 	// Set the log formatter
 	log.SetFormatter(&log.TextFormatter{})
