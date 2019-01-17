@@ -34,7 +34,6 @@ func (c *RestController) Close() {
 // GetAllUsers handler to request the
 func (c *RestController) GetAllUsers(w http.ResponseWriter, r *http.Request) {
 	users, err := c.Repository.FindAll(r.Context())
-
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
@@ -46,8 +45,13 @@ func (c *RestController) GetAllUsers(w http.ResponseWriter, r *http.Request) {
 // GetUserByID handler to request the
 func (c *RestController) GetUserByID(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
+	user, err := c.Repository.FindByID(r.Context(), vars["id"])
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
 	w.WriteHeader(http.StatusOK)
-	fmt.Fprintf(w, "Users: %v\n", vars["Users"])
+	json.NewEncoder(w).Encode(user)
 }
 
 // CreateUser handler to request the
@@ -60,6 +64,10 @@ func (c *RestController) CreateUser(w http.ResponseWriter, r *http.Request) {
 // DeleteUserByID handler to request the
 func (c *RestController) DeleteUserByID(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
+	err := c.Repository.DeleteByID(r.Context(), vars["id"])
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
 	w.WriteHeader(http.StatusOK)
-	fmt.Fprintf(w, "Users: %v\n", vars["Users"])
 }

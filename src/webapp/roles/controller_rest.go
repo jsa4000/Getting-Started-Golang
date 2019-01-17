@@ -1,6 +1,7 @@
 package roles
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 
@@ -10,11 +11,14 @@ import (
 
 // RestController for http transport
 type RestController struct {
+	Repository Repository
 }
 
 // NewRestController create new RestController
-func NewRestController(router *mux.Router) *RestController {
-	ctrl := RestController{}
+func NewRestController(router *mux.Router, repo Repository) *RestController {
+	ctrl := RestController{
+		Repository: repo,
+	}
 	router.HandleFunc("/roles", ctrl.GetAllRoles).Methods("GET")
 	router.HandleFunc("/roles/{id}", ctrl.GetRoleByID).Methods("GET")
 	router.HandleFunc("/roles", ctrl.CreateRole).Methods("POST")
@@ -29,16 +33,26 @@ func (c *RestController) Close() {
 
 // GetAllRoles handler to request the
 func (c *RestController) GetAllRoles(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
+	roles, err := c.Repository.FindAll(r.Context())
+
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
 	w.WriteHeader(http.StatusOK)
-	fmt.Fprintf(w, "Roles: %v\n", vars["Roles"])
+	json.NewEncoder(w).Encode(roles)
 }
 
 // GetRoleByID handler to request the
 func (c *RestController) GetRoleByID(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
+	role, err := c.Repository.FindByID(r.Context(), vars["id"])
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
 	w.WriteHeader(http.StatusOK)
-	fmt.Fprintf(w, "Roles: %v\n", vars["Roles"])
+	json.NewEncoder(w).Encode(role)
 }
 
 // CreateRole handler to request the
@@ -51,6 +65,10 @@ func (c *RestController) CreateRole(w http.ResponseWriter, r *http.Request) {
 // DeleteRoleByID handler to request the
 func (c *RestController) DeleteRoleByID(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
+	err := c.Repository.DeleteByID(r.Context(), vars["id"])
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
 	w.WriteHeader(http.StatusOK)
-	fmt.Fprintf(w, "Roles: %v\n", vars["Roles"])
 }

@@ -24,7 +24,8 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 
 func loggingMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		log.Println(r.RequestURI)
+		log.WithFields(log.Fields{"uri": r.RequestURI, "args": mux.Vars(r)}).
+			Debug("Received Request")
 		next.ServeHTTP(w, r)
 	})
 }
@@ -40,7 +41,12 @@ func main() {
 	log.SetFormatter(&log.TextFormatter{
 		FullTimestamp: true,
 	})
+
 	log.Info("Starting the Server...")
+
+	// Create Repositiories
+	usersRepo := users.NewMockRepository()
+	rolesRepo := roles.NewMockRepository()
 
 	// Create the router
 	router := mux.NewRouter()
@@ -49,15 +55,12 @@ func main() {
 	router.HandleFunc("/", HomeHandler).Methods("GET")
 	router.Use(loggingMiddleware)
 
-	// Create Repositiories
-	usersRepo := users.NewMockRepository()
-
 	// Create controllers
-	rolesRestCtrl := roles.NewRestController(router)
+	rolesRestCtrl := roles.NewRestController(router, rolesRepo)
 	usresRestCtrl := users.NewRestController(router, usersRepo)
 
 	// Create server with parameters
-	srv := &http.Server{
+	server := &http.Server{
 		Addr:         "0.0.0.0:8080",
 		WriteTimeout: time.Second * 15,
 		ReadTimeout:  time.Second * 15,
@@ -67,9 +70,9 @@ func main() {
 
 	// Start the server
 	go func() {
-		log.Info("Listening on " + srv.Addr)
+		log.Info("Listening on " + server.Addr)
 		log.Info("Press Ctrl+c to shutdown the server")
-		if err := srv.ListenAndServe(); err != nil {
+		if err := server.ListenAndServe(); err != nil {
 			log.Println(err)
 		}
 	}()
@@ -80,15 +83,15 @@ func main() {
 	log.Info("Shutting down the server...")
 
 	// Shutdown the server (defaukt context)
-	srv.Shutdown(context.Background())
+	server.Shutdown(context.Background())
 
 	// Shutdown controllers
 	rolesRestCtrl.Close()
 	usresRestCtrl.Close()
 
 	// Close Repositories
+	rolesRepo.Close()
 	usersRepo.Close()
 
 	log.Info("Server gracefully stopped")
-
 }
