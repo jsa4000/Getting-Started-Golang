@@ -2,7 +2,6 @@ package roles
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -34,7 +33,6 @@ func (c *RestController) Close() {
 // GetAllRoles handler to request the
 func (c *RestController) GetAllRoles(w http.ResponseWriter, r *http.Request) {
 	roles, err := c.Repository.FindAll(r.Context())
-
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
@@ -57,9 +55,19 @@ func (c *RestController) GetRoleByID(w http.ResponseWriter, r *http.Request) {
 
 // CreateRole handler to request the
 func (c *RestController) CreateRole(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
+	decoder := json.NewDecoder(r.Body)
+	var role Role
+	err := decoder.Decode(&role)
+	if err != nil {
+		panic(err)
+	}
+	role, err = c.Repository.Create(r.Context(), role)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
 	w.WriteHeader(http.StatusOK)
-	fmt.Fprintf(w, "Roles: %v\n", vars["Roles"])
+	json.NewEncoder(w).Encode(role)
 }
 
 // DeleteRoleByID handler to request the

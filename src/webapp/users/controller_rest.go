@@ -2,7 +2,6 @@ package users
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -56,9 +55,19 @@ func (c *RestController) GetUserByID(w http.ResponseWriter, r *http.Request) {
 
 // CreateUser handler to request the
 func (c *RestController) CreateUser(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
+	decoder := json.NewDecoder(r.Body)
+	var user User
+	err := decoder.Decode(&user)
+	if err != nil {
+		panic(err)
+	}
+	user, err = c.Repository.Create(r.Context(), user)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
 	w.WriteHeader(http.StatusOK)
-	fmt.Fprintf(w, "Users: %v\n", vars["Users"])
+	json.NewEncoder(w).Encode(user)
 }
 
 // DeleteUserByID handler to request the

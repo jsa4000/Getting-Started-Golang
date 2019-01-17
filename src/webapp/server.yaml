@@ -1,0 +1,27 @@
+app:
+  name: WebApp
+  
+logging:
+  level: debug
+
+server:
+  port: 8080
+  writeTimeout: 15
+  readTimeout: 15
+  idleTimeout: 60
+
+repository:
+  roles:
+    mocked: enabled
+    provider: mongodb
+    mongodb:
+      database: roles
+      url: mongodb://db1.example.net:27017,db2.example.net:2500/?replicaSet=test
+  users:
+    mocked: enabled
+    provider: mongodb
+    mongodb:
+      database: users
+      url: mongodb://db1.example.net:27017,db2.example.net:2500/?replicaSet=test
+
+
