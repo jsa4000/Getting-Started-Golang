@@ -1,8 +1,12 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"net/http"
+	"os"
+	"os/signal"
+	"syscall"
 	"time"
 	"webapp/roles"
 	"webapp/users"
@@ -26,12 +30,17 @@ func loggingMiddleware(next http.Handler) http.Handler {
 }
 
 func main() {
+
+	// Create a channel to detect interrupt signal from os
+	stop := make(chan os.Signal, 1)
+	signal.Notify(stop, os.Interrupt, os.Kill, syscall.SIGTERM)
+
 	// Set the log formatter
 	log.SetLevel(log.DebugLevel)
 	log.SetFormatter(&log.TextFormatter{
 		FullTimestamp: true,
 	})
-	log.Debug("Staring Sever...")
+	log.Info("Starting the Server...")
 
 	// Create the router
 	router := mux.NewRouter()
@@ -40,9 +49,12 @@ func main() {
 	router.HandleFunc("/", HomeHandler).Methods("GET")
 	router.Use(loggingMiddleware)
 
-	// Create other controllers
-	rc := roles.NewRestController(router)
-	uc := users.NewRestController(router)
+	// Create Repositiories
+	usersRepo := users.NewMockRepository()
+
+	// Create controllers
+	rolesRestCtrl := roles.NewRestController(router)
+	usresRestCtrl := users.NewRestController(router, usersRepo)
 
 	// Create server with parameters
 	srv := &http.Server{
@@ -54,14 +66,29 @@ func main() {
 	}
 
 	// Start the server
-	if err := srv.ListenAndServe(); err != nil {
-		log.Println(err)
-	}
+	go func() {
+		log.Info("Listening on " + srv.Addr)
+		log.Info("Press Ctrl+c to shutdown the server")
+		if err := srv.ListenAndServe(); err != nil {
+			log.Println(err)
+		}
+	}()
 
-	// Shotdown all controller and services
-	rc.Close()
-	uc.Close()
+	// Waits until an interrupt is sent from the OS
+	<-stop
 
-	log.Debug("Shutdown Server")
+	log.Info("Shutting down the server...")
+
+	// Shutdown the server (defaukt context)
+	srv.Shutdown(context.Background())
+
+	// Shutdown controllers
+	rolesRestCtrl.Close()
+	usresRestCtrl.Close()
+
+	// Close Repositories
+	usersRepo.Close()
+
+	log.Info("Server gracefully stopped")
 
 }

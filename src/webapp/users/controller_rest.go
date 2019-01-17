@@ -1,6 +1,7 @@
 package users
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 
@@ -9,8 +10,10 @@ import (
 )
 
 // NewRestController create new RestController
-func NewRestController(router *mux.Router) *RestController {
-	ctrl := RestController{}
+func NewRestController(router *mux.Router, repo Repository) *RestController {
+	ctrl := RestController{
+		Repository: repo,
+	}
 	router.HandleFunc("/users", ctrl.GetAllUsers).Methods("GET")
 	router.HandleFunc("/users/{id}", ctrl.GetUserByID).Methods("GET")
 	router.HandleFunc("/users", ctrl.CreateUser).Methods("POST")
@@ -20,6 +23,7 @@ func NewRestController(router *mux.Router) *RestController {
 
 // RestController for http transport
 type RestController struct {
+	Repository Repository
 }
 
 // Close gracefully shutdown rest controller
@@ -29,9 +33,14 @@ func (c *RestController) Close() {
 
 // GetAllUsers handler to request the
 func (c *RestController) GetAllUsers(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
+	users, err := c.Repository.FindAll(r.Context())
+
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
 	w.WriteHeader(http.StatusOK)
-	fmt.Fprintf(w, "Users: %v\n", vars["Users"])
+	json.NewEncoder(w).Encode(users)
 }
 
 // GetUserByID handler to request the
