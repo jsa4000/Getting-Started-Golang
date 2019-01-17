@@ -44,7 +44,7 @@ func main() {
 
 	log.Info("Starting the Server...")
 
-	// Create Repositiories
+	// Create Repositories
 	usersRepo := users.NewMockRepository()
 	rolesRepo := roles.NewMockRepository()
 
@@ -57,7 +57,7 @@ func main() {
 
 	// Create controllers
 	rolesRestCtrl := roles.NewRestController(router, rolesRepo)
-	usresRestCtrl := users.NewRestController(router, usersRepo)
+	usersRestCtrl := users.NewRestController(router, usersRepo)
 
 	// Create server with parameters
 	server := &http.Server{
@@ -82,12 +82,14 @@ func main() {
 
 	log.Info("Shutting down the server...")
 
-	// Shutdown the server (defaukt context)
-	server.Shutdown(context.Background())
+	// Shutdown the server (default context)
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	server.Shutdown(ctx)
 
 	// Shutdown controllers
 	rolesRestCtrl.Close()
-	usresRestCtrl.Close()
+	usersRestCtrl.Close()
 
 	// Close Repositories
 	rolesRepo.Close()

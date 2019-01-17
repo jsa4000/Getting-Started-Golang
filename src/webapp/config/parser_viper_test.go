@@ -1,33 +1,103 @@
 package config
 
 import (
+	"os"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
-// GetPathFromConfigfileShouldReturnOk
-func TestReadPath(t *testing.T) {
-	parser := NewViperParser("config_test", ".")
-	path := "app.name"
-	value, err := parser.GetString(path)
+var yamlConfig = []byte(`
+app:
+  name: WebApp
+  version: 1.12
+    
+logging:
+  enabled: true
+  level: debug
+`)
 
-	expectedValue := "WebApp"
+var parser Parser
 
-	if err != nil || value == "" {
-		t.Errorf("Error getting %s", path)
-	}
-
-	if value != expectedValue {
-		t.Errorf("test error %s != %s ", expectedValue, value)
-	}
+func init() {
+	parser = NewViperParserFromBytes(yamlConfig, "yaml")
 }
 
-// GetPathFromConfigfileShouldReturnError
-func TestReadPathError(t *testing.T) {
-	parser := NewViperParser("config_test", ".")
-	path := "app.fail"
-	value, err := parser.GetString(path)
+func TestGetStringFromFile(t *testing.T) {
+	path := "app.name"
+	expectedValue := "WebApp"
 
-	if err == nil || value != "" {
-		t.Errorf("Path must not exist %s", path)
-	}
+	value := parser.GetString(path)
+
+	assert.NotEqual(t, value, "")
+	assert.Equal(t, value, expectedValue)
+}
+
+func TestGetFloat64FromFile(t *testing.T) {
+	path := "app.version"
+	expectedValue := 1.12
+
+	value := parser.GetFloat64(path)
+
+	assert.Equal(t, value, expectedValue)
+}
+
+func TestGetFromFile(t *testing.T) {
+	path := "logging.level"
+	expectedValue := "debug"
+
+	value, err := parser.Get(path)
+
+	assert.Equal(t, value, expectedValue)
+	assert.Equal(t, err, nil)
+}
+
+func TestGetFromFile2(t *testing.T) {
+	path := "logging.enabled"
+	expectedValue := true
+
+	value, err := parser.Get(path)
+
+	assert.Equal(t, value, expectedValue)
+	assert.Equal(t, err, nil)
+}
+
+func TestGetStringFromEnv(t *testing.T) {
+	os.Setenv("ENV_APP_NAME", "WebApp")
+	path := "env.app.name"
+	expectedValue := "WebApp"
+
+	value := parser.GetString(path)
+
+	assert.NotEqual(t, value, "")
+	assert.Equal(t, value, expectedValue)
+
+	os.Unsetenv("ENV_APP_NAME")
+}
+
+func TestGetStringFromEnvFirst(t *testing.T) {
+	os.Setenv("APP_NAME", "WebAppEnv")
+	path := "app.name"
+	expectedValue := "WebAppEnv"
+
+	value := parser.GetString(path)
+
+	assert.NotEqual(t, value, "")
+	assert.Equal(t, value, expectedValue)
+
+	os.Unsetenv("APP_NAME")
+}
+
+func TestGetStringError(t *testing.T) {
+	path := "app.fail"
+	value := parser.GetString(path)
+
+	assert.Equal(t, value, "")
+}
+
+func TestGetError(t *testing.T) {
+	path := "app.fail"
+	_, err := parser.Get(path)
+
+	assert.NotEqual(t, err, nil)
 }
