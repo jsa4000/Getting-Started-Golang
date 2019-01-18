@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"reflect"
 )
 
 // Public/Private = Exported/Un-exported
@@ -204,4 +205,28 @@ func main() {
 		return
 	}
 	fmt.Println(string(bytes))
+
+	printHeader("Reflection")
+
+	// Read the Struct using reflection
+	app := App{}
+	t := reflect.TypeOf(app)
+	for i := 0; i < t.NumField(); i++ {
+		f := t.Field(i)
+		fmt.Println(f.Tag.Get("json"))
+	}
+
+	// Get the Field By NAme Title
+	f, _ := t.FieldByName("Title")
+	fmt.Println(f.Tag)
+	v, ok := f.Tag.Lookup("json")
+	fmt.Printf("%s, %t\n", v, ok)
+
+	vv := reflect.ValueOf(app)
+	for j := 0; j < vv.NumField(); j++ {
+		f := vv.Field(j)
+		n := vv.Type().Field(j).Name
+		t := f.Type().String()
+		fmt.Printf("Name: %s  Basic Type or Kind: %s  Direct or Custom Type: %s\n", n, f.Kind(), t)
+	}
 }

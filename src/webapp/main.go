@@ -8,33 +8,16 @@ import (
 	"os/signal"
 	"syscall"
 	"time"
+	"webapp/config"
 	"webapp/roles"
+	"webapp/server"
 	"webapp/users"
 
 	"github.com/gorilla/mux"
 	log "github.com/sirupsen/logrus"
 )
 
-// HomeHandler handler for the HomePage
-func HomeHandler(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	w.WriteHeader(http.StatusOK)
-	fmt.Fprintf(w, "Roles: %v\n", vars["Roles"])
-}
-
-func loggingMiddleware(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		log.WithFields(log.Fields{"uri": r.RequestURI, "args": mux.Vars(r)}).
-			Debug("Received Request")
-		next.ServeHTTP(w, r)
-	})
-}
-
 func main() {
-
-	// Create a channel to detect interrupt signal from os
-	stop := make(chan os.Signal, 1)
-	signal.Notify(stop, os.Interrupt, os.Kill, syscall.SIGTERM)
 
 	// Set the log formatter
 	log.SetLevel(log.DebugLevel)
@@ -42,7 +25,17 @@ func main() {
 		FullTimestamp: true,
 	})
 
-	log.Info("Starting the Server...")
+	// Create Parser (Configuration)
+	parser := config.NewViperParserFromFile("webapp.yaml", ".")
+
+	// Read the Configuration
+	appconfig := server.NewAppConfig(parser)
+
+	// Create a channel to detect interrupt signal from os
+	stop := make(chan os.Signal, 1)
+	signal.Notify(stop, os.Interrupt, os.Kill, syscall.SIGTERM)
+
+	log.Infof("Starting %s Server...", appconfig.Name)
 
 	// Create Repositories
 	usersRepo := users.NewMockRepository()
@@ -52,8 +45,8 @@ func main() {
 	router := mux.NewRouter()
 
 	// Create the routings
-	router.HandleFunc("/", HomeHandler).Methods("GET")
-	router.Use(loggingMiddleware)
+	router.HandleFunc("/", server.HomeHandler).Methods("GET")
+	router.Use(server.LoggingMiddleware)
 
 	// Create controllers
 	rolesRestCtrl := roles.NewRestController(router, rolesRepo)
@@ -61,10 +54,10 @@ func main() {
 
 	// Create server with parameters
 	server := &http.Server{
-		Addr:         "0.0.0.0:8080",
-		WriteTimeout: time.Second * 15,
-		ReadTimeout:  time.Second * 15,
-		IdleTimeout:  time.Second * 60,
+		Addr:         fmt.Sprintf("0.0.0.0:%d", appconfig.Port),
+		WriteTimeout: time.Second * time.Duration(appconfig.WriteTimeout),
+		ReadTimeout:  time.Second * time.Duration(appconfig.ReadTimeout),
+		IdleTimeout:  time.Second * appconfig.IdleTimeout,
 		Handler:      router,
 	}
 
