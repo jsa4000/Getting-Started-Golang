@@ -108,7 +108,33 @@ func TestGetStringFromDefault(t *testing.T) {
 	assert.Equal(t, expectedValue, value)
 }
 
-// To test when override previous properties with Viper.Set()
+func TestGetIntFromDefault(t *testing.T) {
+	path := "app.integer:1"
+	expectedValue := 1
+
+	value := parser.GetInt(path)
+
+	assert.Equal(t, expectedValue, value)
+}
+
+func TestGetFloat64FromDefault(t *testing.T) {
+	path := "app.float:1.12"
+	expectedValue := 1.12
+
+	value := parser.GetFloat64(path)
+
+	assert.Equal(t, expectedValue, value)
+}
+
+func TestGetBoolFromDefault(t *testing.T) {
+	path := "app.bool:true"
+	expectedValue := true
+
+	value := parser.GetBool(path)
+
+	assert.Equal(t, expectedValue, value)
+}
+
 func TestGetStringFromFileNotDeafult2(t *testing.T) {
 	path := "logging.level:info"
 	expectedValue := "debug"
