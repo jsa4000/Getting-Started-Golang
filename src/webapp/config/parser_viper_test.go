@@ -29,8 +29,18 @@ func TestGetStringFromFile(t *testing.T) {
 
 	value := parser.GetString(path)
 
-	assert.NotEqual(t, value, "")
-	assert.Equal(t, value, expectedValue)
+	assert.NotEqual(t, "", value)
+	assert.Equal(t, expectedValue, value)
+}
+
+func TestGetStringFromFileNotDeafult(t *testing.T) {
+	path := "app.name:WebAppDefault"
+	expectedValue := "WebApp"
+
+	value := parser.GetString(path)
+
+	assert.NotEqual(t, "", value)
+	assert.Equal(t, expectedValue, value)
 }
 
 func TestGetFloat64FromFile(t *testing.T) {
@@ -39,7 +49,7 @@ func TestGetFloat64FromFile(t *testing.T) {
 
 	value := parser.GetFloat64(path)
 
-	assert.Equal(t, value, expectedValue)
+	assert.Equal(t, expectedValue, value)
 }
 
 func TestGetFromFile(t *testing.T) {
@@ -48,8 +58,8 @@ func TestGetFromFile(t *testing.T) {
 
 	value, err := parser.Get(path)
 
-	assert.Equal(t, value, expectedValue)
-	assert.Equal(t, err, nil)
+	assert.Equal(t, expectedValue, value)
+	assert.Equal(t, nil, err)
 }
 
 func TestGetFromFile2(t *testing.T) {
@@ -58,8 +68,8 @@ func TestGetFromFile2(t *testing.T) {
 
 	value, err := parser.Get(path)
 
-	assert.Equal(t, value, expectedValue)
-	assert.Equal(t, err, nil)
+	assert.Equal(t, expectedValue, value)
+	assert.Equal(t, nil, err)
 }
 
 func TestGetStringFromEnv(t *testing.T) {
@@ -69,8 +79,8 @@ func TestGetStringFromEnv(t *testing.T) {
 
 	value := parser.GetString(path)
 
-	assert.NotEqual(t, value, "")
-	assert.Equal(t, value, expectedValue)
+	assert.NotEqual(t, "", value)
+	assert.Equal(t, expectedValue, value)
 
 	os.Unsetenv("ENV_APP_NAME")
 }
@@ -82,22 +92,36 @@ func TestGetStringFromEnvFirst(t *testing.T) {
 
 	value := parser.GetString(path)
 
-	assert.NotEqual(t, value, "")
-	assert.Equal(t, value, expectedValue)
+	assert.NotEqual(t, "", value)
+	assert.Equal(t, expectedValue, value)
 
 	os.Unsetenv("APP_NAME")
 }
 
-func TestGetStringError(t *testing.T) {
-	path := "app.fail"
+func TestGetStringFromDefault(t *testing.T) {
+	path := "app.default:WebAppDefault"
+	expectedValue := "WebAppDefault"
+
 	value := parser.GetString(path)
 
-	assert.Equal(t, value, "")
+	assert.NotEqual(t, "", value)
+	assert.Equal(t, expectedValue, value)
+}
+
+// To test when override previous properties with Viper.Set()
+func TestGetStringFromFileNotDeafult2(t *testing.T) {
+	path := "logging.level:info"
+	expectedValue := "debug"
+
+	value := parser.GetString(path)
+
+	assert.NotEqual(t, "", value)
+	assert.Equal(t, expectedValue, value)
 }
 
 func TestGetError(t *testing.T) {
 	path := "app.fail"
 	_, err := parser.Get(path)
 
-	assert.NotEqual(t, err, nil)
+	assert.NotEqual(t, nil, err)
 }
