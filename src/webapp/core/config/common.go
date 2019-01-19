@@ -1,6 +1,7 @@
 package config
 
 import (
+	"fmt"
 	"reflect"
 	"strings"
 
@@ -33,8 +34,8 @@ func ReadData(parser Parser, data interface{}) {
 		ft := t.Field(i)
 		tag, ok := ft.Tag.Lookup(Tag)
 		if ok {
-			log.WithFields(log.Fields{"Name": ft.Name, "Kind": fv.Kind(), "Type": fv.Type(), "Tag": tag}).
-				Debugf("Read Default Configuration from '%s/%s'", t.PkgPath(), t.Name())
+			log.Debug(log.Fields{"Name": ft.Name, "Kind": fv.Kind(), "Type": fv.Type(), "Tag": tag},
+				fmt.Sprintf("Read Default Configuration from '%s/%s'", t.PkgPath(), t.Name()))
 			switch fv.Kind() {
 			case reflect.String:
 				fv.SetString(parser.GetString(tag))
@@ -45,8 +46,8 @@ func ReadData(parser Parser, data interface{}) {
 			case reflect.Bool:
 				fv.SetBool(parser.GetBool(tag))
 			default:
-				log.WithFields(log.Fields{"Name": ft.Name, "Kind": fv.Kind(), "Type": fv.Type(), "Tag": tag}).
-					Warning("Kind is not supported")
+				log.Warning(log.Fields{"Name": ft.Name, "Kind": fv.Kind(), "Type": fv.Type(), "Tag": tag},
+					"Kind is not supported")
 			}
 		}
 	}
