@@ -29,13 +29,21 @@ func main() {
 	parser := config.NewViperParserFromFile("webapp.yaml", ".")
 
 	// Read the Configuration
-	appconfig := server.NewAppConfig(parser)
+	serverConfig := server.NewConfig(parser)
+	//serverConfig := server.NewConfig2(parser)
+
+	/* DELETE */
+	fmt.Println(serverConfig)
+	exit := true
+	if exit {
+		os.Exit(1)
+	}
 
 	// Create a channel to detect interrupt signal from os
 	stop := make(chan os.Signal, 1)
 	signal.Notify(stop, os.Interrupt, os.Kill, syscall.SIGTERM)
 
-	log.Infof("Starting %s Server...", appconfig.Name)
+	log.Infof("Starting %s Server...", serverConfig.Name)
 
 	// Create Repositories
 	usersRepo := users.NewMockRepository()
@@ -54,10 +62,10 @@ func main() {
 
 	// Create server with parameters
 	server := &http.Server{
-		Addr:         fmt.Sprintf("0.0.0.0:%d", appconfig.Port),
-		WriteTimeout: time.Second * time.Duration(appconfig.WriteTimeout),
-		ReadTimeout:  time.Second * time.Duration(appconfig.ReadTimeout),
-		IdleTimeout:  time.Second * appconfig.IdleTimeout,
+		Addr:         fmt.Sprintf("0.0.0.0:%d", serverConfig.Port),
+		WriteTimeout: time.Second * time.Duration(serverConfig.WriteTimeout),
+		ReadTimeout:  time.Second * time.Duration(serverConfig.ReadTimeout),
+		IdleTimeout:  time.Second * serverConfig.IdleTimeout,
 		Handler:      router,
 	}
 

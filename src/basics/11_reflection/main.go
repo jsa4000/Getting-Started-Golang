@@ -20,6 +20,50 @@ type User struct {
 	Roles []Role `json:"roles,omitempty"`
 }
 
+// DescribeStruct function that shows the values and fields using interfaces
+func DescribeStruct(s interface{}) {
+	v := reflect.ValueOf(s)
+	t := v.Elem().Type()
+	for i := 0; i < v.Elem().NumField(); i++ {
+		fv := v.Elem().Field(i)
+		ft := t.Field(i)
+		fmt.Printf("Name: %s  Kind: %s  Type: %s  Tag:  %s\n", ft.Name, fv.Kind(), fv.Type(), ft.Tag.Get("json"))
+	}
+}
+
+// NewUser get appconfig
+func NewUser() *User {
+	config := User{}
+	tp := reflect.TypeOf(config)
+	val := reflect.ValueOf(&config)
+	for i := 0; i < tp.NumField(); i++ {
+		ft := tp.Field(i)
+		value, ok := ft.Tag.Lookup("config")
+		if ok {
+			fmt.Println(value)
+			// Get the element from the pointer
+			fv := val.Elem().Field(i)
+			fmt.Printf("Name: %s  Kind: %s  Type: %s  Tag:  %s\n", ft.Name, fv.Kind(), fv.Type(), ft.Tag.Get("json"))
+			switch fv.Kind() {
+			case reflect.String:
+				fmt.Printf("Value '%s' is String\n", fv.String())
+				fv.SetString("New Value")
+			case reflect.Int, reflect.Int32, reflect.Int64:
+				fmt.Printf("Value '%s' is Int\n", fv.String())
+				fv.SetInt(1)
+			case reflect.Float32, reflect.Float64:
+				fmt.Printf("Value '%s' is Float\n", fv.String())
+			case reflect.Bool:
+				fmt.Printf("Value '%s' is Bool\n", fv.String())
+			default:
+				fmt.Printf("Kind is not supported for type %s for value '%s'\n", fv.Kind(), fv.String())
+			}
+		}
+
+	}
+	return &config
+}
+
 func printHeader(text string) {
 	fmt.Println()
 	fmt.Println("*** " + text + " ***")
@@ -169,4 +213,9 @@ func main() {
 		}
 	}
 	fmt.Println(user)
+
+	printHeader("Reflection Struct using Interfaces")
+
+	// Print the current data using interface (generics kind-of)
+	DescribeStruct(&user)
 }

@@ -6,8 +6,8 @@ import (
 	"webapp/config"
 )
 
-// AppConfig main app configuration
-type AppConfig struct {
+// Config main app configuration
+type Config struct {
 	Name         string        `config:"app.name:ServerApp"`
 	LogLevel     string        `config:"logging.level:info"`
 	Port         int           `config:"server.port:8080"`
@@ -16,10 +16,17 @@ type AppConfig struct {
 	IdleTimeout  time.Duration `config:"server.idleTimeout:60"`
 }
 
-// NewAppConfig get appconfig
-func NewAppConfig(parser config.Parser) *AppConfig {
-	t := reflect.TypeOf(AppConfig{})
-	return &AppConfig{
+// NewConfig get Config with reflection automatically
+func NewConfig(parser config.Parser) *Config {
+	c := Config{}
+	config.SetConfig(parser, &c)
+	return &c
+}
+
+// NewConfig2 get Config manually using parser functions
+func NewConfig2(parser config.Parser) *Config {
+	t := reflect.TypeOf(Config{})
+	return &Config{
 		Name:         parser.GetString(config.GetTagValue(t, "Name")),
 		LogLevel:     parser.GetString(config.GetTagValue(t, "LogLevel")),
 		Port:         parser.GetInt(config.GetTagValue(t, "Port")),
