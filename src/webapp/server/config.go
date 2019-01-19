@@ -14,6 +14,7 @@ type Config struct {
 	WriteTimeout int           `config:"server.writeTimeout:60"`
 	ReadTimeout  int           `config:"server.readTimeout:60"`
 	IdleTimeout  time.Duration `config:"server.idleTimeout:60"`
+	Status       bool
 }
 
 // NewConfig get Config with reflection automatically
