@@ -9,21 +9,24 @@ import (
 	"syscall"
 	"time"
 	"webapp/core/config/viper"
+	"webapp/core/logging"
+	"webapp/core/logging/logrus"
 	"webapp/roles"
 	"webapp/server"
 	"webapp/users"
 
 	"github.com/gorilla/mux"
-	log "github.com/sirupsen/logrus"
 )
+
+var logger = logrus.New()
 
 func main() {
 
+	logging.Log = logger
+
 	// Set the log formatter
-	log.SetLevel(log.DebugLevel)
-	log.SetFormatter(&log.TextFormatter{
-		FullTimestamp: true,
-	})
+	logger.SetLevel(logging.DebugLevel)
+	logger.SetFormatter(logging.TextFormat)
 
 	// Create Parser (Configuration)
 	parser := viper.NewParserFromFile("webapp.yaml", ".")
@@ -36,7 +39,7 @@ func main() {
 	stop := make(chan os.Signal, 1)
 	signal.Notify(stop, os.Interrupt, os.Kill, syscall.SIGTERM)
 
-	log.Infof("Starting %s Server...", serverConfig.Name)
+	logger.Infof("Starting %s Server...", serverConfig.Name)
 
 	// Create Repositories
 	rolesRepository := roles.NewMockRepository()
@@ -68,17 +71,17 @@ func main() {
 
 	// Start the server
 	go func() {
-		log.Info("Listening on " + server.Addr)
-		log.Info("Press Ctrl+c to shutdown the server")
+		logger.Info("Listening on " + server.Addr)
+		logger.Info("Press Ctrl+c to shutdown the server")
 		if err := server.ListenAndServe(); err != nil {
-			log.Println(err)
+			logger.Error(err)
 		}
 	}()
 
 	// Waits until an interrupt is sent from the OS
 	<-stop
 
-	log.Info("Shutting down the server...")
+	logger.Info("Shutting down the server...")
 
 	// Shutdown the server (default context)
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
@@ -93,5 +96,5 @@ func main() {
 	rolesRepository.Close()
 	usersRepository.Close()
 
-	log.Info("Server gracefully stopped")
+	logger.Info("Server gracefully stopped")
 }
