@@ -4,9 +4,6 @@ import (
 	"io"
 )
 
-// Log Global logger
-var Log Logger
-
 // Level type
 type Level uint32
 
@@ -56,4 +53,107 @@ type Logger interface {
 	Error(args ...interface{})
 	Fatal(args ...interface{})
 	Panic(args ...interface{})
+}
+
+// Log Global logger
+var logger Logger
+
+// SetGlobal sets the Global Logger (singletone)
+func SetGlobal(l Logger) {
+	logger = l
+}
+
+// SetFormatter sets the standard logger formatter.
+func SetFormatter(format Format) {
+	logger.SetFormatter(format)
+}
+
+// SetLevel sets the standard logger level.
+func SetLevel(level Level) {
+	logger.SetLevel(level)
+}
+
+// SetOutput sets the standard logger output.
+func SetOutput(out io.Writer) {
+	logger.SetOutput(out)
+}
+
+// Debugf log
+func Debugf(format string, args ...interface{}) {
+	logger.Debugf(format, args...)
+}
+
+// Infof log
+func Infof(format string, args ...interface{}) {
+	logger.Infof(format, args...)
+}
+
+// Printf log
+func Printf(format string, args ...interface{}) {
+	logger.Printf(format, args...)
+}
+
+// Warnf log
+func Warnf(format string, args ...interface{}) {
+	logger.Warnf(format, args...)
+}
+
+// Warningf log
+func Warningf(format string, args ...interface{}) {
+	logger.Warningf(format, args...)
+}
+
+// Errorf log
+func Errorf(format string, args ...interface{}) {
+	logger.Errorf(format, args...)
+}
+
+// Fatalf log
+func Fatalf(format string, args ...interface{}) {
+	logger.Fatalf(format, args...)
+}
+
+// Panicf log
+func Panicf(format string, args ...interface{}) {
+	logger.Panicf(format, args...)
+}
+
+// Debug log
+func Debug(args ...interface{}) {
+	logger.Debug(args...)
+}
+
+// Info log
+func Info(args ...interface{}) {
+	logger.Info(args...)
+}
+
+// Print log
+func Print(args ...interface{}) {
+	logger.Print(args...)
+}
+
+// Warn log
+func Warn(args ...interface{}) {
+	logger.Warn(args...)
+}
+
+// Warning log
+func Warning(args ...interface{}) {
+	logger.Warning(args...)
+}
+
+// Error log
+func Error(args ...interface{}) {
+	logger.Error(args...)
+}
+
+// Fatal log
+func Fatal(args ...interface{}) {
+	logger.Fatal(args...)
+}
+
+// Panic log
+func Panic(args ...interface{}) {
+	logger.Panic(args...)
 }

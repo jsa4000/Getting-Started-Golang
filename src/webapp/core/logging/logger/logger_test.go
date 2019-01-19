@@ -1,11 +1,13 @@
 package logger
 
 import (
-	"fmt"
 	"io/ioutil"
 	"os"
+	"strings"
 	"testing"
 	"webapp/core/logging"
+
+	"github.com/stretchr/testify/assert"
 )
 
 var logger *Logger
@@ -35,21 +37,27 @@ func TestDebugInLevelInfo(t *testing.T) {
 }
 
 func TestStdoutOutput(t *testing.T) {
-	// Set Stdout writter
-	logger.SetOutput(os.Stdout)
+	expectedMessage := "This is a log to stdout"
+
+	// Set Stdout writer
 	rescueStdout := os.Stdout
 	r, w, _ := os.Pipe()
+	// set the stdout as the pipe created
 	os.Stdout = w
+	// Set the log output as well
+	logger.SetOutput(w)
 
-	logger.Print("This is a debug log to stdout")
-	logger.Error("This is an error log to stdout")
+	logger.Debug(expectedMessage)
 
 	w.Close()
 	out, _ := ioutil.ReadAll(r)
+	// Restore again the stdout as before
 	os.Stdout = rescueStdout
-	fmt.Printf("Captured: %s\n", out)
 	// Default std logrus
 	logger.SetOutput(os.Stderr)
+
+	assert.True(t, strings.Contains(string(out), expectedMessage))
+	assert.True(t, strings.Contains(strings.ToLower(string(out)), "debug"))
 }
 
 func logAll(logLevel string) {

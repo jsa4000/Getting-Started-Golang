@@ -14,18 +14,23 @@ var yamlConfig = []byte(`
 app:
   name: WebApp
   version: 1.12
-    
+
 logging:
   enabled: true
   level: debug
+
+server:
+  port: 9000
+  writeTimeout: 15
+  idleTimeout: 200
+
 `)
 
-// Config main app configuration
 type Config struct {
-	Name         string        `config:"app.name:ServerApp"`
-	LogLevel     string        `config:"logging.level:info"`
-	Port         int           `config:"server.port:8080"`
-	WriteTimeout int           `config:"server.writeTimeout:60"`
+	Name         string `config:"app.name:ServerApp"`
+	LogLevel     string `config:"logging.level:info"`
+	Port         int    `config:"server.port"`
+	WriteTimeout int
 	ReadTimeout  int           `config:"server.readTimeout:60"`
 	IdleTimeout  time.Duration `config:"server.idleTimeout:60"`
 	Status       bool
@@ -167,21 +172,30 @@ func TestGetError(t *testing.T) {
 }
 
 // NewConfig get Config with reflection automatically
-func NewConfig(parser config.Parser) *Config {
+func TestParseFieldsByReflection(t *testing.T) {
 	c := Config{}
-	//config.SetConfig(parser, &c)
-	return &c
+	parser.ReadFields(&c)
+
+	assert.Equal(t, c.Name, "WebApp")
+	assert.Equal(t, c.LogLevel, "debug")
+	assert.Equal(t, c.ReadTimeout, 60)
+	assert.Equal(t, c.IdleTimeout, time.Duration(200))
 }
 
 // NewConfig2 get Config manually using parser functions
-func NewConfig2(parser config.Parser) *Config {
-	t := reflect.TypeOf(Config{})
-	return &Config{
-		Name:         parser.GetString(config.GetTagValue(t, "Name")),
-		LogLevel:     parser.GetString(config.GetTagValue(t, "LogLevel")),
-		Port:         parser.GetInt(config.GetTagValue(t, "Port")),
-		WriteTimeout: parser.GetInt(config.GetTagValue(t, "WriteTimeout")),
-		ReadTimeout:  parser.GetInt(config.GetTagValue(t, "ReadTimeout")),
-		IdleTimeout:  time.Duration(parser.GetInt(config.GetTagValue(t, "IdleTimeout"))),
+func TestParseFieldsManually(t *testing.T) {
+	rt := reflect.TypeOf(Config{})
+	c := &Config{
+		Name:         parser.GetString(config.GetTagValue(rt, "Name")),
+		LogLevel:     parser.GetString(config.GetTagValue(rt, "LogLevel")),
+		Port:         parser.GetInt(config.GetTagValue(rt, "Port")),
+		WriteTimeout: parser.GetInt(config.GetTagValue(rt, "WriteTimeout")),
+		ReadTimeout:  parser.GetInt(config.GetTagValue(rt, "ReadTimeout")),
+		IdleTimeout:  time.Duration(parser.GetInt(config.GetTagValue(rt, "IdleTimeout"))),
 	}
+
+	assert.Equal(t, c.Name, "WebApp")
+	assert.Equal(t, c.LogLevel, "debug")
+	assert.Equal(t, c.ReadTimeout, 60)
+	assert.Equal(t, c.IdleTimeout, time.Duration(200))
 }

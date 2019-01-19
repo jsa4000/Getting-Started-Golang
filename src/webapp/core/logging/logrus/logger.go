@@ -7,12 +7,12 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-// Logger struct to store all the logrus data
+// Logger struct logrus placeholder
 type Logger struct {
 	Log *logrus.Logger
 }
 
-// New Creates new Logrus instance
+// New Creates Logrus new instance
 func New() *Logger {
 	return &Logger{
 		Log: logrus.New(),

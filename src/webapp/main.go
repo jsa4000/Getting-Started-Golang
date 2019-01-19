@@ -8,8 +8,9 @@ import (
 	"os/signal"
 	"syscall"
 	"time"
+	"webapp/core/config"
 	"webapp/core/config/viper"
-	"webapp/core/logging"
+	log "webapp/core/logging"
 	"webapp/core/logging/logrus"
 	"webapp/roles"
 	"webapp/server"
@@ -18,28 +19,33 @@ import (
 	"github.com/gorilla/mux"
 )
 
-var logger = logrus.New()
+func setGlobalLogger() {
+	log.SetGlobal(logrus.New())
+	// Set the log formatter
+	log.SetLevel(log.DebugLevel)
+	log.SetFormatter(log.TextFormat)
+}
+
+func setGlobalParser() {
+	config.SetGlobal(viper.NewParserFromFile("webapp.yaml", "."))
+}
 
 func main() {
 
-	logging.Log = logger
-
-	// Set the log formatter
-	logger.SetLevel(logging.DebugLevel)
-	logger.SetFormatter(logging.TextFormat)
-
-	// Create Parser (Configuration)
-	parser := viper.NewParserFromFile("webapp.yaml", ".")
+	// Set Global Logger
+	setGlobalLogger()
+	// Set Global Parser
+	setGlobalParser()
 
 	// Read the Configuration
 	serverConfig := server.Config{}
-	parser.ReadFields(&serverConfig)
+	config.ReadFields(&serverConfig)
 
 	// Create a channel to detect interrupt signal from os
 	stop := make(chan os.Signal, 1)
 	signal.Notify(stop, os.Interrupt, os.Kill, syscall.SIGTERM)
 
-	logger.Infof("Starting %s Server...", serverConfig.Name)
+	log.Infof("Starting %s Server...", serverConfig.Name)
 
 	// Create Repositories
 	rolesRepository := roles.NewMockRepository()
@@ -71,17 +77,17 @@ func main() {
 
 	// Start the server
 	go func() {
-		logger.Info("Listening on " + server.Addr)
-		logger.Info("Press Ctrl+c to shutdown the server")
+		log.Info("Listening on " + server.Addr)
+		log.Info("Press Ctrl+c to shutdown the server")
 		if err := server.ListenAndServe(); err != nil {
-			logger.Error(err)
+			log.Error(err)
 		}
 	}()
 
 	// Waits until an interrupt is sent from the OS
 	<-stop
 
-	logger.Info("Shutting down the server...")
+	log.Info("Shutting down the server...")
 
 	// Shutdown the server (default context)
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
@@ -96,5 +102,5 @@ func main() {
 	rolesRepository.Close()
 	usersRepository.Close()
 
-	logger.Info("Server gracefully stopped")
+	log.Info("Server gracefully stopped")
 }

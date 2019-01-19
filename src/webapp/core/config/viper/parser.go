@@ -48,7 +48,7 @@ func NewParserFromBytes(buffer []byte, filetype string) *Parser {
 
 // ReadFields read fields tags from struct and return config values
 func (p *Parser) ReadFields(data interface{}) {
-	config.ReadFields(p, data)
+	config.ReadData(p, data)
 }
 
 // GetString from a path
