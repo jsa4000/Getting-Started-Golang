@@ -7,12 +7,13 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-// Tag used for inference path and default value
-// i.e  Name   string  `config:"app.name:ServerApp"`
-const Tag = "config"
-
-// PathSeparator to split the tag into `config:"path:default"`
-const PathSeparator = ":"
+const (
+	// Tag used for inference path and default value
+	// i.e  Name   string  `config:"app.name:ServerApp"`
+	Tag = "config"
+	// PathSeparator to split the tag into `config:"path:default"`
+	PathSeparator = ":"
+)
 
 // Parser interface to read from config files or environment
 type Parser interface {
