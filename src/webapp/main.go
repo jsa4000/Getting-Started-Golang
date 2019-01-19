@@ -2,21 +2,16 @@ package main
 
 import (
 	"context"
-	"fmt"
-	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
-	"time"
 	"webapp/core/config"
 	"webapp/core/config/viper"
 	log "webapp/core/logging"
 	"webapp/core/logging/logrus"
 	"webapp/roles"
-	"webapp/server"
+	"webapp/servers"
 	"webapp/users"
-
-	"github.com/gorilla/mux"
 )
 
 func setGlobalLogger() {
@@ -37,15 +32,11 @@ func main() {
 	// Set Global Parser
 	setGlobalParser()
 
-	// Read the Configuration
-	serverConfig := server.Config{}
-	config.ReadFields(&serverConfig)
-
 	// Create a channel to detect interrupt signal from os
 	stop := make(chan os.Signal, 1)
 	signal.Notify(stop, os.Interrupt, os.Kill, syscall.SIGTERM)
 
-	log.Infof("Starting %s Server...", serverConfig.Name)
+	log.Infof("Starting Services...")
 
 	// Create Repositories
 	rolesRepository := roles.NewMockRepository()
@@ -55,44 +46,27 @@ func main() {
 	rolesService := roles.NewServiceImpl(rolesRepository)
 	usersService := users.NewServiceImpl(usersRepository)
 
-	// Create the router
-	router := mux.NewRouter()
-
-	// Create the routings
-	router.HandleFunc("/", server.HomeHandler).Methods("GET")
-	router.Use(server.LoggingMiddleware)
+	// Create The HTTP Server
+	httpServer := servers.NewHTTPServer()
 
 	// Create controllers
-	rolesRestCtrl := roles.NewRestController(router, rolesService)
-	usersRestCtrl := users.NewRestController(router, usersService)
+	rolesRestCtrl := roles.NewRestController(httpServer.Router, rolesService)
+	usersRestCtrl := users.NewRestController(httpServer.Router, usersService)
 
-	// Create server with parameters
-	server := &http.Server{
-		Addr:         fmt.Sprintf("0.0.0.0:%d", serverConfig.Port),
-		WriteTimeout: time.Second * time.Duration(serverConfig.WriteTimeout),
-		ReadTimeout:  time.Second * time.Duration(serverConfig.ReadTimeout),
-		IdleTimeout:  time.Second * serverConfig.IdleTimeout,
-		Handler:      router,
-	}
+	// Start the HTTP server
+	httpServer.Start()
 
-	// Start the server
-	go func() {
-		log.Info("Listening on " + server.Addr)
-		log.Info("Press Ctrl+c to shutdown the server")
-		if err := server.ListenAndServe(); err != nil {
-			log.Error(err)
-		}
-	}()
+	log.Info("Press Ctrl+c to shutdown the server")
 
 	// Waits until an interrupt is sent from the OS
 	<-stop
 
-	log.Info("Shutting down the server...")
+	log.Infof("Stopping Services...")
 
-	// Shutdown the server (default context)
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-	server.Shutdown(ctx)
+	ctx := context.Background()
+
+	// Shutdown the HTTP server
+	httpServer.Shutdown(ctx)
 
 	// Shutdown controllers
 	rolesRestCtrl.Close()
