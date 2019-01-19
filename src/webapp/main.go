@@ -8,7 +8,7 @@ import (
 	"os/signal"
 	"syscall"
 	"time"
-	"webapp/config"
+	"webapp/core/config/viper"
 	"webapp/roles"
 	"webapp/server"
 	"webapp/users"
@@ -26,18 +26,11 @@ func main() {
 	})
 
 	// Create Parser (Configuration)
-	parser := config.NewViperParserFromFile("webapp.yaml", ".")
+	parser := viper.NewParserFromFile("webapp.yaml", ".")
 
 	// Read the Configuration
-	serverConfig := server.NewConfig(parser)
-	//serverConfig := server.NewConfig2(parser)
-
-	/* DELETE */
-	fmt.Println(serverConfig)
-	exit := true
-	if exit {
-		os.Exit(1)
-	}
+	serverConfig := server.Config{}
+	parser.ReadFields(&serverConfig)
 
 	// Create a channel to detect interrupt signal from os
 	stop := make(chan os.Signal, 1)

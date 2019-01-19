@@ -2,6 +2,7 @@ package config
 
 import (
 	"reflect"
+	"strings"
 
 	log "github.com/sirupsen/logrus"
 )
@@ -10,14 +11,18 @@ import (
 // i.e  Name   string  `config:"app.name:ServerApp"`
 const Tag = "config"
 
+// PathSeparator to split the tag into `config:"path:default"`
+const PathSeparator = ":"
+
 // Parser interface to read from config files or environment
 type Parser interface {
-	SetDefault(key string, value interface{})
+	ReadFields(data interface{})
 	Get(path string) (interface{}, error)
 	GetInt(path string) int
 	GetBool(path string) bool
 	GetFloat64(path string) float64
 	GetString(path string) string
+	SetDefault(key string, value interface{})
 }
 
 // GetTagValue gets a tag from a field and from a Type
@@ -27,9 +32,19 @@ func GetTagValue(t reflect.Type, field string) string {
 	return value
 }
 
-// SetConfig set automatically the config using a parser and a struct with tags 'config'
-func SetConfig(parser Parser, config interface{}) {
-	v := reflect.ValueOf(config)
+//ProcessPath split the path in two parts, returns only the path
+func ProcessPath(parser Parser, path string) string {
+	items := strings.SplitN(path, PathSeparator, 2)
+	if len(items) == 1 {
+		return items[0]
+	}
+	parser.SetDefault(items[0], items[1])
+	return items[0]
+}
+
+// ReadFields set automatically the config using a parser and a struct with tags 'config'
+func ReadFields(parser Parser, data interface{}) {
+	v := reflect.ValueOf(data)
 	t := v.Elem().Type()
 	for i := 0; i < v.Elem().NumField(); i++ {
 		fv := v.Elem().Field(i)
