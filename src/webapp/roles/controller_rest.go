@@ -10,13 +10,13 @@ import (
 
 // RestController for http transport
 type RestController struct {
-	Repository Repository
+	Service Service
 }
 
 // NewRestController create new RestController
-func NewRestController(router *mux.Router, repo Repository) *RestController {
+func NewRestController(router *mux.Router, service Service) *RestController {
 	ctrl := RestController{
-		Repository: repo,
+		Service: service,
 	}
 	router.HandleFunc("/roles", ctrl.GetAllRoles).Methods("GET")
 	router.HandleFunc("/roles/{id}", ctrl.GetRoleByID).Methods("GET")
@@ -32,7 +32,7 @@ func (c *RestController) Close() {
 
 // GetAllRoles handler to request the
 func (c *RestController) GetAllRoles(w http.ResponseWriter, r *http.Request) {
-	roles, err := c.Repository.FindAll(r.Context())
+	roles, err := c.Service.GetAll(r.Context())
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
@@ -44,7 +44,7 @@ func (c *RestController) GetAllRoles(w http.ResponseWriter, r *http.Request) {
 // GetRoleByID handler to request the
 func (c *RestController) GetRoleByID(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	role, err := c.Repository.FindByID(r.Context(), vars["id"])
+	role, err := c.Service.GetByID(r.Context(), vars["id"])
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
@@ -61,7 +61,7 @@ func (c *RestController) CreateRole(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		panic(err)
 	}
-	role, err = c.Repository.Create(r.Context(), role)
+	role, err = c.Service.Create(r.Context(), role)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
@@ -73,7 +73,7 @@ func (c *RestController) CreateRole(w http.ResponseWriter, r *http.Request) {
 // DeleteRoleByID handler to request the
 func (c *RestController) DeleteRoleByID(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	err := c.Repository.DeleteByID(r.Context(), vars["id"])
+	err := c.Service.DeleteByID(r.Context(), vars["id"])
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return

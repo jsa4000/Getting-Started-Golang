@@ -30,7 +30,7 @@ func (s *ServiceImpl) Create(ctx context.Context, user User) (User, error) {
 	return users, err
 }
 
-// RemoveByID user from the repository
-func (s *ServiceImpl) RemoveByID(ctx context.Context, id string) error {
+// DeleteByID user from the repository
+func (s *ServiceImpl) DeleteByID(ctx context.Context, id string) error {
 	return s.Repository.DeleteByID(ctx, id)
 }

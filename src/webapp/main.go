@@ -39,8 +39,12 @@ func main() {
 	log.Infof("Starting %s Server...", serverConfig.Name)
 
 	// Create Repositories
-	usersRepo := users.NewMockRepository()
-	rolesRepo := roles.NewMockRepository()
+	rolesRepository := roles.NewMockRepository()
+	usersRepository := users.NewMockRepository()
+
+	// Create Services
+	rolesService := roles.NewServiceImpl(rolesRepository)
+	usersService := users.NewServiceImpl(usersRepository)
 
 	// Create the router
 	router := mux.NewRouter()
@@ -50,8 +54,8 @@ func main() {
 	router.Use(server.LoggingMiddleware)
 
 	// Create controllers
-	rolesRestCtrl := roles.NewRestController(router, rolesRepo)
-	usersRestCtrl := users.NewRestController(router, usersRepo)
+	rolesRestCtrl := roles.NewRestController(router, rolesService)
+	usersRestCtrl := users.NewRestController(router, usersService)
 
 	// Create server with parameters
 	server := &http.Server{
@@ -86,8 +90,8 @@ func main() {
 	usersRestCtrl.Close()
 
 	// Close Repositories
-	rolesRepo.Close()
-	usersRepo.Close()
+	rolesRepository.Close()
+	usersRepository.Close()
 
 	log.Info("Server gracefully stopped")
 }

@@ -8,21 +8,21 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+// RestController for http transport
+type RestController struct {
+	Service Service
+}
+
 // NewRestController create new RestController
-func NewRestController(router *mux.Router, repo Repository) *RestController {
+func NewRestController(router *mux.Router, service Service) *RestController {
 	ctrl := RestController{
-		Repository: repo,
+		Service: service,
 	}
 	router.HandleFunc("/users", ctrl.GetAllUsers).Methods("GET")
 	router.HandleFunc("/users/{id}", ctrl.GetUserByID).Methods("GET")
 	router.HandleFunc("/users", ctrl.CreateUser).Methods("POST")
 	router.HandleFunc("/users/{id}", ctrl.DeleteUserByID).Methods("DELETE")
 	return &ctrl
-}
-
-// RestController for http transport
-type RestController struct {
-	Repository Repository
 }
 
 // Close gracefully shutdown rest controller
@@ -32,7 +32,7 @@ func (c *RestController) Close() {
 
 // GetAllUsers handler to request the
 func (c *RestController) GetAllUsers(w http.ResponseWriter, r *http.Request) {
-	users, err := c.Repository.FindAll(r.Context())
+	users, err := c.Service.GetAll(r.Context())
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
@@ -44,7 +44,7 @@ func (c *RestController) GetAllUsers(w http.ResponseWriter, r *http.Request) {
 // GetUserByID handler to request the
 func (c *RestController) GetUserByID(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	user, err := c.Repository.FindByID(r.Context(), vars["id"])
+	user, err := c.Service.GetByID(r.Context(), vars["id"])
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
@@ -61,7 +61,7 @@ func (c *RestController) CreateUser(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		panic(err)
 	}
-	user, err = c.Repository.Create(r.Context(), user)
+	user, err = c.Service.Create(r.Context(), user)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
@@ -73,7 +73,7 @@ func (c *RestController) CreateUser(w http.ResponseWriter, r *http.Request) {
 // DeleteUserByID handler to request the
 func (c *RestController) DeleteUserByID(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	err := c.Repository.DeleteByID(r.Context(), vars["id"])
+	err := c.Service.DeleteByID(r.Context(), vars["id"])
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return

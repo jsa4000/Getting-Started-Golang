@@ -7,5 +7,5 @@ type Service interface {
 	GetAll(ctx context.Context) ([]Role, error)
 	GetByID(ctx context.Context, id string) (Role, error)
 	Create(ctx context.Context, role Role) (Role, error)
-	RemoveByID(ctx context.Context, id string) error
+	DeleteByID(ctx context.Context, id string) error
 }
