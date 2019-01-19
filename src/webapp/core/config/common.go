@@ -4,7 +4,7 @@ import (
 	"reflect"
 	"strings"
 
-	log "github.com/sirupsen/logrus"
+	log "webapp/core/logging"
 )
 
 // GetTagValue gets a tag from a field and from a Type

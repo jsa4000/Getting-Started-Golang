@@ -9,7 +9,7 @@ import (
 	"webapp/core/logging"
 )
 
-// Logger struct to store all the logrus data
+// Logger struct log placeholder
 type Logger struct {
 	Log   *log.Logger
 	Level logging.Level

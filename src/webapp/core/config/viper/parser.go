@@ -7,7 +7,8 @@ import (
 	"strings"
 	"webapp/core/config"
 
-	log "github.com/sirupsen/logrus"
+	log "webapp/core/logging"
+
 	"github.com/spf13/viper"
 )
 

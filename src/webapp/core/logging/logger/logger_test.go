@@ -16,7 +16,6 @@ func init() {
 	logger = New()
 	logger.SetLevel(logging.DebugLevel)
 	logger.SetFormatter(logging.TextFormat)
-	// Default std writer in logrus
 	logger.SetOutput(os.Stderr)
 }
 
