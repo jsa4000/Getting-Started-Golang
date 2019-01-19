@@ -60,6 +60,10 @@ func getPrefix(level logging.Level) string {
 	return fmt.Sprintf("%s [%s]:", time.Now().Format(time.RFC3339), getLevelString(level))
 }
 
+func getPrefixWithFields(level logging.Level, fields logging.Fields) string {
+	return fmt.Sprintf("%s [%s]: %s, ", time.Now().Format(time.RFC3339), getLevelString(level), fields)
+}
+
 // Debugf log
 func (l *Logger) Debugf(format string, args ...interface{}) {
 	if l.Level < logging.DebugLevel {
@@ -120,6 +124,67 @@ func (l *Logger) Panicf(format string, args ...interface{}) {
 	}
 	l.Log.Printf(getPrefix(logging.PanicLevel)+format, args...)
 	panic(fmt.Sprintf(getPrefix(logging.PanicLevel)+format, args...))
+}
+
+// DebugWf log
+func (l *Logger) DebugWf(fields logging.Fields, args ...interface{}) {
+	if l.Level < logging.DebugLevel {
+		return
+	}
+	l.Log.Println(append([]interface{}{getPrefixWithFields(logging.DebugLevel, fields)}, args...))
+}
+
+// InfoWf log
+func (l *Logger) InfoWf(fields logging.Fields, args ...interface{}) {
+	if l.Level < logging.InfoLevel {
+		return
+	}
+	l.Log.Println(append([]interface{}{getPrefixWithFields(logging.InfoLevel, fields)}, args...))
+}
+
+// PrintWf log
+func (l *Logger) PrintWf(fields logging.Fields, args ...interface{}) {
+	l.Log.Println(append([]interface{}{getPrefixWithFields(0, fields)}, args...))
+}
+
+// WarnWf log
+func (l *Logger) WarnWf(fields logging.Fields, args ...interface{}) {
+	if l.Level < logging.WarnLevel {
+		return
+	}
+	l.Log.Println(append([]interface{}{getPrefixWithFields(logging.WarnLevel, fields)}, args...))
+}
+
+// WarningWf log
+func (l *Logger) WarningWf(fields logging.Fields, args ...interface{}) {
+	if l.Level < logging.WarnLevel {
+		return
+	}
+	l.Log.Println(append([]interface{}{getPrefixWithFields(logging.WarnLevel, fields)}, args...))
+}
+
+// ErrorWf log
+func (l *Logger) ErrorWf(fields logging.Fields, args ...interface{}) {
+	if l.Level < logging.ErrorLevel {
+		return
+	}
+	l.Log.Println(append([]interface{}{getPrefixWithFields(logging.ErrorLevel, fields)}, args...))
+}
+
+// FatalWf log
+func (l *Logger) FatalWf(fields logging.Fields, args ...interface{}) {
+	if l.Level < logging.FatalLevel {
+		return
+	}
+	l.Log.Println(append([]interface{}{getPrefixWithFields(logging.FatalLevel, fields)}, args...))
+}
+
+// PanicWf log
+func (l *Logger) PanicWf(fields logging.Fields, args ...interface{}) {
+	if l.Level < logging.PanicLevel {
+		return
+	}
+	l.Log.Println(append([]interface{}{getPrefixWithFields(logging.PanicLevel, fields)}, args...))
 }
 
 // Debug log

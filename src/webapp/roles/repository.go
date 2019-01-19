@@ -4,7 +4,7 @@ import (
 	"context"
 )
 
-// Repository Inteface for Roles
+// Repository Interface for Roles
 type Repository interface {
 	Close()
 	FindAll(ctx context.Context) ([]Role, error)

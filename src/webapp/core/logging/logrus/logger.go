@@ -79,6 +79,46 @@ func (l *Logger) Panicf(format string, args ...interface{}) {
 	l.Log.Panicf(format, args...)
 }
 
+// DebugWf log
+func (l *Logger) DebugWf(fields logging.Fields, args ...interface{}) {
+	l.Log.WithFields(logrus.Fields(fields)).Debug(args...)
+}
+
+// InfoWf log
+func (l *Logger) InfoWf(fields logging.Fields, args ...interface{}) {
+	l.Log.WithFields(logrus.Fields(fields)).Info(args...)
+}
+
+// PrintWf log
+func (l *Logger) PrintWf(fields logging.Fields, args ...interface{}) {
+	l.Log.WithFields(logrus.Fields(fields)).Print(args...)
+}
+
+// WarnWf log
+func (l *Logger) WarnWf(fields logging.Fields, args ...interface{}) {
+	l.Log.WithFields(logrus.Fields(fields)).Warn(args...)
+}
+
+// WarningWf log
+func (l *Logger) WarningWf(fields logging.Fields, args ...interface{}) {
+	l.Log.WithFields(logrus.Fields(fields)).Warning(args...)
+}
+
+// ErrorWf log
+func (l *Logger) ErrorWf(fields logging.Fields, args ...interface{}) {
+	l.Log.WithFields(logrus.Fields(fields)).Error(args...)
+}
+
+// FatalWf log
+func (l *Logger) FatalWf(fields logging.Fields, args ...interface{}) {
+	l.Log.WithFields(logrus.Fields(fields)).Fatal(args...)
+}
+
+// PanicWf log
+func (l *Logger) PanicWf(fields logging.Fields, args ...interface{}) {
+	l.Log.WithFields(logrus.Fields(fields)).Panic(args...)
+}
+
 // Debug log
 func (l *Logger) Debug(args ...interface{}) {
 	l.Log.Debug(args...)

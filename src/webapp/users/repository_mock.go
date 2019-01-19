@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 
-	log "github.com/sirupsen/logrus"
+	log "webapp/core/logging"
 )
 
 // MockRepository to implement the Users Repository

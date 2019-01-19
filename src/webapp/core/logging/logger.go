@@ -45,6 +45,15 @@ type Logger interface {
 	Fatalf(format string, args ...interface{})
 	Panicf(format string, args ...interface{})
 
+	DebugWf(fields Fields, args ...interface{})
+	InfoWf(fields Fields, args ...interface{})
+	PrintWf(fields Fields, args ...interface{})
+	WarnWf(fields Fields, args ...interface{})
+	WarningWf(fields Fields, args ...interface{})
+	ErrorWf(fields Fields, args ...interface{})
+	FatalWf(fields Fields, args ...interface{})
+	PanicWf(fields Fields, args ...interface{})
+
 	Debug(args ...interface{})
 	Info(args ...interface{})
 	Print(args ...interface{})
@@ -116,6 +125,46 @@ func Fatalf(format string, args ...interface{}) {
 // Panicf log
 func Panicf(format string, args ...interface{}) {
 	logger.Panicf(format, args...)
+}
+
+// DebugWf log
+func DebugWf(fields Fields, args ...interface{}) {
+	logger.DebugWf(fields, args...)
+}
+
+// InfoWf log
+func InfoWf(fields Fields, args ...interface{}) {
+	logger.InfoWf(fields, args...)
+}
+
+// PrintWf log
+func PrintWf(fields Fields, args ...interface{}) {
+	logger.PrintWf(fields, args...)
+}
+
+// WarnWf log
+func WarnWf(fields Fields, args ...interface{}) {
+	logger.WarnWf(fields, args...)
+}
+
+// WarningWf log
+func WarningWf(fields Fields, args ...interface{}) {
+	logger.WarningWf(fields, args...)
+}
+
+// ErrorWf log
+func ErrorWf(fields Fields, args ...interface{}) {
+	logger.ErrorWf(fields, args...)
+}
+
+// FatalWf log
+func FatalWf(fields Fields, args ...interface{}) {
+	logger.FatalWf(fields, args...)
+}
+
+// PanicWf log
+func PanicWf(fields Fields, args ...interface{}) {
+	logger.PanicWf(fields, args...)
 }
 
 // Debug log

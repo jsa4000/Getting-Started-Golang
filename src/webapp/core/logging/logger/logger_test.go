@@ -96,12 +96,22 @@ func TestDebugf(t *testing.T) {
 	logger.Debugf("This is a debug log %s", "with formatting")
 }
 
+func TestDebugWf(t *testing.T) {
+	logger.DebugWf(logging.Fields{"name": "test", "version": "1.11"},
+		"This is an debug log ", "with fields")
+}
+
 func TestInfo(t *testing.T) {
 	logger.Info("This is an info log")
 }
 
 func TestInfof(t *testing.T) {
 	logger.Infof("This is an info log %s", "with formatting")
+}
+
+func TestInfoWf(t *testing.T) {
+	logger.InfoWf(logging.Fields{"name": "test", "version": "1.11"},
+		"This is an info log ", "with fields")
 }
 
 func TestWarn(t *testing.T) {

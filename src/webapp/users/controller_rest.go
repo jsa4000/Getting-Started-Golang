@@ -4,8 +4,9 @@ import (
 	"encoding/json"
 	"net/http"
 
+	log "webapp/core/logging"
+
 	"github.com/gorilla/mux"
-	log "github.com/sirupsen/logrus"
 )
 
 // RestController for http transport
