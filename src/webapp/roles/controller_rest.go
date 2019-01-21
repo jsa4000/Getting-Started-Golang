@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	log "webapp/core/logging"
+	trans "webapp/core/transport"
 	valid "webapp/core/validation"
 
 	"github.com/gorilla/mux"
@@ -16,15 +17,36 @@ type RestController struct {
 }
 
 // NewRestController create new RestController
-func NewRestController(router *mux.Router, service Service) *RestController {
-	ctrl := RestController{
+func NewRestController(service Service) *RestController {
+	return &RestController{
 		Service: service,
 	}
-	router.HandleFunc("/roles", ctrl.GetAll).Methods("GET")
-	router.HandleFunc("/roles/{id}", ctrl.GetByID).Methods("GET")
-	router.HandleFunc("/roles", ctrl.Create).Methods("POST")
-	router.HandleFunc("/roles/{id}", ctrl.DeleteByID).Methods("DELETE")
-	return &ctrl
+}
+
+// GetRoutes gracefully shutdown rest controller
+func (c *RestController) GetRoutes() []trans.HTTPRoute {
+	return []trans.HTTPRoute{
+		trans.HTTPRoute{
+			Path:    "/roles",
+			Method:  "GET",
+			Handler: c.GetAll,
+		},
+		trans.HTTPRoute{
+			Path:    "/roles/{id}",
+			Method:  "GET",
+			Handler: c.GetByID,
+		},
+		trans.HTTPRoute{
+			Path:    "/roles",
+			Method:  "POST",
+			Handler: c.Create,
+		},
+		trans.HTTPRoute{
+			Path:    "/roles/{id}",
+			Method:  "DELETE",
+			Handler: c.DeleteByID,
+		},
+	}
 }
 
 // Close gracefully shutdown rest controller

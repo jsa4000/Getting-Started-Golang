@@ -7,6 +7,7 @@ import (
 	"time"
 	"webapp/core/config"
 	log "webapp/core/logging"
+	trans "webapp/core/transport"
 
 	"github.com/gorilla/mux"
 )
@@ -69,6 +70,13 @@ func NewHTTPServer() *HTTPServer {
 		Router: router,
 		Server: server,
 		Config: serverConfig,
+	}
+}
+
+// AddRoutes to the router
+func (h *HTTPServer) AddRoutes(routes []trans.HTTPRoute) {
+	for _, r := range routes {
+		h.Router.HandleFunc(r.Path, r.Handler).Methods(r.Method)
 	}
 }
 

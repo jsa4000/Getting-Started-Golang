@@ -57,8 +57,12 @@ func main() {
 	httpServer := servers.NewHTTPServer()
 
 	// Create controllers
-	rolesRestCtrl := roles.NewRestController(httpServer.Router, rolesService)
-	usersRestCtrl := users.NewRestController(httpServer.Router, usersService)
+	rolesRestCtrl := roles.NewRestController(rolesService)
+	usersRestCtrl := users.NewRestController(usersService)
+
+	// Assigen controllers to the Http server
+	httpServer.AddRoutes(rolesRestCtrl.GetRoutes())
+	httpServer.AddRoutes(usersRestCtrl.GetRoutes())
 
 	// Start the HTTP server
 	httpServer.Start()
