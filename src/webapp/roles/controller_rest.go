@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	log "webapp/core/logging"
+	valid "webapp/core/validation"
 
 	"github.com/gorilla/mux"
 )
@@ -45,7 +46,7 @@ func (c *RestController) GetAll(w http.ResponseWriter, r *http.Request) {
 // GetByID handler to request the
 func (c *RestController) GetByID(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	req := GetByIDRequest {ID : vars["id"]}
+	req := GetByIDRequest{ID: vars["id"]}
 	res, err := c.Service.GetByID(r.Context(), &req)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
@@ -63,6 +64,12 @@ func (c *RestController) Create(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		panic(err)
 	}
+	valid, err := valid.Validate(&req)
+	if !valid && err != nil {
+		log.Error(err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
 	res, err := c.Service.Create(r.Context(), &req)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
@@ -75,7 +82,7 @@ func (c *RestController) Create(w http.ResponseWriter, r *http.Request) {
 // DeleteByID handler to request the
 func (c *RestController) DeleteByID(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	req := DeleteByIDRequest {ID : vars["id"]}
+	req := DeleteByIDRequest{ID: vars["id"]}
 	_, err := c.Service.DeleteByID(r.Context(), &req)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)

@@ -9,6 +9,8 @@ import (
 	"webapp/core/config/viper"
 	log "webapp/core/logging"
 	"webapp/core/logging/logrus"
+	"webapp/core/validation"
+	"webapp/core/validation/goplayground"
 	"webapp/roles"
 	"webapp/servers"
 	"webapp/users"
@@ -16,7 +18,6 @@ import (
 
 func setGlobalLogger() {
 	log.SetGlobal(logrus.New())
-	// Set the log formatter
 	log.SetLevel(log.DebugLevel)
 	log.SetFormatter(log.TextFormat)
 }
@@ -25,12 +26,18 @@ func setGlobalParser() {
 	config.SetGlobal(viper.NewParserFromFile("webapp.yaml", "."))
 }
 
+func setGlobalValidator() {
+	validation.SetGlobal(goplayground.New())
+}
+
 func main() {
 
 	// Set Global Logger
 	setGlobalLogger()
 	// Set Global Parser
 	setGlobalParser()
+	// Set global Validator
+	setGlobalValidator()
 
 	// Create a channel to detect interrupt signal from os
 	stop := make(chan os.Signal, 1)

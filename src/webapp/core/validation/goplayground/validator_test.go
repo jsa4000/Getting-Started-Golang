@@ -1,4 +1,4 @@
-package govalidator
+package goplayground
 
 import (
 	"fmt"
@@ -28,7 +28,7 @@ func TestDataWithoutValidations(t *testing.T) {
 		AuthorIP: "123.234.54.3",
 	}
 
-	_, err := validator.ValidateStruct(&request)
+	_, err := validator.Validate(&request)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -52,7 +52,7 @@ func TestDataWithValidations(t *testing.T) {
 		AuthorIP: "123.234.54.3",
 	}
 
-	_, err := validator.ValidateStruct(&request)
+	_, err := validator.Validate(&request)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -74,7 +74,7 @@ func TestDataWithErrorInValidation(t *testing.T) {
 		AuthorIP: "123.234.54.3",
 	}
 
-	_, err := validator.ValidateStruct(&request)
+	_, err := validator.Validate(&request)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -100,7 +100,7 @@ func TestDataAdvancedValidations(t *testing.T) {
 		rate:     6.23,
 	}
 
-	_, err := validator.ValidateStruct(&request)
+	_, err := validator.Validate(&request)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -126,7 +126,7 @@ func TestDataLengthErrorValidation(t *testing.T) {
 		rate:     6.23,
 	}
 
-	_, err := validator.ValidateStruct(&request)
+	_, err := validator.Validate(&request)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -152,7 +152,7 @@ func TestDataRangeErrorValidation(t *testing.T) {
 		rate:     6.23,
 	}
 
-	_, err := validator.ValidateStruct(&request)
+	_, err := validator.Validate(&request)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -180,7 +180,7 @@ func TestDataEmailErrorValidation(t *testing.T) {
 		rate:     6.23,
 	}
 
-	_, err := validator.ValidateStruct(&request)
+	_, err := validator.Validate(&request)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -203,7 +203,7 @@ func TestDataRequiredFieldErrorValidation(t *testing.T) {
 		rate:  6.23,
 	}
 
-	_, err := validator.ValidateStruct(&request)
+	_, err := validator.Validate(&request)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -227,7 +227,7 @@ func TestDataRequiredEmptyFieldErrorValidation(t *testing.T) {
 		rate:    6.23,
 	}
 
-	_, err := validator.ValidateStruct(&request)
+	_, err := validator.Validate(&request)
 	if err != nil {
 		fmt.Println(err)
 	}

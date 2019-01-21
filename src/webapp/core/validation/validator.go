@@ -2,7 +2,7 @@ package validation
 
 // Validator interface
 type Validator interface {
-	ValidateStruct(data interface{}) (bool, error)
+	Validate(data interface{}) (bool, error)
 }
 
 // Validator Global logger
@@ -14,6 +14,6 @@ func SetGlobal(v Validator) {
 }
 
 // ValidateStruct validates the struct using reflection
-func ValidateStruct(data interface{}) (bool, error) {
-	return validator.ValidateStruct(data)
+func Validate(data interface{}) (bool, error) {
+	return validator.Validate(data)
 }

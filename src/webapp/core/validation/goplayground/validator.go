@@ -1,4 +1,4 @@
-package govalidator
+package goplayground
 
 // GoDoc: https://godoc.org/gopkg.in/go-playground/validator.v9
 
@@ -8,19 +8,19 @@ import (
 
 // Validator interface
 type Validator struct {
-	Validate *valid.Validate
+	validator *valid.Validate
 }
 
 // New Creates a new govalidator instance
 func New() *Validator {
 	return &Validator{
-		Validate: valid.New(),
+		validator: valid.New(),
 	}
 }
 
-// ValidateStruct validates the struct using reflection
-func (v *Validator) ValidateStruct(data interface{}) (bool, error) {
-	err := v.Validate.Struct(data)
+// Validate validates the struct using reflection
+func (v *Validator) Validate(data interface{}) (bool, error) {
+	err := v.validator.Struct(data)
 	if err != nil {
 		return false, err
 	}

@@ -17,7 +17,7 @@ func New() *Validator {
 	return &Validator{}
 }
 
-// ValidateStruct validates the struct using reflection
-func (v *Validator) ValidateStruct(data interface{}) (bool, error) {
+// Validate validates the struct using reflection
+func (v *Validator) Validate(data interface{}) (bool, error) {
 	return valid.ValidateStruct(data)
 }
