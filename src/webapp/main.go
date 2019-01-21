@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
@@ -9,10 +10,10 @@ import (
 	"webapp/core/config/viper"
 	log "webapp/core/logging"
 	"webapp/core/logging/logrus"
+	trans "webapp/core/transport"
 	"webapp/core/validation"
 	"webapp/core/validation/goplayground"
 	"webapp/roles"
-	"webapp/servers"
 	"webapp/users"
 )
 
@@ -28,6 +29,12 @@ func setGlobalParser() {
 
 func setGlobalValidator() {
 	validation.SetGlobal(goplayground.New())
+}
+
+// HomeHandler handler for the HomePage
+func HomeHandler(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusOK)
+	log.Info("Home Page")
 }
 
 func main() {
@@ -54,15 +61,23 @@ func main() {
 	usersService := users.NewServiceImpl(usersRepository)
 
 	// Create The HTTP Server
-	httpServer := servers.NewHTTPServer()
+	httpServer := trans.NewHTTPServer()
 
 	// Create controllers
 	rolesRestCtrl := roles.NewRestController(rolesService)
 	usersRestCtrl := users.NewRestController(usersService)
 
 	// Assigen controllers to the Http server
-	httpServer.AddRoutes(rolesRestCtrl.GetRoutes())
-	httpServer.AddRoutes(usersRestCtrl.GetRoutes())
+	httpServer.AddRoutes(rolesRestCtrl.GetRoutes()...)
+	httpServer.AddRoutes(usersRestCtrl.GetRoutes()...)
+
+	// Create the routings
+	httpServer.AddRoutes(trans.HTTPRoute{
+		Path:    "/",
+		Method:  "GET",
+		Handler: HomeHandler,
+	})
+	httpServer.AddMiddleware(trans.LoggingMiddleware)
 
 	// Start the HTTP server
 	httpServer.Start()
