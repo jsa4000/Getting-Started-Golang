@@ -13,24 +13,26 @@ func NewServiceImpl(repo Repository) Service {
 }
 
 // GetAll fetches all the roles from the repository
-func (s *ServiceImpl) GetAll(ctx context.Context) ([]Role, error) {
+func (s *ServiceImpl) GetAll(ctx context.Context, req *GetAllRequest) (*GetAllResponse, error) {
 	roles, err := s.Repository.FindAll(ctx)
-	return roles, err
+	return &GetAllResponse{Roles: roles}, err
 }
 
 // GetByID Role by Id
-func (s *ServiceImpl) GetByID(ctx context.Context, id string) (Role, error) {
-	role, err := s.Repository.FindByID(ctx, id)
-	return role, err
+func (s *ServiceImpl) GetByID(ctx context.Context, req *GetByIDRequest) (*GetByIDResponse, error) {
+	role, err := s.Repository.FindByID(ctx, req.ID)
+	return &GetByIDResponse{Role: role}, err
 }
 
 // Create Add role into the repository
-func (s *ServiceImpl) Create(ctx context.Context, role Role) (Role, error) {
-	roles, err := s.Repository.Create(ctx, role)
-	return roles, err
+func (s *ServiceImpl) Create(ctx context.Context, req *CreateRequest) (*CreateResponse, error) {
+	role := New(req.Name, req.Name)
+	newRole, err := s.Repository.Create(ctx, role)
+	return &CreateResponse{Role : newRole}, err
 }
 
 // DeleteByID role from the repository
-func (s *ServiceImpl) DeleteByID(ctx context.Context, id string) error {
-	return s.Repository.DeleteByID(ctx, id)
+func (s *ServiceImpl) DeleteByID(ctx context.Context, req *DeleteByIDRequest) (*DeleteByIDResponse, error) {
+	err := s.Repository.DeleteByID(ctx, req.ID)
+	return &DeleteByIDResponse{}, err
 }

@@ -7,7 +7,7 @@ type Role struct {
 }
 
 // New creates new instance
-func New(id string, name string) Role {
+func New(id, name string) Role {
 	return Role{
 		ID:   id,
 		Name: name,

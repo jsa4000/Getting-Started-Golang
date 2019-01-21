@@ -19,10 +19,10 @@ func NewRestController(router *mux.Router, service Service) *RestController {
 	ctrl := RestController{
 		Service: service,
 	}
-	router.HandleFunc("/users", ctrl.GetAllUsers).Methods("GET")
-	router.HandleFunc("/users/{id}", ctrl.GetUserByID).Methods("GET")
-	router.HandleFunc("/users", ctrl.CreateUser).Methods("POST")
-	router.HandleFunc("/users/{id}", ctrl.DeleteUserByID).Methods("DELETE")
+	router.HandleFunc("/users", ctrl.GetAll).Methods("GET")
+	router.HandleFunc("/users/{id}", ctrl.GetByID).Methods("GET")
+	router.HandleFunc("/users", ctrl.Create).Methods("POST")
+	router.HandleFunc("/users/{id}", ctrl.DeleteByID).Methods("DELETE")
 	return &ctrl
 }
 
@@ -31,50 +31,52 @@ func (c *RestController) Close() {
 	log.Info("Users Controller Shutdown")
 }
 
-// GetAllUsers handler to request the
-func (c *RestController) GetAllUsers(w http.ResponseWriter, r *http.Request) {
-	users, err := c.Service.GetAll(r.Context())
+// GetAll handler to request the
+func (c *RestController) GetAll(w http.ResponseWriter, r *http.Request) {
+	res, err := c.Service.GetAll(r.Context(), &GetAllRequest{})
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(users)
+	json.NewEncoder(w).Encode(res.Users)
 }
 
-// GetUserByID handler to request the
-func (c *RestController) GetUserByID(w http.ResponseWriter, r *http.Request) {
+// GetByID handler to request the
+func (c *RestController) GetByID(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	user, err := c.Service.GetByID(r.Context(), vars["id"])
+	req := GetByIDRequest {ID : vars["id"]}
+	res, err := c.Service.GetByID(r.Context(), &req)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(user)
+	json.NewEncoder(w).Encode(res.User)
 }
 
-// CreateUser handler to request the
-func (c *RestController) CreateUser(w http.ResponseWriter, r *http.Request) {
+// Create handler to request the
+func (c *RestController) Create(w http.ResponseWriter, r *http.Request) {
 	decoder := json.NewDecoder(r.Body)
-	var user User
-	err := decoder.Decode(&user)
+	var req CreateRequest
+	err := decoder.Decode(&req)
 	if err != nil {
 		panic(err)
 	}
-	user, err = c.Service.Create(r.Context(), user)
+	res, err := c.Service.Create(r.Context(), &req)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(user)
+	json.NewEncoder(w).Encode(res.User)
 }
 
-// DeleteUserByID handler to request the
-func (c *RestController) DeleteUserByID(w http.ResponseWriter, r *http.Request) {
+// DeleteByID handler to request the
+func (c *RestController) DeleteByID(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	err := c.Service.DeleteByID(r.Context(), vars["id"])
+	req := DeleteByIDRequest {ID : vars["id"]}
+	_, err := c.Service.DeleteByID(r.Context(), &req)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return

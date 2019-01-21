@@ -13,24 +13,26 @@ func NewServiceImpl(repo Repository) Service {
 }
 
 // GetAll fetches all the users from the repository
-func (s *ServiceImpl) GetAll(ctx context.Context) ([]User, error) {
+func (s *ServiceImpl) GetAll(ctx context.Context, req *GetAllRequest) (*GetAllResponse, error) {
 	users, err := s.Repository.FindAll(ctx)
-	return users, err
+	return &GetAllResponse{Users: users}, err
 }
 
 // GetByID User by Id
-func (s *ServiceImpl) GetByID(ctx context.Context, id string) (User, error) {
-	user, err := s.Repository.FindByID(ctx, id)
-	return user, err
+func (s *ServiceImpl) GetByID(ctx context.Context, req *GetByIDRequest) (*GetByIDResponse, error) {
+	user, err := s.Repository.FindByID(ctx, req.ID)
+	return &GetByIDResponse{User: user}, err
 }
 
 // Create Add user into the repository
-func (s *ServiceImpl) Create(ctx context.Context, user User) (User, error) {
-	users, err := s.Repository.Create(ctx, user)
-	return users, err
+func (s *ServiceImpl) Create(ctx context.Context, req *CreateRequest) (*CreateResponse, error) {
+	user := New(req.Name, req.Email, req.Password)
+	newUSer, err := s.Repository.Create(ctx, user)
+	return &CreateResponse{User : newUSer}, err
 }
 
 // DeleteByID user from the repository
-func (s *ServiceImpl) DeleteByID(ctx context.Context, id string) error {
-	return s.Repository.DeleteByID(ctx, id)
+func (s *ServiceImpl) DeleteByID(ctx context.Context, req *DeleteByIDRequest) (*DeleteByIDResponse, error) {
+	err := s.Repository.DeleteByID(ctx, req.ID)
+	return &DeleteByIDResponse{}, err
 }
