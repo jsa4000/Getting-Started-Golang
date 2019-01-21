@@ -47,7 +47,7 @@ func TestStdoutOutput(t *testing.T) {
 	// Set the log output as well
 	log.SetOutput(w)
 
-	log.Debug(expectedMessage)
+	log.Info(expectedMessage)
 
 	w.Close()
 	out, _ := ioutil.ReadAll(r)
@@ -57,7 +57,7 @@ func TestStdoutOutput(t *testing.T) {
 	log.SetOutput(os.Stderr)
 
 	assert.True(t, strings.Contains(string(out), expectedMessage))
-	assert.True(t, strings.Contains(strings.ToLower(string(out)), "debug"))
+	assert.True(t, strings.Contains(strings.ToLower(string(out)), "info"))
 }
 
 func TestDebugf(t *testing.T) {

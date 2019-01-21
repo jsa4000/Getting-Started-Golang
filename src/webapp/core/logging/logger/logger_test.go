@@ -64,7 +64,11 @@ func logAll(logLevel string) {
 	logger.Info("This is an info log", logLevel)
 	logger.Warn("This is a warn log", logLevel)
 	logger.Error("This is an error log", logLevel)
-	logger.Fatal("This is a fatal log", logLevel)
+	
+	// Same as Logrus, Fatal and Panic functions exit the execution
+	// Calls os.Exit(1) after logging
+	//logger.Fatal("This is a fatal log", logLevel)
+	// Calls panic() after logging
 	//logger.Panic("This is an info log", logLevel)
 }
 

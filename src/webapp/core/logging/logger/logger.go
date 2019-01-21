@@ -115,6 +115,7 @@ func (l *Logger) Fatalf(format string, args ...interface{}) {
 		return
 	}
 	l.Log.Printf(getPrefix(logging.FatalLevel)+format, args...)
+	os.Exit(1)
 }
 
 // Panicf log
@@ -177,6 +178,7 @@ func (l *Logger) FatalWf(fields logging.Fields, args ...interface{}) {
 		return
 	}
 	l.Log.Println(append([]interface{}{getPrefixWithFields(logging.FatalLevel, fields)}, args...))
+	os.Exit(1)
 }
 
 // PanicWf log
@@ -185,6 +187,7 @@ func (l *Logger) PanicWf(fields logging.Fields, args ...interface{}) {
 		return
 	}
 	l.Log.Println(append([]interface{}{getPrefixWithFields(logging.PanicLevel, fields)}, args...))
+	panic(append([]interface{}{getPrefixWithFields(logging.PanicLevel, fields)}, args...))
 }
 
 // Debug log
@@ -238,6 +241,7 @@ func (l *Logger) Fatal(args ...interface{}) {
 		return
 	}
 	l.Log.Println(append([]interface{}{getPrefix(logging.FatalLevel)}, args...))
+	os.Exit(1)
 }
 
 // Panic log
