@@ -21,10 +21,17 @@ Each test must start with ``'Test..'``
 
 To run the tests
 
+    # Run all the test inside the folder
     go test
 
     # Specific file (without dependencies..)
     go test module_test.go
+
+    # Run a specific a test
+    go test -run TestSomething
+
+    # Verbose option to see the tests performed
+    go test -v ./...
 
     # Verbose option to see the tests performed
     go test -v
@@ -60,3 +67,12 @@ repository:
       database: users
       url: mongodb://db1.example.net:27017,db2.example.net:2500/?replicaSet=test
 ```
+
+## References
+
+### Frameworkds
+
+### Validations
+
+- [Go Validator](https://github.com/asaskevich/govalidator)
+- [Go-Playground validator](https://github.com/go-playground/validator)
