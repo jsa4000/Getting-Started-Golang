@@ -57,3 +57,6 @@ Repository to learn the basics of the Go language
 - Or just run the file
 
         go run main.go
+
+        # If there is more than one file in the folder user `*`
+        go run *.fo

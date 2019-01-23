@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	log "webapp/core/logging"
-	trans "webapp/core/transport"
+	"webapp/core/net"
 	valid "webapp/core/validation"
 )
 
@@ -22,24 +22,24 @@ func NewRestController(service Service) *RestController {
 }
 
 // GetRoutes gracefully shutdown rest controller
-func (c *RestController) GetRoutes() []trans.HTTPRoute {
-	return []trans.HTTPRoute{
-		trans.HTTPRoute{
+func (c *RestController) GetRoutes() []net.HTTPRoute {
+	return []net.HTTPRoute{
+		net.HTTPRoute{
 			Path:    "/users",
 			Method:  "GET",
 			Handler: c.GetAll,
 		},
-		trans.HTTPRoute{
+		net.HTTPRoute{
 			Path:    "/users/{id}",
 			Method:  "GET",
 			Handler: c.GetByID,
 		},
-		trans.HTTPRoute{
+		net.HTTPRoute{
 			Path:    "/users",
 			Method:  "POST",
 			Handler: c.Create,
 		},
-		trans.HTTPRoute{
+		net.HTTPRoute{
 			Path:    "/users/{id}",
 			Method:  "DELETE",
 			Handler: c.DeleteByID,
@@ -65,7 +65,7 @@ func (c *RestController) GetAll(w http.ResponseWriter, r *http.Request) {
 
 // GetByID handler to request the
 func (c *RestController) GetByID(w http.ResponseWriter, r *http.Request) {
-	vars := trans.GetVars(r)
+	vars := net.GetVars(r)
 	req := GetByIDRequest{ID: vars["id"]}
 	res, err := c.Service.GetByID(r.Context(), &req)
 	if err != nil {
@@ -101,7 +101,7 @@ func (c *RestController) Create(w http.ResponseWriter, r *http.Request) {
 
 // DeleteByID handler to request the
 func (c *RestController) DeleteByID(w http.ResponseWriter, r *http.Request) {
-	vars := trans.GetVars(r)
+	vars := net.GetVars(r)
 	req := DeleteByIDRequest{ID: vars["id"]}
 	_, err := c.Service.DeleteByID(r.Context(), &req)
 	if err != nil {
