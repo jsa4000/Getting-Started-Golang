@@ -40,19 +40,19 @@ func (c *MockRepository) FindAll(_ context.Context) ([]User, error) {
 }
 
 // FindByID User by Id
-func (c *MockRepository) FindByID(_ context.Context, id string) (User, error) {
-	_, ok := c.Users[id]
+func (c *MockRepository) FindByID(_ context.Context, id string) (*User, error) {
+	user, ok := c.Users[id]
 	if !ok {
-		return User{}, errors.New("User has not been found with id " + id)
+		return nil, errors.New("User has not been found with id " + id)
 	}
-	return c.Users[id], nil
+	return &user, nil
 }
 
 // Create Add user into the datbase
-func (c *MockRepository) Create(_ context.Context, user User) (User, error) {
+func (c *MockRepository) Create(_ context.Context, user User) (*User, error) {
 	user = New(user.Name, user.Email, user.Password)
 	c.Users[user.ID] = user
-	return user, nil
+	return &user, nil
 }
 
 // DeleteByID user from the database

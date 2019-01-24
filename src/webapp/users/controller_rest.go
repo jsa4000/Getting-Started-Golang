@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"webapp/core/errors"
 	log "webapp/core/logging"
 	"webapp/core/net"
 	valid "webapp/core/validation"
@@ -56,7 +57,12 @@ func (c *RestController) Close() {
 func (c *RestController) GetAll(w http.ResponseWriter, r *http.Request) {
 	res, err := c.Service.GetAll(r.Context(), &GetAllRequest{})
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
+		err, ok := err.(*errors.Error)
+		if !ok {
+			err = ErrServer.From(err)
+		}
+		w.WriteHeader(err.HTTPCode)
+		json.NewEncoder(w).Encode(err)
 		return
 	}
 	w.WriteHeader(http.StatusOK)
@@ -69,7 +75,12 @@ func (c *RestController) GetByID(w http.ResponseWriter, r *http.Request) {
 	req := GetByIDRequest{ID: vars["id"]}
 	res, err := c.Service.GetByID(r.Context(), &req)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
+		err, ok := err.(*errors.Error)
+		if !ok {
+			err = ErrServer.From(err)
+		}
+		w.WriteHeader(err.HTTPCode)
+		json.NewEncoder(w).Encode(err)
 		return
 	}
 	w.WriteHeader(http.StatusOK)

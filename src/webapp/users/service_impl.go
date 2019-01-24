@@ -1,6 +1,8 @@
 package users
 
-import "context"
+import (
+	"context"
+)
 
 // ServiceImpl Implementation used for the service
 type ServiceImpl struct {
@@ -15,12 +17,21 @@ func NewServiceImpl(repo Repository) Service {
 // GetAll fetches all the users from the repository
 func (s *ServiceImpl) GetAll(ctx context.Context, req *GetAllRequest) (*GetAllResponse, error) {
 	users, err := s.Repository.FindAll(ctx)
-	return &GetAllResponse{Users: users}, err
+	if err != nil {
+		return nil, ErrConnRepo.From(err)
+	}
+	return &GetAllResponse{Users: users}, nil
 }
 
 // GetByID User by Id
 func (s *ServiceImpl) GetByID(ctx context.Context, req *GetByIDRequest) (*GetByIDResponse, error) {
 	user, err := s.Repository.FindByID(ctx, req.ID)
+	if err != nil {
+		return nil, ErrConnRepo.From(err)
+	}
+	if user == nil {
+		return nil, ErrUserNotFoud.From(err)
+	}
 	return &GetByIDResponse{User: user}, err
 }
 
@@ -28,7 +39,7 @@ func (s *ServiceImpl) GetByID(ctx context.Context, req *GetByIDRequest) (*GetByI
 func (s *ServiceImpl) Create(ctx context.Context, req *CreateRequest) (*CreateResponse, error) {
 	user := New(req.Name, req.Email, req.Password)
 	newUSer, err := s.Repository.Create(ctx, user)
-	return &CreateResponse{User : newUSer}, err
+	return &CreateResponse{User: newUSer}, err
 }
 
 // DeleteByID user from the repository

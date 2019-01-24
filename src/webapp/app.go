@@ -61,7 +61,7 @@ func (a *App) Startup(ctx context.Context) {
 	})
 
 	// Add global middlewares
-	a.httpServer.AddMiddleware(net.LoggingMiddleware)
+	a.httpServer.AddMiddleware(net.LoggingMiddleware, net.CustomHeaders)
 
 	// Start the HTTP server
 	a.httpServer.Start()

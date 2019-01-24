@@ -45,6 +45,14 @@ func LoggingMiddleware(next http.Handler) http.Handler {
 	})
 }
 
+// CustomHeaders decorator (closure)
+func CustomHeaders(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		next.ServeHTTP(w, r)
+	})
+}
+
 // HTTPServer struct
 type HTTPServer struct {
 	Router *mux.Router
