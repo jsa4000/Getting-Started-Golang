@@ -2,7 +2,7 @@ package roles
 
 import "context"
 
-// Service Inteface for Roles
+// Service Interface for Roles
 type Service interface {
 	GetAll(ctx context.Context, req *GetAllRequest) (*GetAllResponse, error)
 	GetByID(ctx context.Context, req *GetByIDRequest) (*GetByIDResponse, error)

@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
+	errors "webapp/core/errors"
 	log "webapp/core/logging"
 	"webapp/core/net"
 	valid "webapp/core/validation"
@@ -52,11 +53,22 @@ func (c *RestController) Close() {
 	log.Info("Role Controller Shutdown")
 }
 
+// WriteError Sets the error from inner layers
+func (c *RestController) WriteError(w http.ResponseWriter, err error) {
+	herr, ok := err.(*errors.Error)
+	if !ok {
+		herr = ErrInternalServer.From(err)
+	}
+	w.WriteHeader(herr.Code)
+	json.NewEncoder(w).Encode(herr)
+	log.Error(herr)
+}
+
 // GetAll handler to request the
 func (c *RestController) GetAll(w http.ResponseWriter, r *http.Request) {
 	res, err := c.Service.GetAll(r.Context(), &GetAllRequest{})
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
+		c.WriteError(w, err)
 		return
 	}
 	w.WriteHeader(http.StatusOK)
@@ -69,7 +81,7 @@ func (c *RestController) GetByID(w http.ResponseWriter, r *http.Request) {
 	req := GetByIDRequest{ID: vars["id"]}
 	res, err := c.Service.GetByID(r.Context(), &req)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
+		c.WriteError(w, err)
 		return
 	}
 	w.WriteHeader(http.StatusOK)
@@ -78,21 +90,23 @@ func (c *RestController) GetByID(w http.ResponseWriter, r *http.Request) {
 
 // Create handler to request the
 func (c *RestController) Create(w http.ResponseWriter, r *http.Request) {
-	decoder := json.NewDecoder(r.Body)
 	var req CreateRequest
+	decoder := json.NewDecoder(r.Body)
 	err := decoder.Decode(&req)
 	if err != nil {
-		panic(err)
+		err = ErrBadRequest.From(err)
+		c.WriteError(w, err)
+		return
 	}
 	valid, err := valid.Validate(&req)
 	if !valid && err != nil {
-		log.Error(err)
-		w.WriteHeader(http.StatusInternalServerError)
+		err = ErrBadRequest.From(err)
+		c.WriteError(w, err)
 		return
 	}
 	res, err := c.Service.Create(r.Context(), &req)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
+		c.WriteError(w, err)
 		return
 	}
 	w.WriteHeader(http.StatusOK)
@@ -105,7 +119,7 @@ func (c *RestController) DeleteByID(w http.ResponseWriter, r *http.Request) {
 	req := DeleteByIDRequest{ID: vars["id"]}
 	_, err := c.Service.DeleteByID(r.Context(), &req)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
+		c.WriteError(w, err)
 		return
 	}
 	w.WriteHeader(http.StatusOK)

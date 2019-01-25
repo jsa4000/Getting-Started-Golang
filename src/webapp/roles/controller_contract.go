@@ -16,7 +16,7 @@ type GetByIDRequest struct {
 
 // GetByIDResponse struct Response
 type GetByIDResponse struct {
-	Role Role
+	Role *Role
 }
 
 // CreateRequest request
@@ -26,7 +26,7 @@ type CreateRequest struct {
 
 // CreateResponse Response
 type CreateResponse struct {
-	Role Role
+	Role *Role
 }
 
 // DeleteByIDRequest struct request

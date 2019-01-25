@@ -2,7 +2,6 @@ package roles
 
 import (
 	"context"
-	"errors"
 
 	log "webapp/core/logging"
 )
@@ -40,27 +39,27 @@ func (c *MockRepository) FindAll(_ context.Context) ([]Role, error) {
 }
 
 // FindByID Role by Id
-func (c *MockRepository) FindByID(_ context.Context, id string) (Role, error) {
-	_, ok := c.Roles[id]
+func (c *MockRepository) FindByID(_ context.Context, id string) (*Role, error) {
+	role, ok := c.Roles[id]
 	if !ok {
-		return Role{}, errors.New("Role has not been found with id " + id)
+		return nil, nil
 	}
-	return c.Roles[id], nil
+	return &role, nil
 }
 
 // Create Add role into the datbase
-func (c *MockRepository) Create(_ context.Context, role Role) (Role, error) {
+func (c *MockRepository) Create(_ context.Context, role Role) (*Role, error) {
 	role = New(role.Name, role.Name)
 	c.Roles[role.ID] = role
-	return role, nil
+	return &role, nil
 }
 
 // DeleteByID role from the database
-func (c *MockRepository) DeleteByID(_ context.Context, id string) error {
+func (c *MockRepository) DeleteByID(_ context.Context, id string) (bool, error) {
 	_, ok := c.Roles[id]
 	if !ok {
-		return errors.New("Role has not been found with id " + id)
+		return false, nil
 	}
 	delete(c.Roles, id)
-	return nil
+	return true, nil
 }

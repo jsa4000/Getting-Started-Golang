@@ -91,7 +91,6 @@ func (c *RestController) GetByID(w http.ResponseWriter, r *http.Request) {
 // Create handler to request the
 func (c *RestController) Create(w http.ResponseWriter, r *http.Request) {
 	var req CreateRequest
-
 	decoder := json.NewDecoder(r.Body)
 	err := decoder.Decode(&req)
 	if err != nil {
@@ -99,14 +98,12 @@ func (c *RestController) Create(w http.ResponseWriter, r *http.Request) {
 		c.WriteError(w, err)
 		return
 	}
-
 	valid, err := valid.Validate(&req)
 	if !valid && err != nil {
 		err = ErrBadRequest.From(err)
 		c.WriteError(w, err)
 		return
 	}
-
 	res, err := c.Service.Create(r.Context(), &req)
 	if err != nil {
 		c.WriteError(w, err)
