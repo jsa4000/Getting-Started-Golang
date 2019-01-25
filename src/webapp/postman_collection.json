@@ -1,20 +1,22 @@
 {
 	"info": {
-		"_postman_id": "9407d639-efdc-452e-bb3e-c87791c83597",
+		"_postman_id": "37332dd8-4ff0-4391-9083-8e50e280531d",
 		"name": "GoWebApp",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
 		{
 			"name": "Roles",
-			"description": "",
 			"item": [
 				{
 					"name": "GetAll",
 					"request": {
 						"method": "GET",
 						"header": [],
-						"body": {},
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
 						"url": {
 							"raw": "http://localhost:8080/roles",
 							"protocol": "http",
@@ -62,7 +64,10 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"body": {},
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
 						"url": {
 							"raw": "http://localhost:8080/roles/:role",
 							"protocol": "http",
@@ -89,7 +94,10 @@
 					"request": {
 						"method": "DELETE",
 						"header": [],
-						"body": {},
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
 						"url": {
 							"raw": "http://localhost:8080/roles/:role",
 							"protocol": "http",
@@ -115,14 +123,16 @@
 		},
 		{
 			"name": "Users",
-			"description": "",
 			"item": [
 				{
 					"name": "GetAll",
 					"request": {
 						"method": "GET",
 						"header": [],
-						"body": {},
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
 						"url": {
 							"raw": "http://localhost:8080/users",
 							"protocol": "http",
@@ -149,7 +159,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"name\" : \"test_user\",\n\t\"email\" : \"test_user@gmail.com\",\n\t\"password\" : \"password\"\n}"
+							"raw": "{\n    \"name\": \"user_test\",\n    \"email\": \"user.test@example.com\",\n    \"password\": \"1234\"\n}"
 						},
 						"url": {
 							"raw": "http://localhost:8080/users",
@@ -170,7 +180,10 @@
 					"request": {
 						"method": "GET",
 						"header": [],
-						"body": {},
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
 						"url": {
 							"raw": "http://localhost:8080/users/:user",
 							"protocol": "http",
@@ -185,7 +198,7 @@
 							"variable": [
 								{
 									"key": "user",
-									"value": "16f9c7ac-4568-419f-a607-cb259147f698"
+									"value": "1364fd6b-7de2-4c19-bae9-20e08b391088"
 								}
 							]
 						}
@@ -197,7 +210,10 @@
 					"request": {
 						"method": "DELETE",
 						"header": [],
-						"body": {},
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
 						"url": {
 							"raw": "http://localhost:8080/users/:user",
 							"protocol": "http",
@@ -212,7 +228,7 @@
 							"variable": [
 								{
 									"key": "user",
-									"value": "7c06f441-d65e-4d15-9bf1-b80c6ea1ab8c"
+									"value": "1364fd6b-7de2-4c19-bae9-20e08b391088"
 								}
 							]
 						}

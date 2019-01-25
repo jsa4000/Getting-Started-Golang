@@ -1,8 +1,6 @@
 package users
 
-import (
-	"context"
-)
+import "context"
 
 // Service Interface for Users
 type Service interface {

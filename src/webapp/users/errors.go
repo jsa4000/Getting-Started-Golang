@@ -1,12 +1,18 @@
 package users
 
-import ex "webapp/core/exceptions"
+import (
+	"net/http"
+	ex "webapp/core/errors"
+)
 
-// ErrServer Error connection to repository
-var ErrServer = ex.New("Error: Internal Server Error", 500)
+// Link With HTTP errors in net/http
+// https://golang.org/src/net/http/status.go
 
-// ErrValidation Error connection to repository
-var ErrValidation = ex.New("Error: Bad Request", 400)
+// ErrInternalServer Internal Server Error
+var ErrInternalServer = ex.New(http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 
-// ErrNotFound Error resource not found
-var ErrNotFound = ex.New("Error: Resource Not Found", 404)
+// ErrBadRequest Bad Request
+var ErrBadRequest = ex.New(http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+
+// ErrNotFound Resource not found
+var ErrNotFound = ex.New(http.StatusText(http.StatusNotFound), http.StatusNotFound)

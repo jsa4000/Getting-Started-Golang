@@ -1,4 +1,4 @@
-package exceptions
+package errors
 
 import "fmt"
 
@@ -6,14 +6,14 @@ import "fmt"
 type Error struct {
 	Message     string `json:"message"`
 	Description string `json:"error"`
-	HTTPCode    int    `json:"code"`
+	Code        int    `json:"code"`
 }
 
 // New Creates a new Error instance
-func New(message string, httpCode int) *Error {
+func New(message string, code int) *Error {
 	return &Error{
-		Message:  message,
-		HTTPCode: httpCode,
+		Message: message,
+		Code:    code,
 	}
 }
 
@@ -30,5 +30,5 @@ func (e *Error) Error() string {
 
 // Error implementation for error interface
 func (e *Error) String() string {
-	return fmt.Sprintf("error: %s, description: %s", e.Message, e.Description)
+	return fmt.Sprintf("error: %s, description: %s, code: %d", e.Message, e.Description, e.Code)
 }

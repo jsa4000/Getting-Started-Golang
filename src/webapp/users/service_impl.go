@@ -11,15 +11,15 @@ type ServiceImpl struct {
 }
 
 // NewServiceImpl Create a new ServiceImpl
-func NewServiceImpl(repo Repository) Service {
-	return &ServiceImpl{Repository: repo}
+func NewServiceImpl(r Repository) Service {
+	return &ServiceImpl{Repository: r}
 }
 
 // GetAll fetches all the users from the repository
 func (s *ServiceImpl) GetAll(ctx context.Context, req *GetAllRequest) (*GetAllResponse, error) {
 	users, err := s.Repository.FindAll(ctx)
 	if err != nil {
-		return nil, ErrServer.From(err)
+		return nil, ErrInternalServer.From(err)
 	}
 	return &GetAllResponse{Users: users}, nil
 }
@@ -28,7 +28,7 @@ func (s *ServiceImpl) GetAll(ctx context.Context, req *GetAllRequest) (*GetAllRe
 func (s *ServiceImpl) GetByID(ctx context.Context, req *GetByIDRequest) (*GetByIDResponse, error) {
 	user, err := s.Repository.FindByID(ctx, req.ID)
 	if err != nil {
-		return nil, ErrServer.From(err)
+		return nil, ErrInternalServer.From(err)
 	}
 	if user == nil {
 		return nil, ErrNotFound.From(errors.New("User has not been found with id " + req.ID))
@@ -38,19 +38,21 @@ func (s *ServiceImpl) GetByID(ctx context.Context, req *GetByIDRequest) (*GetByI
 
 // Create Add user into the repository
 func (s *ServiceImpl) Create(ctx context.Context, req *CreateRequest) (*CreateResponse, error) {
-	user := New(req.Name, req.Email, req.Password)
-	newUSer, err := s.Repository.Create(ctx, user)
+	user, err := s.Repository.Create(ctx, *New(req.Name, req.Email, req.Password))
 	if err != nil {
-		return nil, ErrServer.From(err)
+		return nil, ErrInternalServer.From(err)
 	}
-	return &CreateResponse{User: newUSer}, nil
+	return &CreateResponse{User: user}, nil
 }
 
 // DeleteByID user from the repository
 func (s *ServiceImpl) DeleteByID(ctx context.Context, req *DeleteByIDRequest) (*DeleteByIDResponse, error) {
-	err := s.Repository.DeleteByID(ctx, req.ID)
+	ok, err := s.Repository.DeleteByID(ctx, req.ID)
 	if err != nil {
-		return nil, ErrServer.From(err)
+		return nil, ErrInternalServer.From(err)
+	}
+	if !ok {
+		return nil, ErrNotFound.From(errors.New("User cannot be deleted with id " + req.ID))
 	}
 	return &DeleteByIDResponse{}, nil
 }
