@@ -64,6 +64,20 @@ func (c *RestController) WriteError(w http.ResponseWriter, err error) {
 	log.Error(herr)
 }
 
+// Decode Sets the error from inner layers
+func (c *RestController) Decode(w http.ResponseWriter, r *http.Request, body interface{}) error {
+	decoder := json.NewDecoder(r.Body)
+	err := decoder.Decode(body)
+	if err != nil {
+		return ErrBadRequest.From(err)
+	}
+	valid, err := valid.Validate(body)
+	if !valid && err != nil {
+		return ErrBadRequest.From(err)
+	}
+	return nil
+}
+
 // GetAll handler to request the
 func (c *RestController) GetAll(w http.ResponseWriter, r *http.Request) {
 	res, err := c.Service.GetAll(r.Context(), &GetAllRequest{})
@@ -91,16 +105,7 @@ func (c *RestController) GetByID(w http.ResponseWriter, r *http.Request) {
 // Create handler to request the
 func (c *RestController) Create(w http.ResponseWriter, r *http.Request) {
 	var req CreateRequest
-	decoder := json.NewDecoder(r.Body)
-	err := decoder.Decode(&req)
-	if err != nil {
-		err = ErrBadRequest.From(err)
-		c.WriteError(w, err)
-		return
-	}
-	valid, err := valid.Validate(&req)
-	if !valid && err != nil {
-		err = ErrBadRequest.From(err)
+	if err := c.Decode(w, r, &req); err != nil {
 		c.WriteError(w, err)
 		return
 	}
