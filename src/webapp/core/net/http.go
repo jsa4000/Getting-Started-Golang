@@ -40,7 +40,7 @@ type HTTPConfig struct {
 // LoggingMiddleware decorator (closure)
 func LoggingMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		log.Debug("Received Request ", fmt.Sprintf("uri=%s args=%s ", r.RequestURI, mux.Vars(r)))
+		log.Info("Received Request ", fmt.Sprintf("uri=%s args=%s ", r.RequestURI, mux.Vars(r)))
 		next.ServeHTTP(w, r)
 	})
 }
