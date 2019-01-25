@@ -1,12 +1,12 @@
 package users
 
-import "webapp/core/errors"
+import ex "webapp/core/exceptions"
 
 // ErrServer Error connection to repository
-var ErrServer = errors.New("Unknown Server Error", 500)
+var ErrServer = ex.New("Error: Internal Server Error", 500)
 
-// ErrConnRepo Error connection to repository
-var ErrConnRepo = errors.New("Error Connecting to the Repository", 500)
+// ErrValidation Error connection to repository
+var ErrValidation = ex.New("Error: Bad Request", 400)
 
-// ErrUserNotFoud Error connection to repository
-var ErrUserNotFoud = errors.New("Error Resource Not Found", 404)
+// ErrNotFound Error resource not found
+var ErrNotFound = ex.New("Error: Resource Not Found", 404)

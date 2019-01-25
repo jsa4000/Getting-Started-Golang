@@ -6,6 +6,6 @@ import (
 )
 
 func main() {
-	// Start the server
+	// Start the Application
 	starters.StartApp(context.Background(), &App{})
 }

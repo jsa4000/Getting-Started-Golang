@@ -2,7 +2,6 @@ package users
 
 import (
 	"context"
-	"errors"
 
 	log "webapp/core/logging"
 )
@@ -43,7 +42,7 @@ func (c *MockRepository) FindAll(_ context.Context) ([]User, error) {
 func (c *MockRepository) FindByID(_ context.Context, id string) (*User, error) {
 	user, ok := c.Users[id]
 	if !ok {
-		return nil, errors.New("User has not been found with id " + id)
+		return nil, nil
 	}
 	return &user, nil
 }
@@ -59,7 +58,7 @@ func (c *MockRepository) Create(_ context.Context, user User) (*User, error) {
 func (c *MockRepository) DeleteByID(_ context.Context, id string) error {
 	_, ok := c.Users[id]
 	if !ok {
-		return errors.New("User has not been found with id " + id)
+		return nil
 	}
 	delete(c.Users, id)
 	return nil

@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"webapp/core/errors"
+	ex "webapp/core/exceptions"
 	log "webapp/core/logging"
 	"webapp/core/net"
 	valid "webapp/core/validation"
@@ -57,10 +57,11 @@ func (c *RestController) Close() {
 func (c *RestController) GetAll(w http.ResponseWriter, r *http.Request) {
 	res, err := c.Service.GetAll(r.Context(), &GetAllRequest{})
 	if err != nil {
-		err, ok := err.(*errors.Error)
+		err, ok := err.(*ex.Error)
 		if !ok {
 			err = ErrServer.From(err)
 		}
+		log.Error(err)
 		w.WriteHeader(err.HTTPCode)
 		json.NewEncoder(w).Encode(err)
 		return
@@ -75,10 +76,11 @@ func (c *RestController) GetByID(w http.ResponseWriter, r *http.Request) {
 	req := GetByIDRequest{ID: vars["id"]}
 	res, err := c.Service.GetByID(r.Context(), &req)
 	if err != nil {
-		err, ok := err.(*errors.Error)
+		err, ok := err.(*ex.Error)
 		if !ok {
 			err = ErrServer.From(err)
 		}
+		log.Error(err)
 		w.WriteHeader(err.HTTPCode)
 		json.NewEncoder(w).Encode(err)
 		return
@@ -93,17 +95,31 @@ func (c *RestController) Create(w http.ResponseWriter, r *http.Request) {
 	var req CreateRequest
 	err := decoder.Decode(&req)
 	if err != nil {
-		panic(err)
+		log.Error(err)
+		err = ErrValidation.From(err)
+		err, _ := err.(*ex.Error)
+		w.WriteHeader(err.HTTPCode)
+		json.NewEncoder(w).Encode(err)
+		return
 	}
 	valid, err := valid.Validate(&req)
 	if !valid && err != nil {
 		log.Error(err)
-		w.WriteHeader(http.StatusInternalServerError)
+		err = ErrValidation.From(err)
+		err, _ := err.(*ex.Error)
+		w.WriteHeader(err.HTTPCode)
+		json.NewEncoder(w).Encode(err)
 		return
 	}
 	res, err := c.Service.Create(r.Context(), &req)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
+		err, ok := err.(*ex.Error)
+		if !ok {
+			err = ErrServer.From(err)
+		}
+		log.Error(err)
+		w.WriteHeader(err.HTTPCode)
+		json.NewEncoder(w).Encode(err)
 		return
 	}
 	w.WriteHeader(http.StatusOK)
@@ -116,6 +132,7 @@ func (c *RestController) DeleteByID(w http.ResponseWriter, r *http.Request) {
 	req := DeleteByIDRequest{ID: vars["id"]}
 	_, err := c.Service.DeleteByID(r.Context(), &req)
 	if err != nil {
+		log.Error(err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
