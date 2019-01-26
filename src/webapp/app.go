@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"net/http"
+	"webapp/core/database/mongo"
 	log "webapp/core/logging"
 	net "webapp/core/net/http"
 	"webapp/roles"
@@ -19,31 +20,34 @@ type App struct {
 	usersService    users.Service
 	usersRestCtrl   net.Controller
 
+	// Mongo Database Client
+	mongodb *mongo.Client
+
 	// Change to interface instead
 	httpServer *net.Server
 }
 
 // GetUsersRepository factory that returns the User Repository
-func GetUsersRepository(t string) users.Repository {
+func (a *App) GetUsersRepository(t string) users.Repository {
 	switch t {
 	case "mock":
 		return users.NewMockRepository()
 	case "mongo":
-		return users.NewMongoRepository()
+		return users.NewMongoRepository(a.mongodb)
 	default:
-		return users.NewMongoRepository()
+		return users.NewMongoRepository(a.mongodb)
 	}
 }
 
 // GetRolesRepository factory that returns the User Repository
-func GetRolesRepository(t string) roles.Repository {
+func (a *App) GetRolesRepository(t string) roles.Repository {
 	switch t {
 	case "mock":
 		return roles.NewMockRepository()
 	case "mongo":
-		return roles.NewMongoRepository()
+		return roles.NewMongoRepository(a.mongodb)
 	default:
-		return roles.NewMongoRepository()
+		return roles.NewMongoRepository(a.mongodb)
 	}
 }
 
@@ -58,10 +62,14 @@ func (a *App) Startup(ctx context.Context) {
 
 	log.Infof("Starting Services...")
 
+	// Create Database Driver
+	a.mongodb = mongo.New()
+	a.mongodb.Connect("mongodb://root:root@dockerhost:27017/admin")
+
 	// Create Repositories
-	rType := "mock"
-	a.rolesRepository = GetRolesRepository(rType)
-	a.usersRepository = GetUsersRepository(rType)
+	rType := "mongo"
+	a.rolesRepository = a.GetRolesRepository(rType)
+	a.usersRepository = a.GetUsersRepository(rType)
 
 	// Create Services
 	a.rolesService = roles.NewServiceImpl(a.rolesRepository)
@@ -103,6 +111,9 @@ func (a *App) Shutdown(ctx context.Context) {
 	a.usersRepository.Close()
 	a.rolesRepository.Close()
 
+	if a.mongodb != nil {
+		a.mongodb.Disconnect()
+	}
 	a.httpServer.Shutdown(context.Background())
 
 	log.Info("Server Stopped")

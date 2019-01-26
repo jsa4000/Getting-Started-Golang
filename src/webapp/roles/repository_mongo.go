@@ -3,17 +3,24 @@ package roles
 import (
 	"context"
 
+	"webapp/core/database/mongo"
 	log "webapp/core/logging"
+
+	driver "github.com/mongodb/mongo-go-driver/mongo"
 )
 
 // MongoRepository to implement the Roles Repository
 type MongoRepository struct {
+	Client   *mongo.Client
+	Database *driver.Database
 }
 
 // NewMongoRepository Create a Mock repository
-func NewMongoRepository() Repository {
-
-	return &MongoRepository{}
+func NewMongoRepository(client *mongo.Client) Repository {
+	return &MongoRepository{
+		Client:   client,
+		Database: client.Db.Database("roles"),
+	}
 }
 
 // Close gracefully shutdown repository
