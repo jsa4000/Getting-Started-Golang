@@ -13,11 +13,11 @@ import (
 type App struct {
 	rolesRepository roles.Repository
 	rolesService    roles.Service
-	rolesRestCtrl   *roles.RestController
+	rolesRestCtrl   net.Controller
 
 	usersRepository users.Repository
 	usersService    users.Service
-	usersRestCtrl   *users.RestController
+	usersRestCtrl   net.Controller
 
 	// Change to interface instead
 	httpServer *net.Server
@@ -73,8 +73,8 @@ func (a *App) Startup(ctx context.Context) {
 func (a *App) Shutdown(ctx context.Context) {
 	log.Info("Server is shutting down")
 
-	a.usersRestCtrl.Close()
-	a.rolesRestCtrl.Close()
+	a.usersRestCtrl.Shutdown()
+	a.rolesRestCtrl.Shutdown()
 	a.usersRepository.Close()
 	a.rolesRepository.Close()
 

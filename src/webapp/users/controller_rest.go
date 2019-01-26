@@ -15,7 +15,7 @@ type RestController struct {
 }
 
 // NewRestController create new RestController
-func NewRestController(service Service) *RestController {
+func NewRestController(service Service) net.Controller {
 	return &RestController{
 		Service: service,
 	}
@@ -47,8 +47,8 @@ func (c *RestController) GetRoutes() []net.Route {
 	}
 }
 
-// Close gracefully shutdown rest controller
-func (c *RestController) Close() {
+// Shutdown gracefully shutdown rest controller
+func (c *RestController) Shutdown() {
 	log.Info("Users Controller Shutdown")
 }
 
