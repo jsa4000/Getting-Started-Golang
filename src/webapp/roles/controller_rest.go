@@ -4,14 +4,13 @@ import (
 	"encoding/json"
 	"net/http"
 
-	errors "webapp/core/errors"
 	log "webapp/core/logging"
 	net "webapp/core/net/http"
-	valid "webapp/core/validation"
 )
 
 // RestController for http netport
 type RestController struct {
+	net.RestController
 	Service Service
 }
 
@@ -51,31 +50,6 @@ func (c *RestController) GetRoutes() []net.Route {
 // Close gracefully shutdown rest controller
 func (c *RestController) Close() {
 	log.Info("Role Controller Shutdown")
-}
-
-// WriteError Sets the error from inner layers
-func (c *RestController) WriteError(w http.ResponseWriter, err error) {
-	herr, ok := err.(*errors.Error)
-	if !ok {
-		herr = net.ErrInternalServer.From(err)
-	}
-	w.WriteHeader(herr.Code)
-	json.NewEncoder(w).Encode(herr)
-	log.Error(herr)
-}
-
-// Decode Sets the error from inner layers
-func (c *RestController) Decode(w http.ResponseWriter, r *http.Request, body interface{}) error {
-	decoder := json.NewDecoder(r.Body)
-	err := decoder.Decode(body)
-	if err != nil {
-		return net.ErrBadRequest.From(err)
-	}
-	valid, err := valid.Validate(body)
-	if !valid && err != nil {
-		return net.ErrBadRequest.From(err)
-	}
-	return nil
 }
 
 // GetAll handler to request the

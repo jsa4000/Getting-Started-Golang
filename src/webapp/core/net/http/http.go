@@ -37,6 +37,11 @@ type Config struct {
 	Status       bool
 }
 
+// Controller to handle http requests
+type Controller interface {
+	GetRoutes() []Route
+}
+
 // LoggingMiddleware decorator (closure)
 func LoggingMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -83,6 +88,11 @@ func NewServer() *Server {
 		Server: server,
 		Config: serverConfig,
 	}
+}
+
+// AddController Add the controller to the router
+func (h *Server) AddController(c Controller) {
+	h.AddRoutes(c.GetRoutes()...)
 }
 
 // AddRoutes to the router

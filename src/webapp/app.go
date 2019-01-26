@@ -49,9 +49,9 @@ func (a *App) Startup(ctx context.Context) {
 	a.rolesRestCtrl = roles.NewRestController(a.rolesService)
 	a.usersRestCtrl = users.NewRestController(a.usersService)
 
-	// Assigen controllers to the Http server
-	a.httpServer.AddRoutes(a.rolesRestCtrl.GetRoutes()...)
-	a.httpServer.AddRoutes(a.usersRestCtrl.GetRoutes()...)
+	// Add controllers to the Http server
+	a.httpServer.AddController(a.rolesRestCtrl)
+	a.httpServer.AddController(a.usersRestCtrl)
 
 	// Create main homepage http route
 	a.httpServer.AddRoutes(net.Route{
