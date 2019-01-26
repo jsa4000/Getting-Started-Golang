@@ -9,7 +9,7 @@ import (
 	"webapp/users"
 )
 
-// App stuct
+// App struct
 type App struct {
 	rolesRepository roles.Repository
 	rolesService    roles.Service
@@ -21,6 +21,30 @@ type App struct {
 
 	// Change to interface instead
 	httpServer *net.Server
+}
+
+// GetUsersRepository factory that returns the User Repository
+func GetUsersRepository(t string) users.Repository {
+	switch t {
+	case "mock":
+		return users.NewMockRepository()
+	case "mongo":
+		return users.NewMongoRepository()
+	default:
+		return users.NewMongoRepository()
+	}
+}
+
+// GetRolesRepository factory that returns the User Repository
+func GetRolesRepository(t string) roles.Repository {
+	switch t {
+	case "mock":
+		return roles.NewMockRepository()
+	case "mongo":
+		return roles.NewMongoRepository()
+	default:
+		return roles.NewMongoRepository()
+	}
 }
 
 // HomeHandler handler for the HomePage
@@ -35,8 +59,9 @@ func (a *App) Startup(ctx context.Context) {
 	log.Infof("Starting Services...")
 
 	// Create Repositories
-	a.rolesRepository = roles.NewMockRepository()
-	a.usersRepository = users.NewMockRepository()
+	rType := "mock"
+	a.rolesRepository = GetRolesRepository(rType)
+	a.usersRepository = GetUsersRepository(rType)
 
 	// Create Services
 	a.rolesService = roles.NewServiceImpl(a.rolesRepository)

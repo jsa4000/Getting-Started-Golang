@@ -68,9 +68,41 @@ repository:
       url: mongodb://db1.example.net:27017,db2.example.net:2500/?replicaSet=test
 ```
 
+## Docker
+
+- Build docker image
+
+      docker build -t webapp-go .
+
+- Execute docker container (copy configuration file)
+
+      docker run -p 8080:8080 -v //d/DEVELOPMENT/Github/Getting-Started-Golang/src/webapp/webapp.yaml:/webapp.yaml -t webapp-go
+
+      docker run -p 8080:8080 -v config/webapp.yaml:/webapp.yaml -t webapp-go
+
+- Test Server
+
+    http://localhost:8080
+
+    http://dockerhost:8080/users
+
+- Docker Shutdown (gracefully shutdown)
+
+      # Get the PID of the container to stop
+      docker ps
+
+      # Get logs from another shell
+      docker logs <container-id> -f
+
+      # Stop the server (vs kill)
+      docker stop <container-id>
+
 ## References
 
-### Frameworkds
+### Frameworks
+
+- [Go-Kit](https://github.com/asaskevich/govalidator)
+- [Go Gin](https://github.com/asaskevich/govalidator)
 
 ### Validations
 
