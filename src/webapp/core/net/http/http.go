@@ -1,4 +1,4 @@
-package net
+package http
 
 import (
 	"context"
@@ -11,23 +11,23 @@ import (
 	"github.com/gorilla/mux"
 )
 
-// HTTPHandler for handle the requests
-type HTTPHandler func(w http.ResponseWriter, r *http.Request)
+// Handler for handle the requests
+type Handler func(w http.ResponseWriter, r *http.Request)
 
-// HTTPMiddleware for handle the requests
-type HTTPMiddleware func(http.Handler) http.Handler
+// Middleware for handle the requests
+type Middleware func(http.Handler) http.Handler
 
-// HTTPRoute route
-type HTTPRoute struct {
+// Route route
+type Route struct {
 	Path    string
 	Method  string
-	Handler HTTPHandler
+	Handler Handler
 	secured bool
 	roles   []string
 }
 
-// HTTPConfig main app configuration
-type HTTPConfig struct {
+// Config main app configuration
+type Config struct {
 	Name         string        `config:"app.name:ServerApp"`
 	LogLevel     string        `config:"logging.level:info"`
 	Port         int           `config:"server.port:8080"`
@@ -53,17 +53,17 @@ func CustomHeaders(next http.Handler) http.Handler {
 	})
 }
 
-// HTTPServer struct
-type HTTPServer struct {
+// Server struct
+type Server struct {
 	Router *mux.Router
 	Server *http.Server
-	Config HTTPConfig
+	Config Config
 }
 
-// NewHTTPServer create
-func NewHTTPServer() *HTTPServer {
+// NewServer create
+func NewServer() *Server {
 	// Read the Configuration
-	serverConfig := HTTPConfig{}
+	serverConfig := Config{}
 	config.ReadFields(&serverConfig)
 
 	// Create the router
@@ -78,7 +78,7 @@ func NewHTTPServer() *HTTPServer {
 		Handler:      router,
 	}
 
-	return &HTTPServer{
+	return &Server{
 		Router: router,
 		Server: server,
 		Config: serverConfig,
@@ -86,21 +86,21 @@ func NewHTTPServer() *HTTPServer {
 }
 
 // AddRoutes to the router
-func (h *HTTPServer) AddRoutes(routes ...HTTPRoute) {
+func (h *Server) AddRoutes(routes ...Route) {
 	for _, r := range routes {
 		h.Router.HandleFunc(r.Path, r.Handler).Methods(r.Method)
 	}
 }
 
 // AddMiddleware to the router
-func (h *HTTPServer) AddMiddleware(mw ...HTTPMiddleware) {
+func (h *Server) AddMiddleware(mw ...Middleware) {
 	for _, m := range mw {
 		h.Router.Use(mux.MiddlewareFunc(m))
 	}
 }
 
 // Start server
-func (h *HTTPServer) Start() {
+func (h *Server) Start() {
 	// Start the server
 	go func() {
 		log.Info("Listening on " + h.Server.Addr)
@@ -111,7 +111,7 @@ func (h *HTTPServer) Start() {
 }
 
 // Shutdown server
-func (h *HTTPServer) Shutdown(ctx context.Context) {
+func (h *Server) Shutdown(ctx context.Context) {
 	// Shutdown the server (default context)
 	log.Info("Shutting down the server...")
 	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)

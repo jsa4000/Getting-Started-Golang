@@ -6,7 +6,7 @@ import (
 
 	errors "webapp/core/errors"
 	log "webapp/core/logging"
-	"webapp/core/net"
+	net "webapp/core/net/http"
 	valid "webapp/core/validation"
 )
 
@@ -23,24 +23,24 @@ func NewRestController(service Service) *RestController {
 }
 
 // GetRoutes gracefully shutdown rest controller
-func (c *RestController) GetRoutes() []net.HTTPRoute {
-	return []net.HTTPRoute{
-		net.HTTPRoute{
+func (c *RestController) GetRoutes() []net.Route {
+	return []net.Route{
+		net.Route{
 			Path:    "/users",
 			Method:  "GET",
 			Handler: c.GetAll,
 		},
-		net.HTTPRoute{
+		net.Route{
 			Path:    "/users/{id}",
 			Method:  "GET",
 			Handler: c.GetByID,
 		},
-		net.HTTPRoute{
+		net.Route{
 			Path:    "/users",
 			Method:  "POST",
 			Handler: c.Create,
 		},
-		net.HTTPRoute{
+		net.Route{
 			Path:    "/users/{id}",
 			Method:  "DELETE",
 			Handler: c.DeleteByID,
@@ -57,7 +57,7 @@ func (c *RestController) Close() {
 func (c *RestController) WriteError(w http.ResponseWriter, err error) {
 	herr, ok := err.(*errors.Error)
 	if !ok {
-		herr = ErrInternalServer.From(err)
+		herr = net.ErrInternalServer.From(err)
 	}
 	w.WriteHeader(herr.Code)
 	json.NewEncoder(w).Encode(herr)
@@ -69,11 +69,11 @@ func (c *RestController) Decode(w http.ResponseWriter, r *http.Request, body int
 	decoder := json.NewDecoder(r.Body)
 	err := decoder.Decode(body)
 	if err != nil {
-		return ErrBadRequest.From(err)
+		return net.ErrBadRequest.From(err)
 	}
 	valid, err := valid.Validate(body)
 	if !valid && err != nil {
-		return ErrBadRequest.From(err)
+		return net.ErrBadRequest.From(err)
 	}
 	return nil
 }

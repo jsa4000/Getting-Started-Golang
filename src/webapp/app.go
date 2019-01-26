@@ -4,7 +4,7 @@ import (
 	"context"
 	"net/http"
 	log "webapp/core/logging"
-	"webapp/core/net"
+	net "webapp/core/net/http"
 	"webapp/roles"
 	"webapp/users"
 )
@@ -20,7 +20,7 @@ type App struct {
 	usersRestCtrl   *users.RestController
 
 	// Change to interface instead
-	httpServer *net.HTTPServer
+	httpServer *net.Server
 }
 
 // HomeHandler handler for the HomePage
@@ -43,7 +43,7 @@ func (a *App) Startup(ctx context.Context) {
 	a.usersService = users.NewServiceImpl(a.usersRepository)
 
 	// Create The HTTP Server
-	a.httpServer = net.NewHTTPServer()
+	a.httpServer = net.NewServer()
 
 	// Create controllers
 	a.rolesRestCtrl = roles.NewRestController(a.rolesService)
@@ -54,7 +54,7 @@ func (a *App) Startup(ctx context.Context) {
 	a.httpServer.AddRoutes(a.usersRestCtrl.GetRoutes()...)
 
 	// Create main homepage http route
-	a.httpServer.AddRoutes(net.HTTPRoute{
+	a.httpServer.AddRoutes(net.Route{
 		Path:    "/",
 		Method:  "GET",
 		Handler: HomeHandler,

@@ -3,6 +3,8 @@ package roles
 import (
 	"context"
 	"errors"
+
+	net "webapp/core/net/http"
 )
 
 // ServiceImpl Implementation used for the service
@@ -19,7 +21,7 @@ func NewServiceImpl(r Repository) Service {
 func (s *ServiceImpl) GetAll(ctx context.Context, req *GetAllRequest) (*GetAllResponse, error) {
 	roles, err := s.Repository.FindAll(ctx)
 	if err != nil {
-		return nil, ErrInternalServer.From(err)
+		return nil, net.ErrInternalServer.From(err)
 	}
 	return &GetAllResponse{Roles: roles}, nil
 }
@@ -28,10 +30,10 @@ func (s *ServiceImpl) GetAll(ctx context.Context, req *GetAllRequest) (*GetAllRe
 func (s *ServiceImpl) GetByID(ctx context.Context, req *GetByIDRequest) (*GetByIDResponse, error) {
 	role, err := s.Repository.FindByID(ctx, req.ID)
 	if err != nil {
-		return nil, ErrInternalServer.From(err)
+		return nil, net.ErrInternalServer.From(err)
 	}
 	if role == nil {
-		return nil, ErrNotFound.From(errors.New("Role has not been found with id " + req.ID))
+		return nil, net.ErrNotFound.From(errors.New("Role has not been found with id " + req.ID))
 	}
 	return &GetByIDResponse{Role: role}, nil
 }
@@ -41,7 +43,7 @@ func (s *ServiceImpl) Create(ctx context.Context, req *CreateRequest) (*CreateRe
 	role := New(req.Name, req.Name)
 	newRole, err := s.Repository.Create(ctx, role)
 	if err != nil {
-		return nil, ErrInternalServer.From(err)
+		return nil, net.ErrInternalServer.From(err)
 	}
 	return &CreateResponse{Role: newRole}, nil
 }
@@ -50,10 +52,10 @@ func (s *ServiceImpl) Create(ctx context.Context, req *CreateRequest) (*CreateRe
 func (s *ServiceImpl) DeleteByID(ctx context.Context, req *DeleteByIDRequest) (*DeleteByIDResponse, error) {
 	ok, err := s.Repository.DeleteByID(ctx, req.ID)
 	if err != nil {
-		return nil, ErrInternalServer.From(err)
+		return nil, net.ErrInternalServer.From(err)
 	}
 	if !ok {
-		return nil, ErrNotFound.From(errors.New("Role cannot be deleted with id " + req.ID))
+		return nil, net.ErrNotFound.From(errors.New("Role cannot be deleted with id " + req.ID))
 	}
 	return &DeleteByIDResponse{}, nil
 }
