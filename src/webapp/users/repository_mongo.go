@@ -8,6 +8,7 @@ import (
 	log "webapp/core/logging"
 
 	"github.com/mongodb/mongo-go-driver/bson"
+	"github.com/mongodb/mongo-go-driver/bson/primitive"
 	driver "github.com/mongodb/mongo-go-driver/mongo"
 )
 
@@ -59,13 +60,13 @@ func (c *MongoRepository) FindByID(_ context.Context, id string) (*User, error) 
 func (c *MongoRepository) Create(_ context.Context, user User) (*User, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
-	_, err := c.Collection.InsertOne(ctx, user)
-	//id := res.InsertedID.(bson.TypeObjectID.String())
+	result, err := c.Collection.InsertOne(ctx, user)
 	if err != nil {
 		return nil, err
 	}
+	id, _ := result.InsertedID.(primitive.ObjectID)
 	user = User{
-		ID:       "",
+		ID:       id.Hex(),
 		Name:     user.Name,
 		Email:    user.Email,
 		Password: user.Password,
