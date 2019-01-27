@@ -62,12 +62,16 @@ func (a *App) Startup(ctx context.Context) {
 
 	log.Infof("Starting Services...")
 
+	// Repository Type: mongo, mock
+	rType := "mongo"
+
 	// Create Database Driver
-	a.mongodb = mongo.New()
-	a.mongodb.Connect("mongodb://root:root@dockerhost:27017/admin")
+	if rType == "mongo" {
+		a.mongodb = mongo.New()
+		a.mongodb.Connect("mongodb://root:root@dockerhost:27017/admin")
+	}
 
 	// Create Repositories
-	rType := "mongo"
 	a.rolesRepository = a.GetRolesRepository(rType)
 	a.usersRepository = a.GetUsersRepository(rType)
 

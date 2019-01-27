@@ -14,6 +14,7 @@ import (
 	"github.com/mongodb/mongo-go-driver/mongo/options"
 )
 
+const timeout = 10
 const database = "webapp"
 const collection = "users"
 
@@ -47,7 +48,7 @@ func (c *MongoRepository) CreateIndexes(ctx context.Context) {
 func (c *MongoRepository) FindAll(ctx context.Context) ([]*User, error) {
 	options := options.Find()
 	options.SetLimit(100)
-	ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
+	ctx, cancel := context.WithTimeout(ctx, timeout*time.Second)
 	defer cancel()
 	cur, err := c.Collection.Find(ctx, bson.M{}, options)
 	users := []*User{}
@@ -74,7 +75,7 @@ func (c *MongoRepository) FindAll(ctx context.Context) ([]*User, error) {
 // FindByID User by Id
 func (c *MongoRepository) FindByID(ctx context.Context, id string) (*User, error) {
 	var result User
-	ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
+	ctx, cancel := context.WithTimeout(ctx, timeout*time.Second)
 	defer cancel()
 	hexID, _ := primitive.ObjectIDFromHex(id)
 	idDoc := bson.M{"_id": hexID}
@@ -89,7 +90,7 @@ func (c *MongoRepository) FindByID(ctx context.Context, id string) (*User, error
 
 // Create Add user into the datbase
 func (c *MongoRepository) Create(ctx context.Context, user User) (*User, error) {
-	ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
+	ctx, cancel := context.WithTimeout(ctx, timeout*time.Second)
 	defer cancel()
 	result, err := c.Collection.InsertOne(ctx, user)
 	if err != nil {
@@ -102,7 +103,7 @@ func (c *MongoRepository) Create(ctx context.Context, user User) (*User, error) 
 
 // DeleteByID user from the database
 func (c *MongoRepository) DeleteByID(ctx context.Context, id string) (bool, error) {
-	ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
+	ctx, cancel := context.WithTimeout(ctx, timeout*time.Second)
 	defer cancel()
 	hexID, _ := primitive.ObjectIDFromHex(id)
 	idDoc := bson.M{"_id": hexID}
