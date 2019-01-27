@@ -15,10 +15,17 @@ import (
 const database = "webapp"
 const collection = "users"
 
+// UserM struct to define an User
+type UserM struct {
+	ID       *primitive.ObjectID `json:"id" bson:"_id,omitempty"`
+	Name     string              `json:"name" bson:"name"`
+	Email    string              `json:"email" bson:"email"`
+	Password string              `json:"password" bson:"password"`
+}
+
 // MongoRepository to implement the Users Repository
 type MongoRepository struct {
 	Client     *mongo.Client
-	Database   *driver.Database
 	Collection *driver.Collection
 }
 
@@ -26,7 +33,6 @@ type MongoRepository struct {
 func NewMongoRepository(client *mongo.Client) Repository {
 	return &MongoRepository{
 		Client:     client,
-		Database:   client.Db.Database(database),
 		Collection: client.Db.Database(database).Collection(collection),
 	}
 }
@@ -44,16 +50,22 @@ func (c *MongoRepository) FindAll(_ context.Context) ([]User, error) {
 
 // FindByID User by Id
 func (c *MongoRepository) FindByID(_ context.Context, id string) (*User, error) {
-	var result User
+	var result UserM
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
-	//idDoc := bson.NewDocument(bson.EC.ObjectID("_id", "5c4ca5e1fa98e587c68295fc"))
-	idDoc := bson.D{{"name", "user_test"}}
+	hexID, _ := primitive.ObjectIDFromHex(id)
+	idDoc := bson.M{"_id": hexID}
 	err := c.Collection.FindOne(ctx, idDoc).Decode(&result)
 	if err != nil {
 		return nil, err
 	}
-	return &result, nil
+	user := User{
+		ID:       result.ID.Hex(),
+		Name:     result.Name,
+		Email:    result.Email,
+		Password: result.Password,
+	}
+	return &user, nil
 }
 
 // Create Add user into the datbase
