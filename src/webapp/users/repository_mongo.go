@@ -17,33 +17,6 @@ import (
 const database = "webapp"
 const collection = "users"
 
-// UserM struct to define an User
-type UserM struct {
-	ID       *primitive.ObjectID `json:"id" bson:"_id,omitempty"`
-	Name     string              `json:"name" bson:"name"`
-	Email    string              `json:"email" bson:"email"`
-	Password string              `json:"password" bson:"password"`
-}
-
-// Convert Returns a user from User
-func (u *UserM) Convert() *User {
-	return &User{
-		ID:       u.ID.Hex(),
-		Name:     u.Name,
-		Email:    u.Email,
-		Password: u.Password,
-	}
-}
-
-// From Returns a user from User
-func From(user User) *UserM {
-	return &UserM{
-		Name:     user.Name,
-		Email:    user.Email,
-		Password: user.Password,
-	}
-}
-
 // MongoRepository to implement the Users Repository
 type MongoRepository struct {
 	Client     *mongo.Client
@@ -68,7 +41,7 @@ func (c *MongoRepository) FindAll(ctx context.Context) ([]*User, error) {
 		return users, err
 	}
 	defer cur.Close(ctx)
-	var result UserM
+	var result User
 
 	for cur.Next(ctx) {
 		err := cur.Decode(&result)
@@ -76,7 +49,7 @@ func (c *MongoRepository) FindAll(ctx context.Context) ([]*User, error) {
 			log.Error(err)
 			continue
 		}
-		users = append(users, result.Convert())
+		users = append(users, &result)
 	}
 	if err := cur.Err(); err != nil {
 		return users, err
@@ -86,7 +59,7 @@ func (c *MongoRepository) FindAll(ctx context.Context) ([]*User, error) {
 
 // FindByID User by Id
 func (c *MongoRepository) FindByID(ctx context.Context, id string) (*User, error) {
-	var result UserM
+	var result User
 	ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
 	defer cancel()
 	hexID, _ := primitive.ObjectIDFromHex(id)
@@ -95,14 +68,14 @@ func (c *MongoRepository) FindByID(ctx context.Context, id string) (*User, error
 	if err != nil {
 		return nil, err
 	}
-	return result.Convert(), nil
+	return &result, nil
 }
 
 // Create Add user into the datbase
 func (c *MongoRepository) Create(ctx context.Context, user User) (*User, error) {
 	ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
 	defer cancel()
-	result, err := c.Collection.InsertOne(ctx, From(user))
+	result, err := c.Collection.InsertOne(ctx, user)
 	if err != nil {
 		return nil, err
 	}

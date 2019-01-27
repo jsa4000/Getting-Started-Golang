@@ -11,6 +11,8 @@ import (
 	"github.com/gorilla/mux"
 )
 
+const nanoseconds = 1000000
+
 // Handler for handle the requests
 type Handler func(w http.ResponseWriter, r *http.Request)
 
@@ -46,6 +48,10 @@ type Controller interface {
 func LoggingMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		log.Info("Received Request ", fmt.Sprintf("uri=%s args=%s ", r.RequestURI, mux.Vars(r)))
+		start := time.Now()
+		defer func() {
+			log.Debug(fmt.Sprintf("Processed Response in %.2f ms", float64(time.Since(start))/nanoseconds))
+		}()
 		next.ServeHTTP(w, r)
 	})
 }

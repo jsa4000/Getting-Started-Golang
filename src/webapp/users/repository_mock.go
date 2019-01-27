@@ -8,12 +8,12 @@ import (
 
 // MockRepository to implement the Users Repository
 type MockRepository struct {
-	Users map[string]User
+	Users map[interface{}]User
 }
 
 // NewMockRepository Create a Mock repository
 func NewMockRepository() Repository {
-	users := make(map[string]User)
+	users := make(map[interface{}]User)
 	data := []User{
 		User{
 			ID:       uuid.NewV4().String(),
