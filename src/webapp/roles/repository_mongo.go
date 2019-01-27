@@ -4,7 +4,6 @@ import (
 	"context"
 
 	"webapp/core/database/mongo"
-	log "webapp/core/logging"
 
 	driver "github.com/mongodb/mongo-go-driver/mongo"
 )
@@ -21,11 +20,6 @@ func NewMongoRepository(client *mongo.Client) Repository {
 		Client:   client,
 		Database: client.Db.Database("roles"),
 	}
-}
-
-// Close gracefully shutdown repository
-func (c *MongoRepository) Close() {
-	log.Info("Roles Repository disconnected")
 }
 
 // FindAll fetches all the values form the database

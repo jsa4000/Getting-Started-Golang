@@ -2,8 +2,6 @@ package roles
 
 import (
 	"context"
-
-	log "webapp/core/logging"
 )
 
 // MockRepository to implement the Roles Repository
@@ -22,11 +20,6 @@ func NewMockRepository() Repository {
 		roles[value.ID] = value
 	}
 	return &MockRepository{Roles: roles}
-}
-
-// Close gracefully shutdown repository
-func (c *MockRepository) Close() {
-	log.Info("Roles Repository disconnected")
 }
 
 // FindAll fetches all the values form the database

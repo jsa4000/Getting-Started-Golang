@@ -3,8 +3,6 @@ package users
 import (
 	"context"
 
-	log "webapp/core/logging"
-
 	uuid "github.com/satori/go.uuid"
 )
 
@@ -36,16 +34,11 @@ func NewMockRepository() Repository {
 	return &MockRepository{Users: users}
 }
 
-// Close gracefully shutdown repository
-func (c *MockRepository) Close() {
-	log.Info("Users Repository disconnected")
-}
-
 // FindAll fetches all the values form the database
-func (c *MockRepository) FindAll(_ context.Context) ([]User, error) {
-	result := make([]User, 0, len(c.Users))
+func (c *MockRepository) FindAll(_ context.Context) ([]*User, error) {
+	result := make([]*User, 0, len(c.Users))
 	for _, val := range c.Users {
-		result = append(result, val)
+		result = append(result, &val)
 	}
 	return result, nil
 }

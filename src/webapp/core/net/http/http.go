@@ -40,7 +40,6 @@ type Config struct {
 // Controller to handle http requests
 type Controller interface {
 	GetRoutes() []Route
-	Shutdown()
 }
 
 // LoggingMiddleware decorator (closure)

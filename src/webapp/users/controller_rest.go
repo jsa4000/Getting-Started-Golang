@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"net/http"
 
-	log "webapp/core/logging"
 	net "webapp/core/net/http"
 )
 
@@ -45,11 +44,6 @@ func (c *RestController) GetRoutes() []net.Route {
 			Handler: c.DeleteByID,
 		},
 	}
-}
-
-// Shutdown gracefully shutdown rest controller
-func (c *RestController) Shutdown() {
-	log.Info("Users Controller Shutdown")
 }
 
 // GetAll handler to request the

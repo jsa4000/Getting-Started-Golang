@@ -106,11 +106,6 @@ func (a *App) Startup(ctx context.Context) {
 func (a *App) Shutdown(ctx context.Context) {
 	log.Info("Server is shutting down")
 
-	a.usersRestCtrl.Shutdown()
-	a.rolesRestCtrl.Shutdown()
-	a.usersRepository.Close()
-	a.rolesRepository.Close()
-
 	if a.mongodb != nil {
 		a.mongodb.Disconnect()
 	}
