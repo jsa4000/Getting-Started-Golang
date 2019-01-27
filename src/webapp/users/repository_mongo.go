@@ -12,7 +12,6 @@ import (
 	"github.com/mongodb/mongo-go-driver/bson/primitive"
 	driver "github.com/mongodb/mongo-go-driver/mongo"
 	"github.com/mongodb/mongo-go-driver/mongo/options"
-	"github.com/mongodb/mongo-go-driver/x/bsonx"
 )
 
 const database = "webapp"
@@ -34,22 +33,14 @@ func NewMongoRepository(client *mongo.Client) Repository {
 	return result
 }
 
-// CreateIndexes fetches all the values form the database
-func (c *MongoRepository) CreateIndexes(ctx context.Context) error {
-	// Set index as unique index
-	options := options.Index()
-	options.SetUnique(true)
-	// Create ascending index (1).
-	index := driver.IndexModel{}
-	index.Keys = bsonx.Doc{{Key: "email", Value: bsonx.Int32(1)}}
-	index.Options = options
-	ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
-	defer cancel()
-	_, err := c.Collection.Indexes().CreateOne(ctx, index)
-	if err != nil {
-		log.Error(err)
+// CreateIndexes create index for the collection
+func (c *MongoRepository) CreateIndexes(ctx context.Context) {
+	// Create ascending index (1) for email Set index as unique index
+	indexes := []driver.IndexModel{
+		mongo.CreateIndexModel("name", true, false),
+		mongo.CreateIndexModel("email", true, true),
 	}
-	return err
+	mongo.CreateIndex(ctx, c.Collection, indexes...)
 }
 
 // FindAll fetches all the values form the database
@@ -88,7 +79,9 @@ func (c *MongoRepository) FindByID(ctx context.Context, id string) (*User, error
 	hexID, _ := primitive.ObjectIDFromHex(id)
 	idDoc := bson.M{"_id": hexID}
 	err := c.Collection.FindOne(ctx, idDoc).Decode(&result)
-	if err != nil {
+	if err != nil && err == driver.ErrNoDocuments {
+		return nil, nil
+	} else if err != nil {
 		return nil, err
 	}
 	return &result, nil
