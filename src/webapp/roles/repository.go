@@ -6,7 +6,7 @@ import (
 
 // Repository Interface for Roles
 type Repository interface {
-	FindAll(ctx context.Context) ([]Role, error)
+	FindAll(ctx context.Context) ([]*Role, error)
 	FindByID(ctx context.Context, id string) (*Role, error)
 	Create(ctx context.Context, role Role) (*Role, error)
 	DeleteByID(ctx context.Context, id string) (bool, error)

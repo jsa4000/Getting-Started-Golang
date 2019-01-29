@@ -6,7 +6,7 @@ type GetAllRequest struct {
 
 // GetAllResponse struct Response
 type GetAllResponse struct {
-	Roles []Role
+	Roles []*Role
 }
 
 // GetByIDRequest struct request

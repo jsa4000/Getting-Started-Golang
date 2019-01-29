@@ -55,9 +55,9 @@ func (c *MongoRepository) FindAll(ctx context.Context) ([]*User, error) {
 		return users, err
 	}
 	defer cur.Close(ctx)
-	var result User
 
 	for cur.Next(ctx) {
+		var result User
 		err := cur.Decode(&result)
 		if err != nil {
 			log.Error(err)

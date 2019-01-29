@@ -2,7 +2,7 @@ package roles
 
 // Role struct to define an Role
 type Role struct {
-	ID   string `json:"id"`
+	ID   string `json:"id" bson:"_id"`
 	Name string `json:"name"`
 }
 
