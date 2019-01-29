@@ -3,23 +3,34 @@ package roles
 import (
 	"context"
 
-	"webapp/core/database/mongo"
+	mongow "webapp/core/storage/mongo"
 
-	driver "github.com/mongodb/mongo-go-driver/mongo"
+	"github.com/mongodb/mongo-go-driver/mongo"
 )
 
-// MongoRepository to implement the Roles Repository
+const timeout = 10
+const database = "webapp"
+const collection = "roles"
+
+// MongoRepository to implement the Users Repository
 type MongoRepository struct {
-	Client   *mongo.Client
-	Database *driver.Database
+	Wrapper    *mongow.Wrapper
+	Collection *mongo.Collection
 }
 
 // NewMongoRepository Create a Mock repository
-func NewMongoRepository(client *mongo.Client) Repository {
-	return &MongoRepository{
-		Client:   client,
-		Database: client.Db.Database("roles"),
+func NewMongoRepository(wrapper *mongow.Wrapper) Repository {
+	result := &MongoRepository{
+		Wrapper:    wrapper,
+		Collection: wrapper.Client.Database(database).Collection(collection),
 	}
+	result.CreateIndexes(context.Background())
+	return result
+}
+
+// CreateIndexes create index for the collection
+func (c *MongoRepository) CreateIndexes(ctx context.Context) {
+
 }
 
 // FindAll fetches all the values form the database

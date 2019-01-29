@@ -4,13 +4,12 @@ import (
 	"context"
 	"time"
 
-	"webapp/core/database/mongo"
-
 	log "webapp/core/logging"
+	mongow "webapp/core/storage/mongo"
 
 	"github.com/mongodb/mongo-go-driver/bson"
 	"github.com/mongodb/mongo-go-driver/bson/primitive"
-	driver "github.com/mongodb/mongo-go-driver/mongo"
+	"github.com/mongodb/mongo-go-driver/mongo"
 	"github.com/mongodb/mongo-go-driver/mongo/options"
 )
 
@@ -20,28 +19,28 @@ const collection = "users"
 
 // MongoRepository to implement the Users Repository
 type MongoRepository struct {
-	Client     *mongo.Client
-	Collection *driver.Collection
+	Wrapper    *mongow.Wrapper
+	Collection *mongo.Collection
 }
 
 // NewMongoRepository Create a Mock repository
-func NewMongoRepository(client *mongo.Client) Repository {
+func NewMongoRepository(wrapper *mongow.Wrapper) Repository {
 	result := &MongoRepository{
-		Client:     client,
-		Collection: client.Db.Database(database).Collection(collection),
+		Wrapper:    wrapper,
+		Collection: wrapper.Client.Database(database).Collection(collection),
 	}
-	result.CreateIndexes(context.Background())
+	go result.CreateIndexes(context.Background())
 	return result
 }
 
 // CreateIndexes create index for the collection
 func (c *MongoRepository) CreateIndexes(ctx context.Context) {
 	// Create ascending index (1) for email Set index as unique index
-	indexes := []driver.IndexModel{
-		mongo.CreateIndexModel("name", true, false),
-		mongo.CreateIndexModel("email", true, true),
+	indexes := []mongo.IndexModel{
+		mongow.CreateIndexModel("name", true, false),
+		mongow.CreateIndexModel("email", true, true),
 	}
-	mongo.CreateIndex(ctx, c.Collection, indexes...)
+	mongow.CreateIndex(ctx, c.Collection, indexes...)
 }
 
 // FindAll fetches all the values form the database
@@ -80,7 +79,7 @@ func (c *MongoRepository) FindByID(ctx context.Context, id string) (*User, error
 	hexID, _ := primitive.ObjectIDFromHex(id)
 	idDoc := bson.M{"_id": hexID}
 	err := c.Collection.FindOne(ctx, idDoc).Decode(&result)
-	if err != nil && err == driver.ErrNoDocuments {
+	if err != nil && err == mongo.ErrNoDocuments {
 		return nil, nil
 	} else if err != nil {
 		return nil, err

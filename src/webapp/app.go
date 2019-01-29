@@ -3,9 +3,9 @@ package main
 import (
 	"context"
 	"net/http"
-	"webapp/core/database/mongo"
 	log "webapp/core/logging"
 	net "webapp/core/net/http"
+	"webapp/core/storage/mongo"
 	"webapp/roles"
 	"webapp/users"
 )
@@ -20,8 +20,7 @@ type App struct {
 	usersService    users.Service
 	usersRestCtrl   net.Controller
 
-	// Mongo Database Client
-	mongodb *mongo.Client
+	db *mongo.Wrapper
 
 	// Change to interface instead
 	httpServer *net.Server
@@ -33,9 +32,9 @@ func (a *App) GetUsersRepository(t string) users.Repository {
 	case "mock":
 		return users.NewMockRepository()
 	case "mongo":
-		return users.NewMongoRepository(a.mongodb)
+		return users.NewMongoRepository(a.db)
 	default:
-		return users.NewMongoRepository(a.mongodb)
+		return users.NewMockRepository()
 	}
 }
 
@@ -45,9 +44,9 @@ func (a *App) GetRolesRepository(t string) roles.Repository {
 	case "mock":
 		return roles.NewMockRepository()
 	case "mongo":
-		return roles.NewMongoRepository(a.mongodb)
+		return roles.NewMongoRepository(a.db)
 	default:
-		return roles.NewMongoRepository(a.mongodb)
+		return roles.NewMockRepository()
 	}
 }
 
@@ -67,8 +66,8 @@ func (a *App) Startup(ctx context.Context) {
 
 	// Create Database Driver
 	if rType == "mongo" {
-		a.mongodb = mongo.New()
-		a.mongodb.Connect("mongodb://root:root@dockerhost:27017/admin")
+		a.db = mongo.New()
+		a.db.Connect(ctx, "mongodb://root:root@dockerhost:27017/admin")
 	}
 
 	// Create Repositories
@@ -110,10 +109,10 @@ func (a *App) Startup(ctx context.Context) {
 func (a *App) Shutdown(ctx context.Context) {
 	log.Info("Server is shutting down")
 
-	if a.mongodb != nil {
-		a.mongodb.Disconnect()
+	if a.db != nil {
+		a.db.Disconnect(ctx)
 	}
-	a.httpServer.Shutdown(context.Background())
+	a.httpServer.Shutdown(ctx)
 
 	log.Info("Server Stopped")
 }

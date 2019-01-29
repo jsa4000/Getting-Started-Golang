@@ -9,6 +9,7 @@ require (
 	github.com/google/go-cmp v0.2.0 // indirect
 	github.com/google/pprof v0.0.0-20190109223431-e84dfd68c163 // indirect
 	github.com/gorilla/mux v1.6.2
+	github.com/ianlancetaylor/demangle v0.0.0-20181102032728-5e5cf60278f6 // indirect
 	github.com/leodido/go-urn v1.1.0 // indirect
 	github.com/magiconair/properties v1.8.0
 	github.com/mongodb/mongo-go-driver v0.2.0
