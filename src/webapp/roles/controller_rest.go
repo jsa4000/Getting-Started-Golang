@@ -29,7 +29,7 @@ func (c *RestController) GetRoutes() []net.Route {
 			Handler: c.GetAll,
 		},
 		net.Route{
-			Path:    "/roles/{id}",
+			Path:    "/roles/:id",
 			Method:  "GET",
 			Handler: c.GetByID,
 		},
@@ -39,7 +39,7 @@ func (c *RestController) GetRoutes() []net.Route {
 			Handler: c.Create,
 		},
 		net.Route{
-			Path:    "/roles/{id}",
+			Path:    "/roles/:id",
 			Method:  "DELETE",
 			Handler: c.DeleteByID,
 		},
