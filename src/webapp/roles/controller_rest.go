@@ -2,6 +2,7 @@ package roles
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	net "webapp/core/net/http"
@@ -29,7 +30,7 @@ func (c *RestController) GetRoutes() []net.Route {
 			Handler: c.GetAll,
 		},
 		net.Route{
-			Path:    "/roles/:id",
+			Path:    fmt.Sprintf("/roles/%s", net.Format("id")),
 			Method:  "GET",
 			Handler: c.GetByID,
 		},
@@ -39,7 +40,7 @@ func (c *RestController) GetRoutes() []net.Route {
 			Handler: c.Create,
 		},
 		net.Route{
-			Path:    "/roles/:id",
+			Path:    fmt.Sprintf("/roles/%s", net.Format("id")),
 			Method:  "DELETE",
 			Handler: c.DeleteByID,
 		},

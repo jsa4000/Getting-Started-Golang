@@ -86,3 +86,8 @@ func (r *Router) Vars(req *http.Request) map[string]string {
 	log.Debug(result)
 	return result
 }
+
+// Format the current id into the proper provider format
+func (r *Router) Format(id string) string {
+	return fmt.Sprintf(":%s", id)
+}

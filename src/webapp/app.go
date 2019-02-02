@@ -62,7 +62,7 @@ func (a *App) Startup(ctx context.Context) {
 	log.Infof("Starting Services...")
 
 	// Repository Type: mongo, mock
-	rType := "mongo"
+	rType := "mock"
 
 	// Create Database Driver
 	if rType == "mongo" {

@@ -7,8 +7,8 @@ import (
 	"webapp/core/logging/logrus"
 	"webapp/core/net/http"
 
-	//router "webapp/core/net/http/gorillamux"
-	router "webapp/core/net/http/httprouter"
+	router "webapp/core/net/http/gorillamux"
+	//router "webapp/core/net/http/httprouter"
 	"webapp/core/validation"
 	"webapp/core/validation/goplayground"
 )
