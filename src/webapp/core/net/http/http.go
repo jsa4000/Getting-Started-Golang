@@ -68,7 +68,7 @@ func LoggingMiddleware(next http.Handler) http.Handler {
 		log.Info("Received Request ", fmt.Sprintf("uri=%s args=%s ", r.RequestURI, Vars(r)))
 		start := time.Now()
 		defer func() {
-			log.Debug(fmt.Sprintf("Processed Response in %.7f ns", float64(time.Since(start))/nanoseconds))
+			log.Debug(fmt.Sprintf("Processed Response in %.7f ms", float64(time.Since(start))/nanoseconds))
 		}()
 		next.ServeHTTP(w, r)
 	})

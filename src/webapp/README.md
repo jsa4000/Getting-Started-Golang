@@ -99,6 +99,14 @@ repository:
 
 ## Profiling
 
+## Graphviz - Graph Visualization Software
+
+Install ``Graphviz`` for the current platform to be able to see ``svg`` images and to use the following tools.
+
+Add ``Graphviz/bin`` folder into $PATH environment variable
+
+    /usr/local/Graphviz/bin
+
 ## pprof 
 
 The first step to profiling a Go program is to enable ``profiling``. Support for profiling benchmarks built with the standard testing package is built into ``go test``. For example, the following command runs benchmarks in the current directory and writes the CPU and memory profiles to ``cpu.prof`` and ``mem.prof``:
@@ -107,13 +115,37 @@ The first step to profiling a Go program is to enable ``profiling``. Support for
 
 ## http/pprof 
 
- To use ``pprof``, link this package into your program:
+To use ``pprof``, link this package into your program:
 
     import _ "net/http/pprof"
 
-Then use the pprof tool to look at the heap profile: 
+Then use the pprof tool to look at the heap profile:
+
+> It must be used ``jmeter``, ``go-wrk``, etc perform some calls to the application.
 
     go tool pprof http://localhost:8080/debug/pprof/heap
+
+    # seconds < server.writeTimeout
+    go tool pprof http://localhost:8080/debug/pprof/profile?seconds=29
+
+    #The input 'web' to generate the svg file
+    (pprof) web
+
+Profiles can then be visualized with the ``pprof`` tool:
+
+    go tool pprof cpu.prof
+
+## go-torch
+
+go-torch --seconds 5 http://localhost:8080/debug/pprof/profile
+
+## wrk
+
+wrk](https://github.com/wg/wrk)
+
+This runs a benchmark for 30 seconds, using 12 threads, and keeping 400 HTTP connections open.
+
+    wrk -t12 -c400 -d30s http://127.0.0.1:8080/index.html
 
 ## References
 
