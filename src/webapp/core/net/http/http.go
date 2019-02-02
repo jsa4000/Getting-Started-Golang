@@ -96,7 +96,6 @@ func NewServer() *Server {
 		WriteTimeout: time.Second * time.Duration(serverConfig.WriteTimeout),
 		ReadTimeout:  time.Second * time.Duration(serverConfig.ReadTimeout),
 		IdleTimeout:  time.Second * serverConfig.IdleTimeout,
-		//Handler:      router.Handler(),
 	}
 
 	return &Server{
