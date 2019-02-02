@@ -12,37 +12,20 @@ import (
 // Router to handle http requests
 type Router struct {
 	router     *httprouter.Router
-	middleware alice.Chain
-	routes     map[string]wrapper.Route
-}
-
-// ContextHandler to wrapper with gorilla mux
-func ContextHandler(h http.Handler) httprouter.Handle {
-	return func(res http.ResponseWriter, req *http.Request, p httprouter.Params) {
-
-		h.ServeHTTP(res, req)
-	}
+	middleware []alice.Constructor
 }
 
 // New Creates new Gorilla mux router
 func New() *Router {
 	return &Router{
 		router:     httprouter.New(),
-		middleware: alice.New(),
-		routes:     map[string]wrapper.Route{},
+		middleware: []alice.Constructor{},
 	}
 }
 
 // Handler return a handler created
 func (r *Router) Handler() http.Handler {
-	return r.router
-}
-
-// HandleRoute set the router
-func (r *Router) setRoutes(routes ...wrapper.Route) {
-	for _, route := range routes {
-		r.router.Handler(route.Method, route.Path, r.middleware.ThenFunc(http.HandlerFunc(route.Handler)))
-	}
+	return alice.New(r.middleware...).Then(r.router)
 }
 
 // HandleRoute set the router
@@ -53,17 +36,15 @@ func (r *Router) routeID(route wrapper.Route) string {
 // HandleRoute set the router
 func (r *Router) HandleRoute(routes ...wrapper.Route) {
 	for _, route := range routes {
-		r.routes[r.routeID(route)] = route
+		r.router.Handler(route.Method, route.Path, http.HandlerFunc(route.Handler))
 	}
-	r.setRoutes(routes...)
 }
 
 // Use set the middleware to use by default
 func (r *Router) Use(mw ...wrapper.Middleware) {
 	for _, m := range mw {
-		r.middleware.Append(alice.Constructor(m))
+		r.middleware = append(r.middleware, alice.Constructor(m))
 	}
-	//r.setRoutes()
 }
 
 //Vars get vars from a request

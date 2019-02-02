@@ -96,7 +96,7 @@ func NewServer() *Server {
 		WriteTimeout: time.Second * time.Duration(serverConfig.WriteTimeout),
 		ReadTimeout:  time.Second * time.Duration(serverConfig.ReadTimeout),
 		IdleTimeout:  time.Second * serverConfig.IdleTimeout,
-		Handler:      router.Handler(),
+		//Handler:      router.Handler(),
 	}
 
 	return &Server{
@@ -125,6 +125,7 @@ func (h *Server) Start() {
 	// Start the server
 	go func() {
 		log.Info("Listening on " + h.Server.Addr)
+		h.Server.Handler = router.Handler()
 		if err := h.Server.ListenAndServe(); err != nil {
 			log.Error(err)
 		}
