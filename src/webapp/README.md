@@ -97,6 +97,24 @@ repository:
       # Stop the server (vs kill)
       docker stop <container-id>
 
+## Profiling
+
+## pprof 
+
+The first step to profiling a Go program is to enable ``profiling``. Support for profiling benchmarks built with the standard testing package is built into ``go test``. For example, the following command runs benchmarks in the current directory and writes the CPU and memory profiles to ``cpu.prof`` and ``mem.prof``:
+
+    go test -cpuprofile cpu.prof -memprofile mem.prof -bench .
+
+## http/pprof 
+
+ To use ``pprof``, link this package into your program:
+
+    import _ "net/http/pprof"
+
+Then use the pprof tool to look at the heap profile: 
+
+    go tool pprof http://localhost:8080/debug/pprof/heap
+
 ## References
 
 ### Frameworks

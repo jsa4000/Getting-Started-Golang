@@ -86,6 +86,9 @@ func (a *App) Startup(ctx context.Context) {
 	a.rolesRestCtrl = roles.NewRestController(a.rolesService)
 	a.usersRestCtrl = users.NewRestController(a.usersService)
 
+	// Profiling Controller
+	a.httpServer.AddController(net.NewPprofController())
+
 	// Add controllers to the Http server
 	a.httpServer.AddController(a.rolesRestCtrl)
 	a.httpServer.AddController(a.usersRestCtrl)
