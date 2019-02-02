@@ -11,6 +11,8 @@ require (
 	github.com/google/pprof v0.0.0-20190109223431-e84dfd68c163 // indirect
 	github.com/gorilla/mux v1.7.0
 	github.com/ianlancetaylor/demangle v0.0.0-20181102032728-5e5cf60278f6 // indirect
+	github.com/julienschmidt/httprouter v1.2.0
+	github.com/justinas/alice v0.0.0-20171023064455-03f45bd4b7da
 	github.com/leodido/go-urn v1.1.0 // indirect
 	github.com/magiconair/properties v1.8.0
 	github.com/mongodb/mongo-go-driver v0.3.0
@@ -18,6 +20,7 @@ require (
 	github.com/sirupsen/logrus v1.3.0
 	github.com/spf13/afero v1.2.1 // indirect
 	github.com/spf13/viper v1.3.1
+	github.com/stephens2424/muxchain v0.0.0-20141026180430-ace9d95af932
 	github.com/stretchr/testify v1.3.0
 	github.com/tidwall/pretty v0.0.0-20180105212114-65a9db5fad51 // indirect
 	github.com/ugorji/go/codec v0.0.0-20190128213124-ee1426cffec0 // indirect
