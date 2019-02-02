@@ -9,26 +9,64 @@ import (
 	"github.com/mongodb/mongo-go-driver/mongo"
 )
 
+// OnConnect Handler that will be called every time is connects
+type OnConnect func()
+
 // Wrapper structure for MongoDb Client
 type Wrapper struct {
-	Client *mongo.Client
+	Client    *mongo.Client
+	OnConnect map[string]OnConnect
 }
 
 // New returns new mongodb client
 func New() *Wrapper {
-	return &Wrapper{}
+	return &Wrapper{
+		OnConnect: map[string]OnConnect{},
+	}
+}
+
+func (w *Wrapper) onConnectEvent() {
+	for _, sub := range w.OnConnect {
+		go sub()
+	}
+}
+
+// Subscribe to OnConnect event
+func (w *Wrapper) Subscribe(id string, f OnConnect) error {
+	_, exist := w.OnConnect[id]
+	if exist {
+		return fmt.Errorf("Key '%s' already subscribed to MongoDb OnConnect event", id)
+	}
+	w.OnConnect[id] = f
+	return nil
+}
+
+// Unsubscribe to OnConnect event
+func (w *Wrapper) Unsubscribe(id string) error {
+	_, ok := w.OnConnect[id]
+	if !ok {
+		return fmt.Errorf("Key '%s' has not been subscribed to MongoDb OnConnect event", id)
+	}
+	delete(w.OnConnect, id)
+	return nil
 }
 
 // Connect to Mongodb database
 func (w *Wrapper) checkConnection(ctx context.Context) {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
-	err := w.Client.Ping(ctx, nil)
-	if err != nil {
-		log.Error(fmt.Sprintf("Error trying to connect to mongodb. '%s'", err))
-		return
+	for {
+		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+		defer cancel()
+		err := w.Client.Ping(ctx, nil)
+		if err != nil {
+			log.Error(fmt.Sprintf("Error trying to connect to mongodb. '%s'", err))
+			cancel()
+			continue
+		}
+		log.Info(fmt.Sprintf("Connected to mongodb at '%s'", w.Client.ConnectionString()))
+		w.onConnectEvent()
+		break
 	}
-	log.Info(fmt.Sprintf("Connected to mongodb at '%s'", w.Client.ConnectionString()))
+
 }
 
 // Connect to Mongodb database

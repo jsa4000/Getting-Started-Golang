@@ -16,6 +16,7 @@ import (
 const timeout = 10
 const database = "webapp"
 const collection = "users"
+const id = "usersrepository"
 
 // MongoRepository to implement the Users Repository
 type MongoRepository struct {
@@ -29,8 +30,17 @@ func NewMongoRepository(wrapper *mongow.Wrapper) Repository {
 		Wrapper:    wrapper,
 		Collection: wrapper.Client.Database(database).Collection(collection),
 	}
-	go result.CreateIndexes(context.Background())
+	//go result.CreateIndexes(context.Background())
+	err := wrapper.Subscribe(id, result.onConnect)
+	if err != nil {
+		log.Error(err)
+	}
 	return result
+}
+
+func (c *MongoRepository) onConnect() {
+	log.Debug("Users Repository received OnConnect event from Mongodb")
+	c.CreateIndexes(context.Background())
 }
 
 // CreateIndexes create index for the collection
@@ -45,12 +55,12 @@ func (c *MongoRepository) CreateIndexes(ctx context.Context) {
 
 // FindAll fetches all the values form the database
 func (c *MongoRepository) FindAll(ctx context.Context) ([]*User, error) {
+	users := []*User{}
 	options := options.Find()
 	options.SetLimit(100)
 	ctx, cancel := context.WithTimeout(ctx, timeout*time.Second)
 	defer cancel()
 	cur, err := c.Collection.Find(ctx, bson.M{}, options)
-	users := []*User{}
 	if err != nil {
 		return users, err
 	}

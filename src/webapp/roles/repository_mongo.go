@@ -32,12 +32,12 @@ func NewMongoRepository(wrapper *mongow.Wrapper) Repository {
 
 // FindAll fetches all the values form the database
 func (c *MongoRepository) FindAll(ctx context.Context) ([]*Role, error) {
+	Roles := []*Role{}
 	options := options.Find()
 	options.SetLimit(100)
 	ctx, cancel := context.WithTimeout(ctx, timeout*time.Second)
 	defer cancel()
 	cur, err := c.Collection.Find(ctx, bson.M{}, options)
-	Roles := []*Role{}
 	if err != nil {
 		return Roles, err
 	}
