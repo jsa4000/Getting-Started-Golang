@@ -5,6 +5,8 @@ import (
 	"webapp/core/config/viper"
 	"webapp/core/logging"
 	"webapp/core/logging/logrus"
+	"webapp/core/net/http"
+	router "webapp/core/net/http/gorillamux"
 	"webapp/core/validation"
 	"webapp/core/validation/goplayground"
 )
@@ -23,6 +25,10 @@ func setGlobalValidator() {
 	validation.SetGlobal(goplayground.New())
 }
 
+func setGlobalRouter() {
+	http.SetGlobal(router.New())
+}
+
 // Init initialize defaults values
 func Init() {
 	// Set Global Logger
@@ -31,4 +37,6 @@ func Init() {
 	setGlobalParser()
 	// Set global Validator
 	setGlobalValidator()
+	// Set global Router
+	setGlobalRouter()
 }

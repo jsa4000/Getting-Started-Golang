@@ -7,9 +7,15 @@ import (
 	"time"
 	"webapp/core/config"
 	log "webapp/core/logging"
-
-	"github.com/gorilla/mux"
 )
+
+// Log Global Router
+var router Router
+
+// SetGlobal sets the Global Logger (singletone)
+func SetGlobal(r Router) {
+	router = r
+}
 
 const nanoseconds = 1000000
 
@@ -26,6 +32,14 @@ type Route struct {
 	Handler Handler
 	secured bool
 	roles   []string
+}
+
+// Router to handle http requests
+type Router interface {
+	Handler() http.Handler
+	HandleRoute(route ...Route)
+	Use(m ...Middleware)
+	Vars(r *http.Request) map[string]string
 }
 
 // Config main app configuration
@@ -47,7 +61,7 @@ type Controller interface {
 // LoggingMiddleware decorator (closure)
 func LoggingMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		log.Info("Received Request ", fmt.Sprintf("uri=%s args=%s ", r.RequestURI, mux.Vars(r)))
+		log.Info("Received Request ", fmt.Sprintf("uri=%s args=%s ", r.RequestURI, Vars(r)))
 		start := time.Now()
 		defer func() {
 			log.Debug(fmt.Sprintf("Processed Response in %.2f ms", float64(time.Since(start))/nanoseconds))
@@ -66,7 +80,6 @@ func CustomHeaders(next http.Handler) http.Handler {
 
 // Server struct
 type Server struct {
-	Router *mux.Router
 	Server *http.Server
 	Config Config
 }
@@ -77,20 +90,16 @@ func NewServer() *Server {
 	serverConfig := Config{}
 	config.ReadFields(&serverConfig)
 
-	// Create the router
-	router := mux.NewRouter()
-
 	// Create server with parameters
 	server := &http.Server{
 		Addr:         fmt.Sprintf("0.0.0.0:%d", serverConfig.Port),
 		WriteTimeout: time.Second * time.Duration(serverConfig.WriteTimeout),
 		ReadTimeout:  time.Second * time.Duration(serverConfig.ReadTimeout),
 		IdleTimeout:  time.Second * serverConfig.IdleTimeout,
-		Handler:      router,
+		Handler:      router.Handler(),
 	}
 
 	return &Server{
-		Router: router,
 		Server: server,
 		Config: serverConfig,
 	}
@@ -103,16 +112,12 @@ func (h *Server) AddController(c Controller) {
 
 // AddRoutes to the router
 func (h *Server) AddRoutes(routes ...Route) {
-	for _, r := range routes {
-		h.Router.HandleFunc(r.Path, r.Handler).Methods(r.Method)
-	}
+	router.HandleRoute(routes...)
 }
 
 // AddMiddleware to the router
 func (h *Server) AddMiddleware(mw ...Middleware) {
-	for _, m := range mw {
-		h.Router.Use(mux.MiddlewareFunc(m))
-	}
+	router.Use(mw...)
 }
 
 // Start server
@@ -135,7 +140,7 @@ func (h *Server) Shutdown(ctx context.Context) {
 	h.Server.Shutdown(ctx)
 }
 
-//GetVars get vars from a request
-func GetVars(r *http.Request) map[string]string {
-	return mux.Vars(r)
+//Vars get vars from a request
+func Vars(r *http.Request) map[string]string {
+	return router.Vars(r)
 }

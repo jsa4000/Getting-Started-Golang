@@ -79,6 +79,7 @@ func (a *App) Startup(ctx context.Context) {
 	a.usersService = users.NewServiceImpl(a.usersRepository)
 
 	// Create The HTTP Server
+
 	a.httpServer = net.NewServer()
 
 	// Create controllers
