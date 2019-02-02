@@ -5,6 +5,7 @@ import (
 	"net/http"
 	log "webapp/core/logging"
 	net "webapp/core/net/http"
+	pprof "webapp/core/net/http/pprof"
 	"webapp/core/storage/mongo"
 	"webapp/roles"
 	"webapp/users"
@@ -87,7 +88,7 @@ func (a *App) Startup(ctx context.Context) {
 	a.usersRestCtrl = users.NewRestController(a.usersService)
 
 	// Profiling Controller
-	a.httpServer.AddController(net.NewPprofController())
+	a.httpServer.AddController(pprof.NewController())
 
 	// Add controllers to the Http server
 	a.httpServer.AddController(a.rolesRestCtrl)

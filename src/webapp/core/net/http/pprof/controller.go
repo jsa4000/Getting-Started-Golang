@@ -1,74 +1,75 @@
-package http
+package pprof
 
-import "net/http/pprof"
+import (
+	"net/http/pprof"
 
-// PprofPreffix
-const PprofPreffix = "/debug/pprof/"
+	net "webapp/core/net/http"
+)
 
-// PprofController for http transport
-type PprofController struct {
-	RestController
+// Controller for http transport
+type Controller struct {
+	net.RestController
 }
 
-// NewPprofController create new RestController
-func NewPprofController() Controller {
-	return &RestController{}
+// NewController create new RestController
+func NewController() net.Controller {
+	return &Controller{}
 }
 
 // GetRoutes gracefully shutdown rest controller
-func (c *RestController) GetRoutes() []Route {
-	return []Route{
-		Route{
+func (c *Controller) GetRoutes() []net.Route {
+	return []net.Route{
+		net.Route{
 			Path:    "/debug/pprof/",
 			Method:  "GET",
 			Handler: pprof.Index,
 		},
-		Route{
+		net.Route{
 			Path:    "/debug/pprof/heap",
 			Method:  "GET",
 			Handler: pprof.Index,
 		},
-		Route{
+		net.Route{
 			Path:    "/debug/pprof/allocs",
 			Method:  "GET",
 			Handler: pprof.Index,
 		},
-		Route{
+		net.Route{
 			Path:    "/debug/pprof/goroutine",
 			Method:  "GET",
 			Handler: pprof.Index,
 		},
-		Route{
+		net.Route{
 			Path:    "/debug/pprof/block",
 			Method:  "GET",
 			Handler: pprof.Index,
 		},
-		Route{
+		net.Route{
 			Path:    "/debug/pprof/mutex",
 			Method:  "GET",
 			Handler: pprof.Index,
 		},
-		Route{
+		net.Route{
 			Path:    "/debug/pprof/threadcreate",
 			Method:  "GET",
 			Handler: pprof.Index,
 		},
-		Route{
+		net.Route{
 			Path:    "/debug/pprof/cmdline",
 			Method:  "GET",
 			Handler: pprof.Cmdline,
 		},
-		Route{
+		net.Route{
 			Path:    "/debug/pprof/profile",
 			Method:  "GET",
 			Handler: pprof.Profile,
 		},
-		Route{
+		net.Route{
 			Path:    "/debug/pprof/symbol",
 			Method:  "GET",
 			Handler: pprof.Symbol,
 		},
-		Route{
+		net.Route{
 			Path:    "/debug/pprof/trace",
 			Method:  "GET",
 			Handler: pprof.Trace,

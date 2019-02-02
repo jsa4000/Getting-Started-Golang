@@ -7,7 +7,7 @@ import (
 	"syscall"
 )
 
-// App inteface for generic Application
+// App interface for generic Application
 type App interface {
 	Startup(ctx context.Context)
 	Shutdown(ctx context.Context)

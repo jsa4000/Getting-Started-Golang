@@ -20,6 +20,8 @@ func SetGlobal(r Router) {
 
 const nanoseconds = 1e6
 
+const pprofPreffix = "/debug/pprof/"
+
 // Handler for handle the requests
 type Handler func(w http.ResponseWriter, r *http.Request)
 
@@ -75,7 +77,7 @@ func LoggingMiddleware(next http.Handler) http.Handler {
 // CustomHeaders decorator (closure)
 func CustomHeaders(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if strings.Contains(r.RequestURI, PprofPreffix) {
+		if strings.Contains(r.RequestURI, pprofPreffix) {
 			w.Header().Set("Content-Type", "text/html")
 		} else {
 			w.Header().Set("Content-Type", "application/json")
