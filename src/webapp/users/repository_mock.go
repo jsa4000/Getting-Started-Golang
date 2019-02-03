@@ -37,8 +37,9 @@ func NewMockRepository() Repository {
 // FindAll fetches all the values form the database
 func (c *MockRepository) FindAll(_ context.Context) ([]*User, error) {
 	result := make([]*User, 0, len(c.Users))
-	for _, val := range c.Users {
-		result = append(result, &val)
+	for key := range c.Users {
+		var value = c.Users[key] // Create new pointer to add into the list
+		result = append(result, &value)
 	}
 	return result, nil
 }
