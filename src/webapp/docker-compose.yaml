@@ -8,3 +8,10 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: root
+
+  #webapp-go:
+  # image: webapp-go
+  # ports:
+  # - "8080:8080"
+  # volumes:
+  # - //d/DEVELOPMENT/Github/Getting-Started-Golang/src/webapp/webapp.yaml:/webapp.yaml

@@ -80,6 +80,12 @@ repository:
 
       docker run -p 8080:8080 -v config/webapp.yaml:/webapp.yaml -t webapp-go
 
+- To use the same network as docker-compose
+
+    docker network ls
+
+    docker run --network=webapp_default -p 8080:8080 -v //d/DEVELOPMENT/Github/Getting-Started-Golang/src/webapp/webapp.yaml:/webapp.yaml -t webapp-go
+
 - Test Server
 
     http://localhost:8080
