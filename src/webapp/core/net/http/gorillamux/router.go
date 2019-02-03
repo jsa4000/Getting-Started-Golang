@@ -1,4 +1,4 @@
-package router
+package gorillamux
 
 import (
 	"net/http"

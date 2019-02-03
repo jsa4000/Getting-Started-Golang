@@ -12,6 +12,39 @@ import (
 // OnConnect Handler that will be called every time is connects
 type OnConnect func()
 
+// Wrapper Global Mongo wrapper
+var wrapper *Wrapper
+
+// SetGlobal sets the Global Mongo wrapper (singletone)
+func SetGlobal(w *Wrapper) {
+	wrapper = w
+}
+
+// Client Returns Mongo Client
+func Client() *mongo.Client {
+	return wrapper.Client
+}
+
+// Subscribe to OnConnect event
+func Subscribe(id string, f OnConnect) error {
+	return wrapper.Subscribe(id, f)
+}
+
+// Unsubscribe to OnConnect event
+func Unsubscribe(id string) error {
+	return wrapper.Unsubscribe(id)
+}
+
+// Connect to Mongodb database
+func Connect(ctx context.Context, conn string) error {
+	return wrapper.Connect(ctx, conn)
+}
+
+// Disconnect to Mongodb database
+func Disconnect(ctx context.Context) error {
+	return wrapper.Disconnect(ctx)
+}
+
 // Wrapper structure for MongoDb Client
 type Wrapper struct {
 	Client    *mongo.Client

@@ -20,18 +20,16 @@ const id = "usersrepository"
 
 // MongoRepository to implement the Users Repository
 type MongoRepository struct {
-	Wrapper    *mongow.Wrapper
 	Collection *mongo.Collection
 }
 
 // NewMongoRepository Create a Mock repository
-func NewMongoRepository(wrapper *mongow.Wrapper) Repository {
+func NewMongoRepository() Repository {
 	result := &MongoRepository{
-		Wrapper:    wrapper,
-		Collection: wrapper.Client.Database(database).Collection(collection),
+		Collection: mongow.Client().Database(database).Collection(collection),
 	}
 	//go result.CreateIndexes(context.Background())
-	err := wrapper.Subscribe(id, result.onConnect)
+	err := mongow.Subscribe(id, result.onConnect)
 	if err != nil {
 		log.Error(err)
 	}

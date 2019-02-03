@@ -64,10 +64,10 @@ type Controller interface {
 // LoggingMiddleware decorator (closure)
 func LoggingMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		log.Info("Received Request ", fmt.Sprintf("uri=%s args=%s ", r.RequestURI, Vars(r)))
+		log.Infof("Received Request uri=%s args=%s ", r.RequestURI, Vars(r))
 		start := time.Now()
 		defer func() {
-			log.Debug(fmt.Sprintf("Processed Response in %.7f ms", float64(time.Since(start))/nanoseconds))
+			log.Debugf("Processed Response in %d ns", time.Since(start).Nanoseconds())
 		}()
 		next.ServeHTTP(w, r)
 	})

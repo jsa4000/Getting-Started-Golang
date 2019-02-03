@@ -18,15 +18,13 @@ const collection = "roles"
 
 // MongoRepository to implement the Roles Repository
 type MongoRepository struct {
-	Wrapper    *mongow.Wrapper
 	Collection *mongo.Collection
 }
 
 // NewMongoRepository Create a Mock repository
-func NewMongoRepository(wrapper *mongow.Wrapper) Repository {
+func NewMongoRepository() Repository {
 	return &MongoRepository{
-		Wrapper:    wrapper,
-		Collection: wrapper.Client.Database(database).Collection(collection),
+		Collection: mongow.Client().Database(database).Collection(collection),
 	}
 }
 
