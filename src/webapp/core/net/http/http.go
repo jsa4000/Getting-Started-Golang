@@ -43,7 +43,6 @@ type Router interface {
 	HandleRoute(route ...Route)
 	Use(m ...Middleware)
 	Vars(r *http.Request) map[string]string
-	Format(id string) string
 }
 
 // Config main app configuration
@@ -151,9 +150,4 @@ func (h *Server) Shutdown(ctx context.Context) {
 //Vars get vars from a request
 func Vars(r *http.Request) map[string]string {
 	return router.Vars(r)
-}
-
-// Format the current id into the proper provider format
-func Format(id string) string {
-	return router.Format(id)
 }

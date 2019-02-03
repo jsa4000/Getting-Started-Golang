@@ -1,7 +1,6 @@
 package router
 
 import (
-	"fmt"
 	"net/http"
 	wrapper "webapp/core/net/http"
 
@@ -42,9 +41,4 @@ func (r *Router) Use(mw ...wrapper.Middleware) {
 //Vars get vars from a request
 func (r *Router) Vars(req *http.Request) map[string]string {
 	return mux.Vars(req)
-}
-
-// Format the current id into the proper provider format
-func (r *Router) Format(id string) string {
-	return fmt.Sprintf("{%s}", id)
 }

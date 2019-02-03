@@ -47,10 +47,14 @@ func (r *Router) routeID(route wrapper.Route) string {
 	return fmt.Sprintf("%s:%s", route.Method, route.Path)
 }
 
+func (r *Router) normalize(path string) string {
+	return strings.Replace(strings.Replace(path, "}", "", -1), "{", ":", -1)
+}
+
 // HandleRoute set the router
 func (r *Router) HandleRoute(routes ...wrapper.Route) {
 	for _, route := range routes {
-		//r.router.Handler(route.Method, route.Path, http.HandlerFunc(route.Handler))
+		route.Path = r.normalize(route.Path)
 		switch strings.ToLower(route.Method) {
 		case "get":
 			r.router.GET(route.Path, wrapHandler(http.HandlerFunc(route.Handler)))
@@ -85,9 +89,4 @@ func (r *Router) Vars(req *http.Request) map[string]string {
 	}
 	log.Debug(result)
 	return result
-}
-
-// Format the current id into the proper provider format
-func (r *Router) Format(id string) string {
-	return fmt.Sprintf(":%s", id)
 }
