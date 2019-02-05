@@ -1,28 +1,26 @@
 package starters
 
 import (
-	"context"
 	"fmt"
 )
 
-// Component interface for components to register
-type Component interface {
-	Init(ctx context.Context)
-	Close(ctx context.Context)
-}
-
 var control = NewControl()
+
+// Control struct to register the components
+type Control struct {
+	components map[string]Component
+}
 
 // NewControl creates a new instance
 func NewControl() *Control {
 	return &Control{
-		Components: make(map[string]Component),
+		components: make(map[string]Component),
 	}
 }
 
-// Control struct to register the components
-type Control struct {
-	Components map[string]Component
+// Components Get current components registered
+func Components() map[string]Component {
+	return control.components
 }
 
 // Register current component
@@ -37,15 +35,15 @@ func Clean() {
 
 // Register current component
 func (c *Control) Register(key string, comp Component) error {
-	_, ok := c.Components[key]
+	_, ok := c.components[key]
 	if ok {
 		return fmt.Errorf("Component %T already registered", comp)
 	}
-	c.Components[key] = comp
+	c.components[key] = comp
 	return nil
 }
 
 // Clean removes all the components registered
 func (c *Control) Clean() {
-	c.Components = make(map[string]Component)
+	c.components = make(map[string]Component)
 }
