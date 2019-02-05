@@ -46,7 +46,8 @@ func init() {
 	log.SetLevel(log.DebugLevel)
 	log.SetFormatter(log.TextFormat)
 
-	parser = NewParserFromBytes(yamlConfig, "yaml")
+	parser = New()
+	parser.LoadFromBytes(yamlConfig, "yaml")
 }
 
 func TestGetStringFromFile(t *testing.T) {
