@@ -9,7 +9,6 @@ import (
 	"webapp/core/net/http"
 
 	router "webapp/core/net/http/gorillamux"
-	"webapp/core/storage/mongo"
 	"webapp/core/validation"
 	"webapp/core/validation/goplayground"
 )
@@ -32,15 +31,6 @@ func setGlobalRouter(_ context.Context) {
 	http.SetGlobal(router.New())
 }
 
-func setGlobalMongo(ctx context.Context) {
-	mongo.SetGlobal(mongo.New())
-	mongo.Connect(ctx, "mongodb://root:root@dockerhost:27017/admin")
-}
-
-func unsetGlobalMongo(ctx context.Context) {
-	mongo.Disconnect(ctx)
-}
-
 // Init initialize defaults values
 func Init(ctx context.Context) {
 	// Set Global Logger
@@ -51,12 +41,15 @@ func Init(ctx context.Context) {
 	setGlobalValidator(ctx)
 	// Set global Router
 	setGlobalRouter(ctx)
-	// Set global MongoDB Storage
-	setGlobalMongo(ctx)
+
+	for _, c := range control.Components {
+		c.Init(ctx)
+	}
 }
 
 // Shutdown initialize defaults values
 func Shutdown(ctx context.Context) {
-	// Set global MongoDB Storage
-	unsetGlobalMongo(ctx)
+	for _, c := range control.Components {
+		c.Close(ctx)
+	}
 }

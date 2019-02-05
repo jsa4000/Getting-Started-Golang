@@ -12,12 +12,24 @@ import (
 // OnConnect Handler that will be called every time is connects
 type OnConnect func()
 
-// Wrapper Global Mongo wrapper
+// Wrapper structure for MongoDb Client
+type Wrapper struct {
+	Client    *mongo.Client
+	OnConnect map[string]OnConnect
+}
+
 var wrapper *Wrapper
 
-// SetGlobal sets the Global Mongo wrapper (singletone)
+// Set Global component
 func SetGlobal(w *Wrapper) {
 	wrapper = w
+}
+
+// New returns new mongodb client
+func New() *Wrapper {
+	return &Wrapper{
+		OnConnect: map[string]OnConnect{},
+	}
 }
 
 // Client Returns Mongo Client
@@ -43,19 +55,6 @@ func Connect(ctx context.Context, conn string) error {
 // Disconnect to Mongodb database
 func Disconnect(ctx context.Context) error {
 	return wrapper.Disconnect(ctx)
-}
-
-// Wrapper structure for MongoDb Client
-type Wrapper struct {
-	Client    *mongo.Client
-	OnConnect map[string]OnConnect
-}
-
-// New returns new mongodb client
-func New() *Wrapper {
-	return &Wrapper{
-		OnConnect: map[string]OnConnect{},
-	}
 }
 
 func (w *Wrapper) onConnectEvent() {

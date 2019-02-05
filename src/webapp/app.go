@@ -7,6 +7,8 @@ import (
 	net "webapp/core/net/http"
 	pprof "webapp/core/net/http/pprof"
 
+	_ "webapp/core/storage/mongo/starter"
+
 	"webapp/roles"
 	"webapp/users"
 )
