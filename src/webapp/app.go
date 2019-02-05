@@ -7,6 +7,8 @@ import (
 	net "webapp/core/net/http"
 	pprof "webapp/core/net/http/pprof"
 
+	_ "webapp/core/config/viper/starter"
+	_ "webapp/core/logging/logrus/starter"
 	_ "webapp/core/net/http/gorillamux/starter"
 	_ "webapp/core/storage/mongo/starter"
 	_ "webapp/core/validation/goplayground/starter"

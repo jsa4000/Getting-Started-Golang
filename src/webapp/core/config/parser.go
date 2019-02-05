@@ -11,6 +11,9 @@ const (
 // Parser interface to read from config files or environment
 // path must be in the form 'configPath:defaultValue'. i.e "app.name:MyServerApp"
 type Parser interface {
+	LoadFromFile(filename string, path string) error
+	LoadFromBytes(buffer []byte, filetype string) error
+
 	ReadFields(data interface{})
 	Get(path string) (interface{}, error)
 	GetInt(path string) int

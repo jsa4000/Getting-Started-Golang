@@ -1,0 +1,37 @@
+package starter
+
+import (
+	"context"
+	"webapp/core/logging"
+	"webapp/core/logging/logrus"
+	"webapp/core/starters"
+)
+
+// Wrapper Global Mongo wrapper
+var component = New()
+
+// Component for mongo
+type Component struct {
+	logger *logrus.Logger
+}
+
+// New creates a new component to register the component
+func New() *Component {
+	result := &Component{
+		logger: logrus.New(),
+	}
+	logging.SetGlobal(result.logger)
+	starters.Register("logger", result)
+	return result
+}
+
+// Init function that will be called after register the component
+func (c *Component) Init(_ context.Context) {
+	c.logger.SetLevel(logging.DebugLevel)
+	c.logger.SetFormatter(logging.TextFormat)
+}
+
+// Close fucntion that willbe called at the end of the application
+func (c *Component) Close(_ context.Context) {
+
+}

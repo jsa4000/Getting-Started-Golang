@@ -7,8 +7,6 @@ import (
 	"strings"
 	"webapp/core/config"
 
-	log "webapp/core/logging"
-
 	"github.com/spf13/viper"
 )
 
@@ -16,10 +14,14 @@ import (
 type Parser struct {
 }
 
-// NewParserFromFile creates the default parser implementation
-func NewParserFromFile(filename string, path string) *Parser {
-	parser := Parser{}
+// New creates the default parser implementation
+func New() *Parser {
+	viper.New()
+	return &Parser{}
+}
 
+// LoadFromFile creates the default parser implementation
+func (p *Parser) LoadFromFile(filename string, path string) error {
 	//viper.SetConfigType("yaml") // Inferred
 	viper.SetConfigName(strings.TrimSuffix(filename, filepath.Ext(filename)))
 	viper.AddConfigPath(path)
@@ -27,24 +29,21 @@ func NewParserFromFile(filename string, path string) *Parser {
 	viper.AutomaticEnv()
 
 	if err := viper.ReadInConfig(); err != nil {
-		log.Fatalf("Error reading config file, %s", err)
+		return err
 	}
-	return &parser
+	return nil
 }
 
-// NewParserFromBytes creates the default parser implementation
-func NewParserFromBytes(buffer []byte, filetype string) *Parser {
-	parser := Parser{}
-
-	viper.New()
+// LoadFromBytes creates the default parser implementation
+func (p *Parser) LoadFromBytes(buffer []byte, filetype string) error {
 	viper.SetConfigType(filetype)
 	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 	viper.AutomaticEnv()
 
 	if err := viper.ReadConfig(bytes.NewBuffer(buffer)); err != nil {
-		log.Fatalf("Error reading config file, %s", err)
+		return err
 	}
-	return &parser
+	return nil
 }
 
 // ReadFields read fields tags from struct and return config values
