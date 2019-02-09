@@ -20,8 +20,13 @@ type App interface {
 func StartApp(ctx context.Context, app App) {
 	start := time.Now()
 
-	// Initialize the default components: loggin, parser, validation, etc..
+	// Initialize the default components: config, logging, validation, etc..
 	Init(ctx)
+
+	// Load App Config
+	c := LoadConfig()
+
+	log.Infof("Starting Application %s", c.Name)
 
 	// Create a channel to detect interrupt signal from os
 	stop := make(chan os.Signal, 1)
@@ -29,7 +34,7 @@ func StartApp(ctx context.Context, app App) {
 
 	app.Startup(ctx)
 
-	log.Debugf("App Started in %d ns", time.Since(start).Nanoseconds())
+	log.Debugf("%s Started in %d ns", c.Name, time.Since(start).Nanoseconds())
 
 	// Waits until an interrupt is sent from the OS
 	<-stop
@@ -43,9 +48,9 @@ func StartApp(ctx context.Context, app App) {
 	// Shutdown the app
 	app.Shutdown(ctx)
 
-	// Shutdown the components registered previosly
+	// Shutdown the components registered previously
 	Shutdown(ctx)
 
-	log.Debugf("App shutdown in %d ns", time.Since(end).Nanoseconds())
+	log.Debugf("%s shutdown in %d ns", c.Name, time.Since(end).Nanoseconds())
 
 }

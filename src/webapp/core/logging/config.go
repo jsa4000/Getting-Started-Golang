@@ -73,19 +73,19 @@ func LoadConfig() *Config {
 	//Output
 	output, err := outputByName(c.Output)
 	if err != nil {
-		output = os.Stderr
+		panic(err)
 	}
 
 	//Level
 	level, err := levelByName(c.Level)
 	if err != nil {
-		level = DebugLevel
+		panic(err)
 	}
 
 	//Format
 	format, err := formatByName(c.Format)
 	if err != nil {
-		format = TextFormat
+		panic(err)
 	}
 
 	return &Config{
