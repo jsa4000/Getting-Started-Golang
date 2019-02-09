@@ -27,20 +27,20 @@ func (p *Parser) LoadFromFile(filename string, path string) error {
 	//p.Viper.SetConfigType("yaml") // Inferred
 	p.Viper.SetConfigName(strings.TrimSuffix(filename, filepath.Ext(filename)))
 	p.Viper.AddConfigPath(path)
+	p.defaults()
 	if err := p.Viper.ReadInConfig(); err != nil {
 		return err
 	}
-	p.defaults()
 	return nil
 }
 
 // LoadFromBytes creates the default parser implementation
 func (p *Parser) LoadFromBytes(buffer []byte, filetype string) error {
 	p.Viper.SetConfigType(filetype)
+	p.defaults()
 	if err := p.Viper.ReadConfig(bytes.NewBuffer(buffer)); err != nil {
 		return err
 	}
-	p.defaults()
 	return nil
 }
 
