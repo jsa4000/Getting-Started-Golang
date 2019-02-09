@@ -5,7 +5,7 @@ import (
 	"log"
 	"webapp/core/config"
 	"webapp/core/config/viper"
-	"webapp/core/starters"
+	"webapp/core/starter"
 )
 
 // Wrapper Global Mongo wrapper
@@ -22,7 +22,7 @@ func New() *Component {
 		parser: viper.New(),
 	}
 	config.SetGlobal(result.parser)
-	starters.Register("config", result)
+	starter.Register("config", result)
 	return result
 }
 

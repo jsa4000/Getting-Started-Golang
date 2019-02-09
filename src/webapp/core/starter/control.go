@@ -1,4 +1,4 @@
-package starters
+package starter
 
 import (
 	"fmt"

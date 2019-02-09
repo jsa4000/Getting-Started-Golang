@@ -2,7 +2,7 @@ package starter
 
 import (
 	"context"
-	"webapp/core/starters"
+	"webapp/core/starter"
 	"webapp/core/validation"
 	"webapp/core/validation/govalidator"
 )
@@ -21,7 +21,7 @@ func New() *Component {
 		router: govalidator.New(),
 	}
 	validation.SetGlobal(result.router)
-	starters.Register("validator", result)
+	starter.Register("validator", result)
 	return result
 }
 

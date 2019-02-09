@@ -4,7 +4,7 @@ import (
 	"context"
 	"webapp/core/logging"
 	"webapp/core/logging/logrus"
-	"webapp/core/starters"
+	"webapp/core/starter"
 )
 
 // Wrapper Global Mongo wrapper
@@ -21,7 +21,7 @@ func New() *Component {
 		logger: logrus.New(),
 	}
 	logging.SetGlobal(result.logger)
-	starters.Register("logger", result)
+	starter.Register("logger", result)
 	return result
 }
 

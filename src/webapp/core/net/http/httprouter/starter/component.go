@@ -4,7 +4,7 @@ import (
 	"context"
 	"webapp/core/net/http"
 	router "webapp/core/net/http/httprouter"
-	"webapp/core/starters"
+	"webapp/core/starter"
 )
 
 // Wrapper Global Mongo wrapper
@@ -21,7 +21,7 @@ func New() *Component {
 		router: router.New(),
 	}
 	http.SetGlobal(result.router)
-	starters.Register("router", result)
+	starter.Register("router", result)
 	return result
 }
 

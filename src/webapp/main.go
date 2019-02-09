@@ -2,10 +2,11 @@ package main
 
 import (
 	"context"
-	"webapp/core/starters"
+	"webapp/core/starter"
+	"webapp/server"
 )
 
 func main() {
 	// Start the Application
-	starters.StartApp(context.Background(), &App{})
+	starter.StartApp(context.Background(), &server.App{})
 }

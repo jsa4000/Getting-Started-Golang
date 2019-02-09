@@ -2,7 +2,7 @@ package starter
 
 import (
 	"context"
-	"webapp/core/starters"
+	"webapp/core/starter"
 	"webapp/core/storage/mongo"
 )
 
@@ -20,7 +20,7 @@ func New() *Component {
 		wrapper: mongo.New(),
 	}
 	mongo.SetGlobal(result.wrapper)
-	starters.Register("mongo", result)
+	starter.Register("mongo", result)
 	return result
 }
 
