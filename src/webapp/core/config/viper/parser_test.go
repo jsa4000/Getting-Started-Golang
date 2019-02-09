@@ -26,6 +26,10 @@ server:
   writeTimeout: 15
   idleTimeout: 200
 
+cache:
+  total: 2
+  enabled: true
+
 `)
 
 type Config struct {
@@ -206,4 +210,113 @@ func TestParseFieldsManually(t *testing.T) {
 	assert.Equal(t, c.LogLevel, "debug")
 	assert.Equal(t, c.ReadTimeout, 60)
 	assert.Equal(t, c.IdleTimeout, time.Duration(200))
+}
+
+// TestUnmarshal get Config manually using parser functions
+func TestUnmarshalKey(t *testing.T) {
+	type cache struct {
+		Total   int  `mapstructure:"total"`
+		Enabled bool `mapstructure:"enabled"`
+	}
+
+	result := cache{}
+	err := parser.UnmarshalKey("cache", &result)
+	if err != nil {
+		assert.Error(t, err)
+	}
+
+	assert.Equal(t, result.Total, 2)
+	assert.Equal(t, result.Enabled, true)
+}
+
+// TestUnmarshal get Config manually using parser functions
+func TestUnmarshalKeyGetByFields(t *testing.T) {
+
+	type cache struct {
+		Total   int  `mapstructure:"total"`
+		Enabled bool `mapstructure:"enabled"`
+	}
+
+	result := cache{}
+	err := parser.UnmarshalKey("cache", &result)
+	if err != nil {
+		assert.Error(t, err)
+	}
+
+	total := parser.GetInt("cache.total")
+	enabled := parser.GetBool("cache.enabled")
+
+	assert.Equal(t, result.Total, 2)
+	assert.Equal(t, result.Enabled, true)
+	assert.Equal(t, total, 2)
+	assert.Equal(t, enabled, true)
+}
+
+// TestUnmarshal get Config manually using parser functions
+func TestUnmarshalKeyGetByFieldsEnv(t *testing.T) {
+	os.Setenv("CACHE_TOTAL", "4")
+
+	type cache struct {
+		Total   int  `mapstructure:"total"`
+		Enabled bool `mapstructure:"enabled"`
+	}
+
+	result := cache{}
+	err := parser.UnmarshalKey("cache", &result)
+	if err != nil {
+		assert.Error(t, err)
+	}
+
+	total := parser.GetInt("cache.total")
+	enabled := parser.GetBool("cache.enabled")
+
+	assert.Equal(t, result.Total, 4)
+	assert.Equal(t, result.Enabled, true)
+	assert.Equal(t, total, 4)
+	assert.Equal(t, enabled, true)
+
+	os.Unsetenv("CACHE_TOTAL")
+}
+
+// TestUnmarshal get Config manually using parser functions
+func TestUnmarshalAdvanced(t *testing.T) {
+
+	var conf = []byte(`
+cache:
+  total: 2
+  enabled: true
+  caches: 
+    cache1:
+      max-items: 100
+      item-size: 64
+    cache2:
+      max-items: 200
+      item-size: 80
+`)
+	parser := New()
+	parser.LoadFromBytes(conf, "yaml")
+
+	type item struct {
+		Max  int `mapstructure:"max-items"`
+		Size int `mapstructure:"item-size"`
+	}
+
+	type cache struct {
+		Total   int             `mapstructure:"total"`
+		Enabled bool            `mapstructure:"enabled"`
+		Items   map[string]item `mapstructure:"caches"`
+	}
+
+	result := cache{}
+	err := parser.UnmarshalKey("cache", &result)
+	if err != nil {
+		assert.Error(t, err)
+	}
+
+	assert.Equal(t, result.Total, 2)
+	assert.Equal(t, result.Enabled, true)
+	assert.Equal(t, result.Items["cache1"].Max, 100)
+	assert.Equal(t, result.Items["cache1"].Size, 64)
+	assert.Equal(t, result.Items["cache2"].Max, 200)
+	assert.Equal(t, result.Items["cache2"].Size, 80)
 }

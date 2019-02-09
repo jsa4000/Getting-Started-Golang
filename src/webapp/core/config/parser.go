@@ -15,6 +15,7 @@ type Parser interface {
 	LoadFromBytes(buffer []byte, filetype string) error
 
 	ReadFields(data interface{})
+	UnmarshalKey(key string, val interface{}) error
 	Get(path string) (interface{}, error)
 	GetInt(path string) int
 	GetBool(path string) bool
