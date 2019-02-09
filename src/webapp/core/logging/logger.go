@@ -1,8 +1,6 @@
 package logging
 
-import (
-	"io"
-)
+import "io"
 
 // Level type
 type Level uint32

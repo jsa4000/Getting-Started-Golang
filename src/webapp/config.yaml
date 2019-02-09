@@ -2,7 +2,9 @@ app:
   name: WebApp
   
 logging:
-  level: debug
+  output: stderr  # stdout, stderr
+  format: text    # text, json
+  level: debug    # info, error, warn, debug, etc..
 
 server:
   port: 8080
@@ -12,13 +14,11 @@ server:
 
 repository:
   roles:
-    mocked: enabled
     provider: mongodb
     mongodb:
       database: roles
       url: mongodb://db1.example.net:27017,db2.example.net:2500/?replicaSet=test
   users:
-    mocked: enabled
     provider: mongodb
     mongodb:
       database: users

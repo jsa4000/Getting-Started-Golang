@@ -27,11 +27,13 @@ func New() *Component {
 
 // Init function that will be called after register the component
 func (c *Component) Init(_ context.Context) {
-	c.logger.SetLevel(logging.DebugLevel)
-	c.logger.SetFormatter(logging.TextFormat)
+	config := logging.LoadConfig()
+	c.logger.SetLevel(config.Level)
+	c.logger.SetFormatter(config.Format)
+	c.logger.SetOutput(config.Output)
 }
 
-// Close fucntion that willbe called at the end of the application
+// Close function that will called at the end of the application
 func (c *Component) Close(_ context.Context) {
 
 }

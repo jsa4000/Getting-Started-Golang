@@ -6,8 +6,6 @@ import (
 	"testing"
 	"time"
 	"webapp/core/config"
-	log "webapp/core/logging"
-	"webapp/core/logging/logger"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -45,11 +43,6 @@ type Config struct {
 var parser *Parser
 
 func init() {
-	log.SetGlobal(logger.New())
-	// Set the log formatter
-	log.SetLevel(log.DebugLevel)
-	log.SetFormatter(log.TextFormat)
-
 	parser = New()
 	parser.LoadFromBytes(yamlConfig, "yaml")
 }

@@ -28,7 +28,7 @@ func New() *Component {
 
 // Init function that will be called after register the component
 func (c *Component) Init(_ context.Context) {
-	err := c.parser.LoadFromFile("webapp.yaml", ".")
+	err := c.parser.LoadFromFile("config.yaml", ".")
 	if err != nil {
 		log.Fatalf("Error reading config file, %s", err)
 	}
