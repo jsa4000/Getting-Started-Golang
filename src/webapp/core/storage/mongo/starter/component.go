@@ -34,3 +34,8 @@ func (c *Component) Init(ctx context.Context) {
 func (c *Component) Close(ctx context.Context) {
 	c.wrapper.Disconnect(ctx)
 }
+
+// Priority Get the priority to be initialized
+func (c *Component) Priority() int {
+	return starter.PriorityStorage
+}

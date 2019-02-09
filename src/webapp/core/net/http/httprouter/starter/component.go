@@ -34,3 +34,8 @@ func (c *Component) Init(_ context.Context) {
 func (c *Component) Close(_ context.Context) {
 
 }
+
+// Priority Get the priority to be initialized
+func (c *Component) Priority() int {
+	return starter.PriorityNet
+}

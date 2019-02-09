@@ -6,7 +6,7 @@ import (
 
 // Config main app configuration
 type Config struct {
-	URL string `config:"repository.mongodb.url:mongodb://root:root@dockerhost:27017/admin"`
+	URL string `config:"repository.mongodb.url:mongodb://root:root@localhost:27017/admin"`
 }
 
 // LoadConfig Load config from file
