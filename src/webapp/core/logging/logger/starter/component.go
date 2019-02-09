@@ -33,7 +33,7 @@ func (c *Component) Init(_ context.Context) {
 	c.logger.SetOutput(config.Output)
 }
 
-// Close fucntion that willbe called at the end of the application
+// Close function that will be called at the end of the application
 func (c *Component) Close(_ context.Context) {
 
 }

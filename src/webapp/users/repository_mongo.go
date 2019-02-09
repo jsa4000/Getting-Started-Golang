@@ -4,6 +4,7 @@ import (
 	"context"
 	"time"
 
+	"webapp/core/config"
 	log "webapp/core/logging"
 	mongow "webapp/core/storage/mongo"
 
@@ -13,10 +14,16 @@ import (
 	"github.com/mongodb/mongo-go-driver/mongo/options"
 )
 
-const timeout = 10
-const database = "webapp"
-const collection = "users"
-const id = "usersrepository"
+const (
+	timeout      = 10
+	repositoryID = "usersrepository"
+)
+
+// MongoConfig main app configuration
+type MongoConfig struct {
+	Database   string `config:"repository.mongodb.users.database"`
+	Collection string `config:"repository.mongodb.users.collection"`
+}
 
 // MongoRepository to implement the Users Repository
 type MongoRepository struct {
@@ -25,11 +32,12 @@ type MongoRepository struct {
 
 // NewMongoRepository Create a Mock repository
 func NewMongoRepository() Repository {
+	c := MongoConfig{}
+	config.ReadFields(&c)
 	result := &MongoRepository{
-		Collection: mongow.Client().Database(database).Collection(collection),
+		Collection: mongow.Client().Database(c.Database).Collection(c.Collection),
 	}
-	//go result.CreateIndexes(context.Background())
-	err := mongow.Subscribe(id, result.onConnect)
+	err := mongow.Subscribe(repositoryID, result.onConnect)
 	if err != nil {
 		log.Error(err)
 	}

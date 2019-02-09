@@ -6,22 +6,18 @@ logging:
   format: text    # text, json
   level: debug    # info, error, warn, debug, etc..
 
-server:
+http:
   port: 8080
   writeTimeout: 30
   readTimeout: 15
   idleTimeout: 60
 
 repository:
-  roles:
-    provider: mongodb
-    mongodb:
-      database: roles
-      url: mongodb://db1.example.net:27017,db2.example.net:2500/?replicaSet=test
-  users:
-    provider: mongodb
-    mongodb:
-      database: users
-      url: mongodb://db1.example.net:27017,db2.example.net:2500/?replicaSet=test
-
-
+  mongodb:
+    url: mongodb://root:root@dockerhost:27017/admin
+    roles:
+      database: webapp
+      collection: roles
+    users:
+      database: webapp
+      collection: users

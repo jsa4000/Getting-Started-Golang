@@ -4,6 +4,7 @@ import (
 	"context"
 	"time"
 
+	"webapp/core/config"
 	log "webapp/core/logging"
 	mongow "webapp/core/storage/mongo"
 
@@ -13,8 +14,12 @@ import (
 )
 
 const timeout = 10
-const database = "webapp"
-const collection = "roles"
+
+// MongoConfig for mongoDB Repository
+type MongoConfig struct {
+	Database   string `config:"repository.mongodb.roles.database"`
+	Collection string `config:"repository.mongodb.roles.collection"`
+}
 
 // MongoRepository to implement the Roles Repository
 type MongoRepository struct {
@@ -23,8 +28,10 @@ type MongoRepository struct {
 
 // NewMongoRepository Create a Mock repository
 func NewMongoRepository() Repository {
+	c := MongoConfig{}
+	config.ReadFields(&c)
 	return &MongoRepository{
-		Collection: mongow.Client().Database(database).Collection(collection),
+		Collection: mongow.Client().Database(c.Database).Collection(c.Collection),
 	}
 }
 

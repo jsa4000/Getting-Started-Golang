@@ -6,7 +6,6 @@ import (
 	"net/http"
 	"strings"
 	"time"
-	"webapp/core/config"
 	log "webapp/core/logging"
 )
 
@@ -45,17 +44,6 @@ type Router interface {
 	Vars(r *http.Request) map[string]string
 }
 
-// Config main app configuration
-type Config struct {
-	Name         string        `config:"app.name:ServerApp"`
-	LogLevel     string        `config:"logging.level:info"`
-	Port         int           `config:"server.port:8080"`
-	WriteTimeout int           `config:"server.writeTimeout:60"`
-	ReadTimeout  int           `config:"server.readTimeout:60"`
-	IdleTimeout  time.Duration `config:"server.idleTimeout:60"`
-	Status       bool
-}
-
 // Controller to handle http requests
 type Controller interface {
 	GetRoutes() []Route
@@ -88,14 +76,13 @@ func CustomHeaders(next http.Handler) http.Handler {
 // Server struct
 type Server struct {
 	Server *http.Server
-	Config Config
+	Config *Config
 }
 
 // NewServer create
 func NewServer() *Server {
 	// Read the Configuration
-	serverConfig := Config{}
-	config.ReadFields(&serverConfig)
+	serverConfig := LoadConfig()
 
 	// Create server with parameters
 	server := &http.Server{

@@ -26,10 +26,11 @@ func New() *Component {
 
 // Init function that will be called after register the component
 func (c *Component) Init(ctx context.Context) {
-	c.wrapper.Connect(ctx, "mongodb://root:root@dockerhost:27017/admin")
+	config := mongo.LoadConfig()
+	c.wrapper.Connect(ctx, config.URL)
 }
 
-// Close fucntion that willbe called at the end of the application
+// Close function that will be called at the end of the application
 func (c *Component) Close(ctx context.Context) {
 	c.wrapper.Disconnect(ctx)
 }
