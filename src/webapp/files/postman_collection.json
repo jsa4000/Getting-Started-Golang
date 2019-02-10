@@ -18,10 +18,10 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "http://localhost:8080/roles",
+							"raw": "http://{{url}}:8080/roles",
 							"protocol": "http",
 							"host": [
-								"localhost"
+								"{{url}}"
 							],
 							"port": "8080",
 							"path": [
@@ -43,13 +43,13 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"name\" : \"ROLE_CUSTOM\"\n}"
+							"raw": "{\n\t\"name\" : \"ROLE_ADMIN\"\n}"
 						},
 						"url": {
-							"raw": "http://localhost:8080/roles",
+							"raw": "http://{{url}}:8080/roles",
 							"protocol": "http",
 							"host": [
-								"localhost"
+								"{{url}}"
 							],
 							"port": "8080",
 							"path": [
@@ -69,10 +69,10 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "http://localhost:8080/roles/:role",
+							"raw": "http://{{url}}:8080/roles/:role",
 							"protocol": "http",
 							"host": [
-								"localhost"
+								"{{url}}"
 							],
 							"port": "8080",
 							"path": [
@@ -82,7 +82,7 @@
 							"variable": [
 								{
 									"key": "role",
-									"value": "ROLE_USER"
+									"value": "ROLE_ADMIN"
 								}
 							]
 						}
@@ -99,10 +99,10 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "http://localhost:8080/roles/:role",
+							"raw": "http://{{url}}:8080/roles/:role",
 							"protocol": "http",
 							"host": [
-								"localhost"
+								"{{url}}"
 							],
 							"port": "8080",
 							"path": [
@@ -112,7 +112,7 @@
 							"variable": [
 								{
 									"key": "role",
-									"value": "ROLE_ADMIN"
+									"value": "ROLE_CUSTOM"
 								}
 							]
 						}
@@ -134,10 +134,10 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "http://localhost:8080/users",
+							"raw": "http://{{url}}:8080/users",
 							"protocol": "http",
 							"host": [
-								"localhost"
+								"{{url}}"
 							],
 							"port": "8080",
 							"path": [
@@ -162,10 +162,10 @@
 							"raw": "{\n    \"name\": \"user_test\",\n    \"email\": \"user.test@example.com\",\n    \"password\": \"1234\"\n}"
 						},
 						"url": {
-							"raw": "http://localhost:8080/users",
+							"raw": "http://{{url}}:8080/users",
 							"protocol": "http",
 							"host": [
-								"localhost"
+								"{{url}}"
 							],
 							"port": "8080",
 							"path": [
@@ -185,10 +185,10 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "http://localhost:8080/users/:user",
+							"raw": "http://{{url}}:8080/users/:user",
 							"protocol": "http",
 							"host": [
-								"localhost"
+								"{{url}}"
 							],
 							"port": "8080",
 							"path": [
@@ -198,7 +198,7 @@
 							"variable": [
 								{
 									"key": "user",
-									"value": "1364fd6b-7de2-4c19-bae9-20e08b391088"
+									"value": "5c5f11b8222b351dc1414c0a"
 								}
 							]
 						}
@@ -215,10 +215,10 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "http://localhost:8080/users/:user",
+							"raw": "http://{{url}}:8080/users/:user",
 							"protocol": "http",
 							"host": [
-								"localhost"
+								"{{url}}"
 							],
 							"port": "8080",
 							"path": [
@@ -228,7 +228,7 @@
 							"variable": [
 								{
 									"key": "user",
-									"value": "1364fd6b-7de2-4c19-bae9-20e08b391088"
+									"value": "5c575f4dfeb76b2c2e8c9444"
 								}
 							]
 						}

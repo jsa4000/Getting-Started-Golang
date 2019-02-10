@@ -1,0 +1,23 @@
+app:
+  name: DockerWebApp
+  
+logging:
+  output: stderr  # stdout, stderr
+  format: json    # text, json
+  level: debug    # info, error, warn, debug, etc..
+
+http:
+  port: 8080
+  writeTimeout: 30
+  readTimeout: 15
+  idleTimeout: 60
+
+repository:
+  mongodb:
+    url: mongodb://root:root@mongo:27017/admin
+    roles:
+      database: webapp
+      collection: roles
+    users:
+      database: webapp
+      collection: users

@@ -1,4 +1,4 @@
-version: "2"
+version: "3.5"
 services:
 
   mongo:
@@ -8,10 +8,9 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: root
+    networks: 
+    - webapp-network
 
-  #webapp-go:
-  # image: webapp-go
-  # ports:
-  # - "8080:8080"
-  # volumes:
-  # - //d/DEVELOPMENT/Github/Getting-Started-Golang/src/webapp/webapp.yaml:/webapp.yaml
+networks:
+  webapp-network:
+    name: webapp-network

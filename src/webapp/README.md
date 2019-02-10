@@ -38,7 +38,7 @@ To run the tests
 
 ## Configuration
 
-The configuration file ``webapp.yaml`` is the following
+The configuration file ``config.yaml`` is the following
 
 ```yaml
 app:
@@ -76,15 +76,15 @@ repository:
 
 - Execute docker container (copy configuration file)
 
-      docker run -p 8080:8080 -v //d/DEVELOPMENT/Github/Getting-Started-Golang/src/webapp/webapp.yaml:/webapp.yaml -t webapp-go
+      docker run -p 8080:8080 -v //d/DEVELOPMENT/Github/Getting-Started-Golang/src/webapp/config.docker.yaml:/config.yaml -t webapp-go
 
-      docker run -p 8080:8080 -v config/webapp.yaml:/webapp.yaml -t webapp-go
+      docker run -p 8080:8080 -v $(pwd)/config.docker.yaml:/config.yaml -t webapp-go
 
-- To use the same network as docker-compose
+- To use the same network as configured docker-compose ``webapp-network``
 
     docker network ls
 
-    docker run --network=webapp_default -p 8080:8080 -v //d/DEVELOPMENT/Github/Getting-Started-Golang/src/webapp/webapp.yaml:/webapp.yaml -t webapp-go
+    docker run --network=webapp-network -p 8080:8080 -v //d/DEVELOPMENT/Github/Getting-Started-Golang/src/webapp/config.docker.yaml:/config.yaml -t webapp-go
 
 - Test Server
 

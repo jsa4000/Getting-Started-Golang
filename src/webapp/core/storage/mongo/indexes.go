@@ -11,8 +11,8 @@ import (
 	"github.com/mongodb/mongo-go-driver/x/bsonx"
 )
 
-// CreateIndexModel fetches all the values form the database
-func CreateIndexModel(name string, asc, unique bool) mongo.IndexModel {
+// UniqueIndex creates an unique index model
+func UniqueIndex(name string, asc, unique bool) mongo.IndexModel {
 	// Set index options (unique)
 	options := options.Index()
 	options.SetUnique(unique)

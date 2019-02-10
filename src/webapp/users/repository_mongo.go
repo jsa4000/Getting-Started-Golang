@@ -53,8 +53,8 @@ func (c *MongoRepository) onConnect() {
 func (c *MongoRepository) CreateIndexes(ctx context.Context) {
 	// Create ascending index (1) for email Set index as unique index
 	indexes := []mongo.IndexModel{
-		mongow.CreateIndexModel("name", true, false),
-		mongow.CreateIndexModel("email", true, true),
+		mongow.UniqueIndex("name", true, false),
+		mongow.UniqueIndex("email", true, true),
 	}
 	mongow.CreateIndex(ctx, c.Collection, indexes...)
 }
