@@ -69,8 +69,13 @@ func CustomHeaders(next http.Handler) http.Handler {
 		} else {
 			w.Header().Set("Content-Type", "application/json")
 		}
+		enableCors(&w)
 		next.ServeHTTP(w, r)
 	})
+}
+
+func enableCors(w *http.ResponseWriter) {
+	(*w).Header().Set("Access-Control-Allow-Origin", "*")
 }
 
 // Server struct
