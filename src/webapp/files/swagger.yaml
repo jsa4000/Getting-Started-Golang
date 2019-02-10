@@ -64,7 +64,6 @@ paths:
             type: array
             items:
               $ref: '#/definitions/User'
-              responses:
   /users/{id}:
     get:
       tags:
@@ -148,7 +147,6 @@ paths:
             type: array
             items:
               $ref: '#/definitions/Role'
-              responses:
   /roles/{id}:
     get:
       tags:
