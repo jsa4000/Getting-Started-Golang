@@ -32,6 +32,10 @@ func sortedComponents(asc bool) []Component {
 	for _, c := range comps {
 		result = append(result, c)
 	}
+	if !asc {
+		sort.Sort(sort.Reverse(byPriority(result)))
+		return result
+	}
 	sort.Sort(byPriority(result))
 	return result
 }
