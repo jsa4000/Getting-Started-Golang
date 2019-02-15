@@ -2,7 +2,6 @@ package server
 
 import (
 	"context"
-	"net/http"
 	log "webapp/core/logging"
 	net "webapp/core/net/http"
 	pprof "webapp/core/net/http/pprof"
@@ -28,12 +27,6 @@ type App struct {
 	usersRestCtrl   net.Controller
 
 	httpServer *net.Server
-}
-
-// HomeHandler handler for the HomePage
-func HomeHandler(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusOK)
-	log.Info("Home Page")
 }
 
 //Startup the server
@@ -62,12 +55,8 @@ func (a *App) Startup(ctx context.Context) {
 	a.httpServer.AddController(a.rolesRestCtrl)
 	a.httpServer.AddController(a.usersRestCtrl)
 
-	// Create main homepage http route
-	a.httpServer.AddRoutes(net.Route{
-		Path:    "/",
-		Method:  "GET",
-		Handler: HomeHandler,
-	})
+	// Create swagger static content
+	a.httpServer.Static("/", "./static/swaggerui/")
 
 	// Add global middlewares
 	a.httpServer.AddMiddleware(net.LoggingMiddleware, net.CustomHeaders)

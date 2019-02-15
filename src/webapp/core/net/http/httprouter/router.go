@@ -70,6 +70,11 @@ func (r *Router) HandleRoute(routes ...wrapper.Route) {
 	}
 }
 
+//Static add static context to the router
+func (r *Router) Static(path string, root string) {
+	r.router.ServeFiles(path+"*filepath", http.Dir(root))
+}
+
 // Use set the middleware to use by default
 func (r *Router) Use(mw ...wrapper.Middleware) {
 	for _, m := range mw {

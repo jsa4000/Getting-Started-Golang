@@ -20,6 +20,7 @@ func SetGlobal(r Router) {
 const nanoseconds = 1e6
 
 const pprofPreffix = "/debug/pprof/"
+const swaggerPreffix = "/swagger"
 
 // Handler for handle the requests
 type Handler func(w http.ResponseWriter, r *http.Request)
@@ -40,6 +41,7 @@ type Route struct {
 type Router interface {
 	Handler() http.Handler
 	HandleRoute(route ...Route)
+	Static(path string, root string)
 	Use(m ...Middleware)
 	Vars(r *http.Request) map[string]string
 }
@@ -64,18 +66,24 @@ func LoggingMiddleware(next http.Handler) http.Handler {
 // CustomHeaders decorator (closure)
 func CustomHeaders(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if strings.Contains(r.RequestURI, pprofPreffix) {
-			w.Header().Set("Content-Type", "text/html")
-		} else {
+		if !strings.Contains(r.RequestURI, pprofPreffix) && !strings.Contains(r.RequestURI, swaggerPreffix) {
 			w.Header().Set("Content-Type", "application/json")
 		}
-		enableCors(&w)
+		defaultHeaders(w)
+		enableCors(w)
+
 		next.ServeHTTP(w, r)
 	})
 }
 
-func enableCors(w *http.ResponseWriter) {
-	(*w).Header().Set("Access-Control-Allow-Origin", "*")
+func defaultHeaders(w http.ResponseWriter) {
+	w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token")
+	w.Header().Set("Access-Control-Allow-Credentials", "true")
+}
+
+func enableCors(w http.ResponseWriter) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 }
 
 // Server struct
@@ -116,6 +124,11 @@ func (h *Server) AddRoutes(routes ...Route) {
 // AddMiddleware to the router
 func (h *Server) AddMiddleware(mw ...Middleware) {
 	router.Use(mw...)
+}
+
+//Static add static context to the router
+func (h *Server) Static(path string, root string) {
+	router.Static(path, root)
 }
 
 // Start server
