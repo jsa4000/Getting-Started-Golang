@@ -53,6 +53,26 @@ func (c *MockRepository) FindByID(_ context.Context, id string) (*User, error) {
 	return &user, nil
 }
 
+// FindByName User by Id
+func (c *MockRepository) FindByName(_ context.Context, name string) (*User, error) {
+	for _, user := range c.Users {
+		if user.Name == name {
+			return &user, nil
+		}
+	}
+	return nil, nil
+}
+
+// FindByEmail User by Id
+func (c *MockRepository) FindByEmail(_ context.Context, email string) (*User, error) {
+	for _, user := range c.Users {
+		if user.Email == email {
+			return &user, nil
+		}
+	}
+	return nil, nil
+}
+
 // Create Add user into the datbase
 func (c *MockRepository) Create(_ context.Context, user User) (*User, error) {
 	user = User{

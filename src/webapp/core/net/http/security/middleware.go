@@ -16,16 +16,16 @@ var (
 // AuthHandlerMiddleware returns LogginMiddleware struct
 type AuthHandlerMiddleware struct {
 	net.MiddlewareBase
-	//config Config
+	config *Config
 }
 
 // NewAuthHandlerMiddleware creation
-func NewAuthHandlerMiddleware() net.Middleware {
+func NewAuthHandlerMiddleware(c *Config) net.Middleware {
 	return &AuthHandlerMiddleware{
 		net.MiddlewareBase{
 			Hdlr: nil,
 			Prio: net.PrioritySecurity,
-		},
+		}, c,
 	}
 }
 

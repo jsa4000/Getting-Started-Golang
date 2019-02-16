@@ -103,6 +103,36 @@ func (c *MongoRepository) FindByID(ctx context.Context, id string) (*User, error
 	return &result, nil
 }
 
+// FindByEmail User by Id
+func (c *MongoRepository) FindByEmail(ctx context.Context, email string) (*User, error) {
+	var result User
+	ctx, cancel := context.WithTimeout(ctx, timeout*time.Second)
+	defer cancel()
+	idDoc := bson.M{"email": email}
+	err := c.Collection.FindOne(ctx, idDoc).Decode(&result)
+	if err != nil && err == mongo.ErrNoDocuments {
+		return nil, nil
+	} else if err != nil {
+		return nil, err
+	}
+	return &result, nil
+}
+
+// FindByName User by Id
+func (c *MongoRepository) FindByName(ctx context.Context, name string) (*User, error) {
+	var result User
+	ctx, cancel := context.WithTimeout(ctx, timeout*time.Second)
+	defer cancel()
+	idDoc := bson.M{"name": name}
+	err := c.Collection.FindOne(ctx, idDoc).Decode(&result)
+	if err != nil && err == mongo.ErrNoDocuments {
+		return nil, nil
+	} else if err != nil {
+		return nil, err
+	}
+	return &result, nil
+}
+
 // Create Add user into the datbase
 func (c *MongoRepository) Create(ctx context.Context, user User) (*User, error) {
 	ctx, cancel := context.WithTimeout(ctx, timeout*time.Second)

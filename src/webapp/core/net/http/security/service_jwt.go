@@ -8,19 +8,31 @@ import (
 
 // ServiceJwt Implementation used for the service
 type ServiceJwt struct {
+	config *Config
 }
 
 // NewServiceJwt Create a new ServiceImpl
-func NewServiceJwt() Service {
-	return &ServiceJwt{}
+func NewServiceJwt(config *Config) Service {
+	return &ServiceJwt{
+		config: config,
+	}
 }
 
 // CreateToken create the token
 func (s *ServiceJwt) CreateToken(ctx context.Context, req *CreateTokenRequest) (*CreateTokenResponse, error) {
 	log.Debug("Create Token Request: ", req)
+
+	user, err := s.config.uc.GetUserByName(ctx, req.UserName)
+
+	if err != nil {
+		return nil, err
+	}
+
+	log.Debug("User Founded: ", user)
+
 	return &CreateTokenResponse{
 		Token:  "Bearer 3243",
-		Expire: time.Now().Add(time.Duration(int64(time.Millisecond) * int64(60000))),
+		Expire: time.Now().Add(time.Duration(int64(time.Millisecond) * int64(s.config.expiretime))),
 	}, nil
 }
 

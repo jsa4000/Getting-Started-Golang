@@ -1,8 +1,31 @@
 package security
 
 import (
+	"context"
 	net "webapp/core/net/http"
 )
+
+// UserData structure to identify the user
+type UserData struct {
+	Name     string
+	Email    string
+	Password string
+	Roles    []string
+}
+
+// TokenData data structure for token generation
+type TokenData map[string]interface{}
+
+// UserCallback Interface
+type UserCallback interface {
+	GetUserByName(ctx context.Context, name string) (*UserData, error)
+	GetUserByEmail(ctx context.Context, email string) (*UserData, error)
+}
+
+// TokenCallback Interface
+type TokenCallback interface {
+	OnGenerate(ctx context.Context, t *TokenData)
+}
 
 // Manager returns struct
 type Manager struct {
@@ -12,16 +35,15 @@ type Manager struct {
 }
 
 // New returns new security config
-func New() net.Security {
-	cfg := LoadConfig()
+func New(config *Config) net.Security {
 	return &Manager{
 		middleware: []net.Middleware{
-			NewAuthHandlerMiddleware(),
+			NewAuthHandlerMiddleware(config),
 		},
 		controllers: []net.Controller{
-			NewRestController(NewServiceJwt()),
+			NewRestController(NewServiceJwt(config)),
 		},
-		config: cfg,
+		config: config,
 	}
 }
 

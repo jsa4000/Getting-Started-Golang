@@ -5,7 +5,7 @@ import (
 	log "webapp/core/logging"
 	net "webapp/core/net/http"
 	pprof "webapp/core/net/http/pprof"
-	security "webapp/core/net/http/security"
+	httpSec "webapp/core/net/http/security"
 
 	// Go-Core Starters
 	_ "webapp/core/config/viper/starter"
@@ -15,6 +15,7 @@ import (
 	_ "webapp/core/validation/goplayground/starter"
 
 	"webapp/roles"
+	"webapp/security"
 	"webapp/users"
 )
 
@@ -27,9 +28,18 @@ type App struct {
 func (a *App) Startup(ctx context.Context) {
 	log.Infof("Starting Services...")
 
+	// Create repositories
+	rolesRepository := roles.NewMongoRepository()
+	usersRepository := users.NewMongoRepository()
+
 	// Create Services
-	rolesService := roles.NewServiceImpl(roles.NewMongoRepository())
-	usersService := users.NewServiceImpl(users.NewMongoRepository())
+	rolesService := roles.NewServiceImpl(rolesRepository)
+	usersService := users.NewServiceImpl(usersRepository)
+	credentialService := security.NewCredentialService(usersRepository)
+
+	// Security Config
+	secConfig := httpSec.NewConfig().
+		WithUserCallback(credentialService)
 
 	// Create The HTTP Server
 	a.httpServer = net.NewServer().
@@ -38,7 +48,7 @@ func (a *App) Startup(ctx context.Context) {
 		WithControllers(users.NewRestController(usersService)).                       // Add users controller
 		WithStatic("/swagger/", "./static/swaggerui/").                               // Create swagger static content '/swagger/index.html'
 		WithMiddleware(net.NewLoggingMiddleware(), net.NewCustomHeadersMiddleware()). // Add global middlewares
-		WithSecurity(security.New()).                                                 // Add security to http requests
+		WithSecurity(httpSec.New(secConfig)).                                         // Add security to http requests
 		Start()                                                                       // Start the HTTP server
 }
 
