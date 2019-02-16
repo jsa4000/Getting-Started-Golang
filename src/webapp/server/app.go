@@ -38,8 +38,8 @@ func (a *App) Startup(ctx context.Context) {
 		AddController(users.NewRestController(usersService)).                        // Add users controller
 		Static("/swagger/", "./static/swaggerui/").                                  // Create swagger static content '/swagger/index.html'
 		AddMiddleware(net.NewLoggingMiddleware(), net.NewCustomHeadersMiddleware()). // Add global middlewares
-		AddSecurity(security.New()).
-		Start() // Start the HTTP server
+		AddSecurity(security.New()).                                                 // Add security to http requests
+		Start()                                                                      // Start the HTTP server
 }
 
 // Shutdown the server
