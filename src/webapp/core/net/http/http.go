@@ -81,6 +81,12 @@ func (h *Server) AddRoutes(routes ...Route) *Server {
 	return h
 }
 
+// AddSecurity to the router
+func (h *Server) AddSecurity(s Security) *Server {
+	router.Use(s.Middleware()...)
+	return h
+}
+
 // AddMiddleware to the router
 func (h *Server) AddMiddleware(mw ...Middleware) *Server {
 	router.Use(mw...)

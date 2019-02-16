@@ -16,3 +16,9 @@ var ErrBadRequest = ex.New(http.StatusText(http.StatusBadRequest), http.StatusBa
 
 // ErrNotFound Resource not found
 var ErrNotFound = ex.New(http.StatusText(http.StatusNotFound), http.StatusNotFound)
+
+// ErrUnauthorized request Unauthorized
+var ErrUnauthorized = ex.New(http.StatusText(http.StatusUnauthorized), http.StatusUnauthorized)
+
+// ErrForbidden Forbidden for resource
+var ErrForbidden = ex.New(http.StatusText(http.StatusForbidden), http.StatusForbidden)

@@ -2,14 +2,12 @@ package http
 
 import (
 	"net/http"
-	"strings"
 	"time"
 	log "webapp/core/logging"
 )
 
-const (
-	pprofPreffix   = "/debug/pprof/"
-	swaggerPreffix = "/swagger"
+var (
+	filters = []string{"/debug/pprof/", "/swagger/"}
 )
 
 // LoggingMiddleware returns LogginMiddleware struct
@@ -26,8 +24,8 @@ type CustomHeadersMiddleware struct {
 func NewLoggingMiddleware() Middleware {
 	return &LoggingMiddleware{
 		MiddlewareBase{
-			handler:  LoggingHandler,
-			priority: PriorityLogging,
+			Hdlr: LoggingHandler,
+			Prio: PriorityLogging,
 		},
 	}
 }
@@ -36,8 +34,8 @@ func NewLoggingMiddleware() Middleware {
 func NewCustomHeadersMiddleware() Middleware {
 	return &CustomHeadersMiddleware{
 		MiddlewareBase{
-			handler:  CustomHeadersHandler,
-			priority: PriorityHeaders,
+			Hdlr: CustomHeadersHandler,
+			Prio: PriorityHeaders,
 		},
 	}
 }
@@ -58,7 +56,7 @@ func LoggingHandler(next http.Handler) http.Handler {
 func CustomHeadersHandler(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		log.Debugf("Setting custom headers for request uri=%s", r.RequestURI)
-		if !strings.Contains(r.RequestURI, pprofPreffix) && !strings.Contains(r.RequestURI, swaggerPreffix) {
+		if !Contains(r.RequestURI, filters) {
 			w.Header().Set("Content-Type", "application/json")
 		}
 		//defaultHeaders(w)

@@ -3,12 +3,13 @@ package http
 import (
 	"net/http"
 	"sort"
+	"strings"
 )
 
 // HandlerMid for handle the requests
 type HandlerMid func(http.Handler) http.Handler
 
-// Middleware interface for components to register
+// Middleware interface for middleware to register
 type Middleware interface {
 	Handler() HandlerMid
 	Priority() int
@@ -29,18 +30,18 @@ func (c byPriority) Less(i, j int) bool {
 
 // MiddlewareBase interface for components to register
 type MiddlewareBase struct {
-	handler  HandlerMid
-	priority int
+	Hdlr HandlerMid
+	Prio int
 }
 
 // Handler returns the HandlerMid
 func (m *MiddlewareBase) Handler() HandlerMid {
-	return m.handler
+	return m.Hdlr
 }
 
 // Priority returns the priority
 func (m *MiddlewareBase) Priority() int {
-	return m.priority
+	return m.Prio
 }
 
 // SortMiddleware function to short middleware by priority
@@ -56,4 +57,14 @@ func SortMiddleware(m []Middleware, asc bool) []Middleware {
 	}
 	sort.Sort(byPriority(result))
 	return result
+}
+
+// Contains function to short middleware by priority
+func Contains(source string, values []string) bool {
+	for _, substr := range values {
+		if strings.Contains(source, substr) {
+			return true
+		}
+	}
+	return false
 }

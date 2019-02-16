@@ -5,6 +5,7 @@ import (
 	log "webapp/core/logging"
 	net "webapp/core/net/http"
 	pprof "webapp/core/net/http/pprof"
+	security "webapp/core/net/http/security"
 
 	// Go-Core Starters
 	_ "webapp/core/config/viper/starter"
@@ -37,7 +38,8 @@ func (a *App) Startup(ctx context.Context) {
 		AddController(users.NewRestController(usersService)).                        // Add users controller
 		Static("/swagger/", "./static/swaggerui/").                                  // Create swagger static content '/swagger/index.html'
 		AddMiddleware(net.NewLoggingMiddleware(), net.NewCustomHeadersMiddleware()). // Add global middlewares
-		Start()                                                                      // Start the HTTP server
+		AddSecurity(security.New()).
+		Start() // Start the HTTP server
 }
 
 // Shutdown the server
