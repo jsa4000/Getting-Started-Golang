@@ -10,26 +10,32 @@ import (
 )
 
 var (
-	filters = []string{"/swagger/"}
+	filters = []string{"/swagger/", "/oauth/"}
 )
 
 // AuthHandlerMiddleware returns LogginMiddleware struct
 type AuthHandlerMiddleware struct {
 	net.MiddlewareBase
+	//config Config
 }
 
 // NewAuthHandlerMiddleware creation
 func NewAuthHandlerMiddleware() net.Middleware {
 	return &AuthHandlerMiddleware{
 		net.MiddlewareBase{
-			Hdlr: AuthHandler,
+			Hdlr: nil,
 			Prio: net.PrioritySecurity,
 		},
 	}
 }
 
+// Handler returns the HandlerMid
+func (a *AuthHandlerMiddleware) Handler() net.HandlerMid {
+	return a.AuthHandler
+}
+
 // AuthHandler decorator (closure)
-func AuthHandler(next http.Handler) http.Handler {
+func (a *AuthHandlerMiddleware) AuthHandler(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		log.Debugf("Verify security for request uri=%s", r.RequestURI)
 

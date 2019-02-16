@@ -67,34 +67,35 @@ func NewServer() *Server {
 	}
 }
 
-// AddController Add the controller to the router
-func (h *Server) AddController(c ...Controller) *Server {
+// WithControllers Add the controller to the router
+func (h *Server) WithControllers(c ...Controller) *Server {
 	for _, ctrl := range c {
-		h.AddRoutes(ctrl.GetRoutes()...)
+		h.WithRoutes(ctrl.GetRoutes()...)
 	}
 	return h
 }
 
-// AddRoutes to the router
-func (h *Server) AddRoutes(routes ...Route) *Server {
+// WithRoutes routes to the handler by router
+func (h *Server) WithRoutes(routes ...Route) *Server {
 	router.HandleRoute(routes...)
 	return h
 }
 
-// AddSecurity to the router
-func (h *Server) AddSecurity(s Security) *Server {
+// WithSecurity to the router
+func (h *Server) WithSecurity(s Security) *Server {
 	router.Use(s.Middleware()...)
+	h.WithControllers(s.Controllers()...)
 	return h
 }
 
-// AddMiddleware to the router
-func (h *Server) AddMiddleware(mw ...Middleware) *Server {
+// WithMiddleware to the router
+func (h *Server) WithMiddleware(mw ...Middleware) *Server {
 	router.Use(mw...)
 	return h
 }
 
-//Static add static context to the router
-func (h *Server) Static(path string, root string) *Server {
+//WithStatic add static context to the router
+func (h *Server) WithStatic(path string, root string) *Server {
 	router.Static(path, root)
 	return h
 }
