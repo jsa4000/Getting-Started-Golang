@@ -32,12 +32,12 @@ func (a *App) Startup(ctx context.Context) {
 
 	// Create The HTTP Server
 	a.httpServer = net.NewServer().
-		AddController(pprof.NewController()).                    // Add Controller for Profiling
-		AddController(roles.NewRestController(rolesService)).    // Add roles controller
-		AddController(users.NewRestController(usersService)).    // Add users controller
-		Static("/", "./static/swaggerui/").                      // Create swagger static content
-		AddMiddleware(net.LoggingMiddleware, net.CustomHeaders). // Add global middlewares
-		Start()                                                  // Start the HTTP server
+		AddController(pprof.NewController()).                                        // Add Controller for Profiling
+		AddController(roles.NewRestController(rolesService)).                        // Add roles controller
+		AddController(users.NewRestController(usersService)).                        // Add users controller
+		Static("/swagger/", "./static/swaggerui/").                                  // Create swagger static content '/swagger/index.html'
+		AddMiddleware(net.NewLoggingMiddleware(), net.NewCustomHeadersMiddleware()). // Add global middlewares
+		Start()                                                                      // Start the HTTP server
 }
 
 // Shutdown the server

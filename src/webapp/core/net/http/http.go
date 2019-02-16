@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"net/http"
-	"strings"
 	"time"
 	log "webapp/core/logging"
 )
@@ -16,11 +15,6 @@ var router Router
 func SetGlobal(r Router) {
 	router = r
 }
-
-const nanoseconds = 1e6
-
-const pprofPreffix = "/debug/pprof/"
-const swaggerPreffix = "/swagger"
 
 // Handler for handle the requests
 type Handler func(w http.ResponseWriter, r *http.Request)
@@ -46,41 +40,6 @@ type Router interface {
 // Controller to handle http requests
 type Controller interface {
 	GetRoutes() []Route
-}
-
-// LoggingMiddleware decorator (closure)
-func LoggingMiddleware(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		log.Infof("Received Request uri=%s args=%s ", r.RequestURI, Vars(r))
-		start := time.Now()
-		defer func() {
-			log.Debugf("Processed Response in %d ns", time.Since(start).Nanoseconds())
-		}()
-		next.ServeHTTP(w, r)
-	})
-}
-
-// CustomHeaders decorator (closure)
-func CustomHeaders(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if !strings.Contains(r.RequestURI, pprofPreffix) && !strings.Contains(r.RequestURI, swaggerPreffix) {
-			w.Header().Set("Content-Type", "application/json")
-		}
-		//defaultHeaders(w)
-		enableCors(w)
-
-		next.ServeHTTP(w, r)
-	})
-}
-
-func defaultHeaders(w http.ResponseWriter) {
-	w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
-	w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token")
-	w.Header().Set("Access-Control-Allow-Credentials", "true")
-}
-
-func enableCors(w http.ResponseWriter) {
-	w.Header().Set("Access-Control-Allow-Origin", "*")
 }
 
 // Server struct

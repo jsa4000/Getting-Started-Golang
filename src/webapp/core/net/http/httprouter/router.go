@@ -17,7 +17,7 @@ const params = "params"
 // Router to handle http requests
 type Router struct {
 	router     *httprouter.Router
-	middleware []alice.Constructor
+	middleware []wrapper.Middleware
 }
 
 func wrapHandler(h http.Handler) httprouter.Handle {
@@ -33,13 +33,18 @@ func wrapHandler(h http.Handler) httprouter.Handle {
 func New() *Router {
 	return &Router{
 		router:     httprouter.New(),
-		middleware: []alice.Constructor{},
+		middleware: []wrapper.Middleware{},
 	}
 }
 
 // Handler return a handler created
 func (r *Router) Handler() http.Handler {
-	return alice.New(r.middleware...).Then(r.router)
+	sm := wrapper.SortMiddleware(r.middleware, true)
+	am := make([]alice.Constructor, 0, len(sm))
+	for _, m := range sm {
+		am = append(am, alice.Constructor(m.Handler()))
+	}
+	return alice.New(am...).Then(r.router)
 }
 
 // HandleRoute set the router
@@ -78,7 +83,7 @@ func (r *Router) Static(path string, root string) {
 // Use set the middleware to use by default
 func (r *Router) Use(mw ...wrapper.Middleware) {
 	for _, m := range mw {
-		r.middleware = append(r.middleware, alice.Constructor(m))
+		r.middleware = append(r.middleware, m)
 	}
 }
 

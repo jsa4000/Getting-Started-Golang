@@ -9,18 +9,24 @@ import (
 
 // Router to handle http requests
 type Router struct {
-	router *mux.Router
+	router     *mux.Router
+	middleware []wrapper.Middleware
 }
 
 // New Creates new Gorilla mux router
 func New() *Router {
 	return &Router{
-		router: mux.NewRouter(),
+		router:     mux.NewRouter(),
+		middleware: []wrapper.Middleware{},
 	}
 }
 
 // Handler return a handler created
 func (r *Router) Handler() http.Handler {
+	sm := wrapper.SortMiddleware(r.middleware, true)
+	for _, m := range sm {
+		r.router.Use(mux.MiddlewareFunc(m.Handler()))
+	}
 	return r.router
 }
 
@@ -40,7 +46,7 @@ func (r *Router) Static(path string, root string) {
 // Use set the middleware to use by default
 func (r *Router) Use(mw ...wrapper.Middleware) {
 	for _, m := range mw {
-		r.router.Use(mux.MiddlewareFunc(m))
+		r.middleware = append(r.middleware, m)
 	}
 }
 
