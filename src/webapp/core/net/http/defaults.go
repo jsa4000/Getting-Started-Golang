@@ -27,7 +27,7 @@ func NewLoggingMiddleware() Middleware {
 	return &LoggingMiddleware{
 		MiddlewareBase{
 			handler:  LoggingHandler,
-			priority: -30,
+			priority: PriorityLogging,
 		},
 	}
 }
@@ -37,7 +37,7 @@ func NewCustomHeadersMiddleware() Middleware {
 	return &CustomHeadersMiddleware{
 		MiddlewareBase{
 			handler:  CustomHeadersHandler,
-			priority: -20,
+			priority: PriorityHeaders,
 		},
 	}
 }
@@ -57,6 +57,7 @@ func LoggingHandler(next http.Handler) http.Handler {
 // CustomHeadersHandler decorator (closure)
 func CustomHeadersHandler(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		log.Debugf("Setting custom headers for request uri=%s", r.RequestURI)
 		if !strings.Contains(r.RequestURI, pprofPreffix) && !strings.Contains(r.RequestURI, swaggerPreffix) {
 			w.Header().Set("Content-Type", "application/json")
 		}
