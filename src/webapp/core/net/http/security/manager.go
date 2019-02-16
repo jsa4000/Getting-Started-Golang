@@ -4,30 +4,33 @@ import (
 	net "webapp/core/net/http"
 )
 
-// Config returns struct
-type Config struct {
+// Manager returns struct
+type Manager struct {
 	middleware  []net.Middleware
 	controllers []net.Controller
+	config      *Config
 }
 
 // New returns new security config
 func New() net.Security {
-	return &Config{
+	cfg := LoadConfig()
+	return &Manager{
 		middleware: []net.Middleware{
 			NewAuthHandlerMiddleware(),
 		},
 		controllers: []net.Controller{
-			NewRestController(NewServiceImpl()),
+			NewRestController(NewServiceJwt()),
 		},
+		config: cfg,
 	}
 }
 
 // Middleware returns the middleware for the security implementation
-func (c *Config) Middleware() []net.Middleware {
+func (c *Manager) Middleware() []net.Middleware {
 	return c.middleware
 }
 
 // Controllers returns the controllers for the security implementation
-func (c *Config) Controllers() []net.Controller {
+func (c *Manager) Controllers() []net.Controller {
 	return c.controllers
 }

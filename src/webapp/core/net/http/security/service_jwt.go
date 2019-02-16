@@ -6,17 +6,17 @@ import (
 	log "webapp/core/logging"
 )
 
-// ServiceImpl Implementation used for the service
-type ServiceImpl struct {
+// ServiceJwt Implementation used for the service
+type ServiceJwt struct {
 }
 
-// NewServiceImpl Create a new ServiceImpl
-func NewServiceImpl() Service {
-	return &ServiceImpl{}
+// NewServiceJwt Create a new ServiceImpl
+func NewServiceJwt() Service {
+	return &ServiceJwt{}
 }
 
 // CreateToken create the token
-func (s *ServiceImpl) CreateToken(ctx context.Context, req *CreateTokenRequest) (*CreateTokenResponse, error) {
+func (s *ServiceJwt) CreateToken(ctx context.Context, req *CreateTokenRequest) (*CreateTokenResponse, error) {
 	log.Debug("Create Token Request: ", req)
 	return &CreateTokenResponse{
 		Token:  "Bearer 3243",
@@ -25,7 +25,7 @@ func (s *ServiceImpl) CreateToken(ctx context.Context, req *CreateTokenRequest) 
 }
 
 // CheckToken returns deserialized token
-func (s *ServiceImpl) CheckToken(ctx context.Context, req *CheckTokenRequest) (*CheckTokenResponse, error) {
+func (s *ServiceJwt) CheckToken(ctx context.Context, req *CheckTokenRequest) (*CheckTokenResponse, error) {
 	log.Debug("Check Token Request: ", req)
 	return &CheckTokenResponse{
 		Data: string([]byte(`{"Name":"Alice","Body":"Hello","Time":1294706395881547000}`)),
