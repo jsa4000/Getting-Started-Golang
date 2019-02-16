@@ -6,6 +6,7 @@ import (
 	net "webapp/core/net/http"
 	pprof "webapp/core/net/http/pprof"
 
+	// Go-Core Starters
 	_ "webapp/core/config/viper/starter"
 	_ "webapp/core/logging/logrus/starter"
 	_ "webapp/core/net/http/gorillamux/starter"
@@ -18,14 +19,6 @@ import (
 
 // App struct
 type App struct {
-	rolesRepository roles.Repository
-	rolesService    roles.Service
-	rolesRestCtrl   net.Controller
-
-	usersRepository users.Repository
-	usersService    users.Service
-	usersRestCtrl   net.Controller
-
 	httpServer *net.Server
 }
 
@@ -33,36 +26,18 @@ type App struct {
 func (a *App) Startup(ctx context.Context) {
 	log.Infof("Starting Services...")
 
-	// Create Repositories
-	a.rolesRepository = roles.NewMongoRepository()
-	a.usersRepository = users.NewMongoRepository()
-
 	// Create Services
-	a.rolesService = roles.NewServiceImpl(a.rolesRepository)
-	a.usersService = users.NewServiceImpl(a.usersRepository)
-
-	// Create controllers
-	a.rolesRestCtrl = roles.NewRestController(a.rolesService)
-	a.usersRestCtrl = users.NewRestController(a.usersService)
+	rolesService := roles.NewServiceImpl(roles.NewMongoRepository())
+	usersService := users.NewServiceImpl(users.NewMongoRepository())
 
 	// Create The HTTP Server
-	a.httpServer = net.NewServer()
-
-	// Add Controller for Profiling
-	a.httpServer.AddController(pprof.NewController())
-
-	// Add controllers to the Http server
-	a.httpServer.AddController(a.rolesRestCtrl)
-	a.httpServer.AddController(a.usersRestCtrl)
-
-	// Create swagger static content
-	a.httpServer.Static("/", "./static/swaggerui/")
-
-	// Add global middlewares
-	a.httpServer.AddMiddleware(net.LoggingMiddleware, net.CustomHeaders)
-
-	// Start the HTTP server
-	a.httpServer.Start()
+	a.httpServer = net.NewServer().
+		AddController(pprof.NewController()).                    // Add Controller for Profiling
+		AddController(roles.NewRestController(rolesService)).    // Add roles controller
+		AddController(users.NewRestController(usersService)).    // Add users controller
+		Static("/", "./static/swaggerui/").                      // Create swagger static content
+		AddMiddleware(net.LoggingMiddleware, net.CustomHeaders). // Add global middlewares
+		Start()                                                  // Start the HTTP server
 }
 
 // Shutdown the server

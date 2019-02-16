@@ -25,9 +25,6 @@ const swaggerPreffix = "/swagger"
 // Handler for handle the requests
 type Handler func(w http.ResponseWriter, r *http.Request)
 
-// Middleware for handle the requests
-type Middleware func(http.Handler) http.Handler
-
 // Route route
 type Route struct {
 	Path    string
@@ -69,7 +66,7 @@ func CustomHeaders(next http.Handler) http.Handler {
 		if !strings.Contains(r.RequestURI, pprofPreffix) && !strings.Contains(r.RequestURI, swaggerPreffix) {
 			w.Header().Set("Content-Type", "application/json")
 		}
-		defaultHeaders(w)
+		//defaultHeaders(w)
 		enableCors(w)
 
 		next.ServeHTTP(w, r)
@@ -112,27 +109,33 @@ func NewServer() *Server {
 }
 
 // AddController Add the controller to the router
-func (h *Server) AddController(c Controller) {
-	h.AddRoutes(c.GetRoutes()...)
+func (h *Server) AddController(c ...Controller) *Server {
+	for _, ctrl := range c {
+		h.AddRoutes(ctrl.GetRoutes()...)
+	}
+	return h
 }
 
 // AddRoutes to the router
-func (h *Server) AddRoutes(routes ...Route) {
+func (h *Server) AddRoutes(routes ...Route) *Server {
 	router.HandleRoute(routes...)
+	return h
 }
 
 // AddMiddleware to the router
-func (h *Server) AddMiddleware(mw ...Middleware) {
+func (h *Server) AddMiddleware(mw ...Middleware) *Server {
 	router.Use(mw...)
+	return h
 }
 
 //Static add static context to the router
-func (h *Server) Static(path string, root string) {
+func (h *Server) Static(path string, root string) *Server {
 	router.Static(path, root)
+	return h
 }
 
 // Start server
-func (h *Server) Start() {
+func (h *Server) Start() *Server {
 	// Start the server
 	go func() {
 		log.Info("Listening on " + h.Server.Addr)
@@ -141,15 +144,17 @@ func (h *Server) Start() {
 			log.Error(err)
 		}
 	}()
+	return h
 }
 
 // Shutdown server
-func (h *Server) Shutdown(ctx context.Context) {
+func (h *Server) Shutdown(ctx context.Context) *Server {
 	// Shutdown the server (default context)
 	log.Info("Shutting down the server...")
 	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
 	defer cancel()
 	h.Server.Shutdown(ctx)
+	return h
 }
 
 //Vars get vars from a request
