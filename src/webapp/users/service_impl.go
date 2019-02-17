@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	net "webapp/core/net/http"
+	security "webapp/core/net/http/security"
 )
 
 // ServiceImpl Implementation used for the service
@@ -12,7 +13,11 @@ type ServiceImpl struct {
 }
 
 // NewServiceImpl Create a new ServiceImpl
-func NewServiceImpl(r Repository) Service {
+// NOTE: Instead returning a Service interfaces here we are returning a pointer
+// 	     since this struct implements two interfaces: Service & security.UserCallback
+//       In Go there is no need to implicitly reference the interface we are implementing
+//       like other languages.
+func NewServiceImpl(r Repository) *ServiceImpl {
 	return &ServiceImpl{Repository: r}
 }
 
@@ -56,4 +61,36 @@ func (s *ServiceImpl) DeleteByID(ctx context.Context, req *DeleteByIDRequest) (*
 		return nil, net.ErrNotFound.From(errors.New("User cannot be deleted with id " + req.ID))
 	}
 	return &DeleteByIDResponse{}, nil
+}
+
+// GetUserByName implements usercallback interface
+func (s *ServiceImpl) GetUserByName(ctx context.Context, name string) (*security.UserData, error) {
+	user, err := s.Repository.FindByName(ctx, name)
+	if err != nil {
+		return nil, net.ErrInternalServer.From(err)
+	}
+	if user == nil {
+		return nil, net.ErrNotFound.From(errors.New("User has not been found with name " + name))
+	}
+	return &security.UserData{
+		Name:     user.Name,
+		Email:    user.Email,
+		Password: user.Password,
+	}, nil
+}
+
+// GetUserByEmail implements usercallback interface
+func (s *ServiceImpl) GetUserByEmail(ctx context.Context, email string) (*security.UserData, error) {
+	user, err := s.Repository.FindByEmail(ctx, email)
+	if err != nil {
+		return nil, net.ErrInternalServer.From(err)
+	}
+	if user == nil {
+		return nil, net.ErrNotFound.From(errors.New("User has not been found with email " + email))
+	}
+	return &security.UserData{
+		Name:     user.Name,
+		Email:    user.Email,
+		Password: user.Password,
+	}, nil
 }

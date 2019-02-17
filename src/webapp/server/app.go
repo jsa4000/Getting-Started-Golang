@@ -15,7 +15,6 @@ import (
 	_ "webapp/core/validation/goplayground/starter"
 
 	"webapp/roles"
-	"webapp/security"
 	"webapp/users"
 )
 
@@ -35,11 +34,10 @@ func (a *App) Startup(ctx context.Context) {
 	// Create Services
 	rolesService := roles.NewServiceImpl(rolesRepository)
 	usersService := users.NewServiceImpl(usersRepository)
-	credentialService := security.NewCredentialService(usersRepository)
 
 	// Security Config
 	secConfig := httpSec.NewConfig().
-		WithUserCallback(credentialService)
+		WithUserCallback(usersService)
 
 	// Create The HTTP Server
 	a.httpServer = net.NewServer().
