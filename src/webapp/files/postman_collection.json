@@ -6,6 +6,87 @@
 	},
 	"item": [
 		{
+			"name": "OAuth",
+			"item": [
+				{
+					"name": "CheckToken",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://{{url}}:8080/oauth/check_token?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOiIyMDE5LTAyLTE4VDE5OjU2OjI1KzAxOjAwIiwiaWF0IjoiMjAxOS0wMi0xN1QxOTo1NjoyNSswMTowMCIsImlzcyI6InNlcnZlci1vYXV0aCIsImp0aSI6IjZjN2RkZGM1LTQ2MTYtNDU4Mi1hNzQ3LTRkZTZmZDllOTNkMyIsIm5hbWUiOiJ1c2VyX3Rlc3QiLCJyb2xlcyI6bnVsbCwic3ViIjoiNWM2N2JmNDJiMzk2M2RkYjg2ZjlkYWI3In0._tZfPaHudZXJVTHnKf_4xAWrnj_NnLMLnWNgRVtAS28",
+							"protocol": "http",
+							"host": [
+								"{{url}}"
+							],
+							"port": "8080",
+							"path": [
+								"oauth",
+								"check_token"
+							],
+							"query": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOiIyMDE5LTAyLTE4VDE5OjU2OjI1KzAxOjAwIiwiaWF0IjoiMjAxOS0wMi0xN1QxOTo1NjoyNSswMTowMCIsImlzcyI6InNlcnZlci1vYXV0aCIsImp0aSI6IjZjN2RkZGM1LTQ2MTYtNDU4Mi1hNzQ3LTRkZTZmZDllOTNkMyIsIm5hbWUiOiJ1c2VyX3Rlc3QiLCJyb2xlcyI6bnVsbCwic3ViIjoiNWM2N2JmNDJiMzk2M2RkYjg2ZjlkYWI3In0._tZfPaHudZXJVTHnKf_4xAWrnj_NnLMLnWNgRVtAS28"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CreateTokenJson",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "trusted-client",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "mypassword$",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"useremail\": \"user.test@example.com\",\n\t\"password\": \"password\",\n\t\"grant_type\": \"password\"\n}"
+						},
+						"url": {
+							"raw": "http://{{url}}:8080/oauth/token",
+							"protocol": "http",
+							"host": [
+								"{{url}}"
+							],
+							"port": "8080",
+							"path": [
+								"oauth",
+								"token"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
 			"name": "Roles",
 			"item": [
 				{
@@ -159,7 +240,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": \"user_test\",\n    \"email\": \"user.test@example.com\",\n    \"password\": \"1234\"\n}"
+							"raw": "{\n    \"name\": \"user_test2\",\n    \"email\": \"user.test2@example.com\",\n    \"password\": \"1234\"\n}"
 						},
 						"url": {
 							"raw": "http://{{url}}:8080/users",
@@ -198,7 +279,7 @@
 							"variable": [
 								{
 									"key": "user",
-									"value": "5c5f11b8222b351dc1414c0a"
+									"value": "5c67bf49b3963ddb86f9dab8"
 								}
 							]
 						}
