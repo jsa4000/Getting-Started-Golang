@@ -12,6 +12,13 @@ http:
   readTimeout: 15
   idleTimeout: 60
 
+security:
+  issuer: server-oauth
+  expirationtime: 86400    #seconds
+  secretkey: mypassword$
+  clientid: trusted-client
+  clientsecret: mypassword$
+
 repository:
   mongodb:
     url: mongodb://root:root@dockerhost:27017/admin

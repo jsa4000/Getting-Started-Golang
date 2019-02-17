@@ -3,6 +3,7 @@ package users
 import (
 	"context"
 	"errors"
+	"fmt"
 	net "webapp/core/net/http"
 	security "webapp/core/net/http/security"
 )
@@ -73,6 +74,7 @@ func (s *ServiceImpl) GetUserByName(ctx context.Context, name string) (*security
 		return nil, net.ErrNotFound.From(errors.New("User has not been found with name " + name))
 	}
 	return &security.UserData{
+		ID:       fmt.Sprintf("%v", user.ID),
 		Name:     user.Name,
 		Email:    user.Email,
 		Password: user.Password,
@@ -89,6 +91,7 @@ func (s *ServiceImpl) GetUserByEmail(ctx context.Context, email string) (*securi
 		return nil, net.ErrNotFound.From(errors.New("User has not been found with email " + email))
 	}
 	return &security.UserData{
+		ID:       fmt.Sprintf("%v", user.ID),
 		Name:     user.Name,
 		Email:    user.Email,
 		Password: user.Password,

@@ -4,18 +4,18 @@ import "time"
 
 // CreateTokenRequest request
 type CreateTokenRequest struct {
-	UserName     string   `json:"username" validate:"min=0,max=255,required"`
-	Password     string   `json:"password" validate:"min=0,max=1024,required"`
-	GranType     string   `json:"grant_type" validate:"min=0,max=255,required"`
-	Scope        []string `json:"scope" validate:"min=0,max=1024"`
-	ClientID     string   `json:"client_id" validate:"min=0,max=1024"`
-	ClientSecret string   `json:"client_secret" validate:"min=0,max=1024"`
+	UserName      string   `json:"username" validate:"min=0,max=255"`
+	UserEmail     string   `json:"useremail" validate:"email,min=0,max=255"`
+	Password      string   `json:"password" validate:"min=0,max=1024,required"`
+	GranType      string   `json:"grant_type" validate:"min=0,max=255,required"`
+	Scope         []string `json:"scope" validate:"min=0,max=1024"`
+	Authorization string   `json:"authorization" validate:"min=0,max=255"`
 }
 
 // CreateTokenResponse Response
 type CreateTokenResponse struct {
-	Token  string
-	Expire time.Time
+	Token      string
+	ExpireTime time.Time
 }
 
 // CheckTokenRequest struct request
@@ -25,5 +25,5 @@ type CheckTokenRequest struct {
 
 // CheckTokenResponse struct Response
 type CheckTokenResponse struct {
-	Data string
+	Data interface{}
 }

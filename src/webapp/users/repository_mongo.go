@@ -115,7 +115,7 @@ func (c *MongoRepository) FindByEmail(ctx context.Context, email string) (*User,
 	} else if err != nil {
 		return nil, err
 	}
-	return &result, nil
+	return normalize(&result), nil
 }
 
 // FindByName User by Id
@@ -130,7 +130,7 @@ func (c *MongoRepository) FindByName(ctx context.Context, name string) (*User, e
 	} else if err != nil {
 		return nil, err
 	}
-	return &result, nil
+	return normalize(&result), nil
 }
 
 // Create Add user into the datbase
@@ -160,4 +160,10 @@ func (c *MongoRepository) DeleteByID(ctx context.Context, id string) (bool, erro
 		return false, nil
 	}
 	return true, nil
+}
+
+func normalize(user *User) *User {
+	id, _ := user.ID.(primitive.ObjectID)
+	user.ID = id.Hex()
+	return user
 }

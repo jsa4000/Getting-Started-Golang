@@ -36,8 +36,9 @@ func (a *App) Startup(ctx context.Context) {
 	usersService := users.NewServiceImpl(usersRepository)
 
 	// Security Config
-	secConfig := httpSec.NewConfig().
-		WithUserCallback(usersService)
+	secConfig := httpSec.NewConfigBuilder().
+		WithUserCallback(usersService).
+		Build()
 
 	// Create The HTTP Server
 	a.httpServer = net.NewServer().

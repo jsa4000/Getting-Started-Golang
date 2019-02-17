@@ -3,8 +3,14 @@ package security
 import (
 	"encoding/json"
 	"net/http"
+	"strings"
 
 	net "webapp/core/net/http"
+)
+
+const (
+	// BasicAuthHeader from http request
+	BasicAuthHeader = "Basic "
 )
 
 // RestController for http transport
@@ -43,6 +49,9 @@ func (c *RestController) CreateToken(w http.ResponseWriter, r *http.Request) {
 		c.WriteError(w, err)
 		return
 	}
+	if basicAuth, ok := r.Header["Authorization"]; ok {
+		req.Authorization = strings.TrimPrefix(basicAuth[0], BasicAuthHeader)
+	}
 	res, err := c.Service.CreateToken(r.Context(), &req)
 	if err != nil {
 		c.WriteError(w, err)
@@ -54,13 +63,12 @@ func (c *RestController) CreateToken(w http.ResponseWriter, r *http.Request) {
 
 // CheckToken handler to request the
 func (c *RestController) CheckToken(w http.ResponseWriter, r *http.Request) {
-	vars := net.Vars(r)
-	req := CheckTokenRequest{Token: vars["token"]}
+	req := CheckTokenRequest{Token: r.FormValue("token")}
 	res, err := c.Service.CheckToken(r.Context(), &req)
 	if err != nil {
 		c.WriteError(w, err)
 		return
 	}
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(res)
+	json.NewEncoder(w).Encode(res.Data)
 }
