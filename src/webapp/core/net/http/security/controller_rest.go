@@ -3,7 +3,6 @@ package security
 import (
 	"encoding/json"
 	"net/http"
-	"strings"
 
 	net "webapp/core/net/http"
 )
@@ -48,9 +47,6 @@ func (c *RestController) CreateToken(w http.ResponseWriter, r *http.Request) {
 	if err := c.Decode(w, r, &req); err != nil {
 		c.WriteError(w, err)
 		return
-	}
-	if basicAuth, ok := r.Header["Authorization"]; ok {
-		req.Authorization = strings.TrimPrefix(basicAuth[0], BasicAuthHeader)
 	}
 	res, err := c.Service.CreateToken(r.Context(), &req)
 	if err != nil {

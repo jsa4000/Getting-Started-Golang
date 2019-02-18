@@ -37,12 +37,13 @@ type Manager struct {
 
 // New returns new security config
 func New(config *Config) net.Security {
+	service := NewServiceJwt(config)
 	return &Manager{
 		middleware: []net.Middleware{
-			NewAuthHandlerMiddleware(config),
+			NewAuthHandlerMiddleware(config, service),
 		},
 		controllers: []net.Controller{
-			NewRestController(NewServiceJwt(config)),
+			NewRestController(service),
 		},
 		config: config,
 	}

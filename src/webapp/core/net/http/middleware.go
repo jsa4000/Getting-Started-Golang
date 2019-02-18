@@ -1,9 +1,12 @@
 package http
 
 import (
+	"encoding/json"
 	"net/http"
 	"sort"
 	"strings"
+	"webapp/core/errors"
+	log "webapp/core/logging"
 )
 
 // HandlerMid for handle the requests
@@ -42,6 +45,17 @@ func (m *MiddlewareBase) Handler() HandlerMid {
 // Priority returns the priority
 func (m *MiddlewareBase) Priority() int {
 	return m.Prio
+}
+
+// WriteError response
+func (m *MiddlewareBase) WriteError(w http.ResponseWriter, err error) {
+	herr, ok := err.(*errors.Error)
+	if !ok {
+		herr = ErrInternalServer.From(err)
+	}
+	w.WriteHeader(herr.Code)
+	json.NewEncoder(w).Encode(herr)
+	log.Error(herr)
 }
 
 // SortMiddleware function to short middleware by priority

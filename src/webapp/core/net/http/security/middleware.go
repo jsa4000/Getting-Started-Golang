@@ -1,31 +1,38 @@
 package security
 
 import (
-	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
-	"webapp/core/errors"
+	"strings"
 	log "webapp/core/logging"
 	net "webapp/core/net/http"
 )
 
+const (
+	bearerPreffix = "Bearer "
+	authHeader    = "Authorization"
+)
+
 var (
-	filters = []string{"/swagger/", "/oauth/"}
+	noAuth    = []string{"/swagger/"}
+	basicAuth = []string{"/oauth/"}
 )
 
 // AuthHandlerMiddleware returns LogginMiddleware struct
 type AuthHandlerMiddleware struct {
 	net.MiddlewareBase
-	config *Config
+	service Service
+	config  *Config
 }
 
 // NewAuthHandlerMiddleware creation
-func NewAuthHandlerMiddleware(c *Config) net.Middleware {
+func NewAuthHandlerMiddleware(c *Config, service Service) net.Middleware {
 	return &AuthHandlerMiddleware{
 		net.MiddlewareBase{
 			Hdlr: nil,
 			Prio: net.PrioritySecurity,
-		}, c,
+		}, service, c,
 	}
 }
 
@@ -38,23 +45,43 @@ func (a *AuthHandlerMiddleware) Handler() net.HandlerMid {
 func (a *AuthHandlerMiddleware) AuthHandler(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		log.Debugf("Verify security for request uri=%s", r.RequestURI)
-
-		if !net.Contains(r.RequestURI, filters) {
-			writeError(w, net.ErrForbidden.
-				From(fmt.Errorf("Unauthorized for resource '%s'", r.RequestURI)))
-			return
+		if net.Contains(r.RequestURI, basicAuth) {
+			if err := a.basicAuthHandler(w, r); err != nil {
+				a.WriteError(w, err)
+				return
+			}
+		} else if !net.Contains(r.RequestURI, noAuth) {
+			if err := a.jwtHandler(w, r); err != nil {
+				a.WriteError(w, err)
+				return
+			}
 		}
 		next.ServeHTTP(w, r)
 	})
 }
 
-// WriteError response
-func writeError(w http.ResponseWriter, err error) {
-	herr, ok := err.(*errors.Error)
+func (a *AuthHandlerMiddleware) jwtHandler(w http.ResponseWriter, r *http.Request) error {
+	basicAuth, ok := r.Header[authHeader]
 	if !ok {
-		herr = net.ErrInternalServer.From(err)
+		return net.ErrUnauthorized.From(errors.New("Authorization has not been found"))
 	}
-	w.WriteHeader(herr.Code)
-	json.NewEncoder(w).Encode(herr)
-	log.Error(herr)
+	token := strings.TrimPrefix(basicAuth[0], bearerPreffix)
+	fmt.Println(token)
+	resp, err := a.service.CheckToken(r.Context(), &CheckTokenRequest{Token: token})
+	if err != nil || !resp.Valid {
+		return net.ErrUnauthorized.From(errors.New("Authorization Beared invalid"))
+	}
+	return nil
+}
+
+func (a *AuthHandlerMiddleware) basicAuthHandler(w http.ResponseWriter, r *http.Request) error {
+	user, password, hasAuth := r.BasicAuth()
+	if !hasAuth {
+		return net.ErrUnauthorized.From(errors.New("Authorization has not been found"))
+	}
+	if user != a.config.ClientID && password != a.config.ClientSecret {
+		return net.ErrUnauthorized.From(errors.New("Credentials are not valid for client #{user}"))
+	}
+	//r.WithContext(context.WithValue(r.Context(), "basicAuth", user))
+	return nil
 }

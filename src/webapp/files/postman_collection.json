@@ -1,16 +1,32 @@
 {
 	"info": {
-		"_postman_id": "37332dd8-4ff0-4391-9083-8e50e280531d",
+		"_postman_id": "ea70de80-ab87-4ac0-98b8-89cccec9beed",
 		"name": "GoWebApp",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
 		{
 			"name": "OAuth",
+			"description": null,
 			"item": [
 				{
 					"name": "CheckToken",
 					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "mypassword$",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "client-trusted",
+									"type": "string"
+								}
+							]
+						},
 						"method": "GET",
 						"header": [],
 						"body": {
@@ -18,7 +34,7 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "http://{{url}}:8080/oauth/check_token?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOiIyMDE5LTAyLTE4VDE5OjU2OjI1KzAxOjAwIiwiaWF0IjoiMjAxOS0wMi0xN1QxOTo1NjoyNSswMTowMCIsImlzcyI6InNlcnZlci1vYXV0aCIsImp0aSI6IjZjN2RkZGM1LTQ2MTYtNDU4Mi1hNzQ3LTRkZTZmZDllOTNkMyIsIm5hbWUiOiJ1c2VyX3Rlc3QiLCJyb2xlcyI6bnVsbCwic3ViIjoiNWM2N2JmNDJiMzk2M2RkYjg2ZjlkYWI3In0._tZfPaHudZXJVTHnKf_4xAWrnj_NnLMLnWNgRVtAS28",
+							"raw": "http://{{url}}:8080/oauth/check_token?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOiIyMDE5LTAyLTE5VDE2OjQ3OjM4KzAxOjAwIiwiaWF0IjoiMjAxOS0wMi0xOFQxNjo0NzozOCswMTowMCIsImlzcyI6InNlcnZlci1vYXV0aCIsImp0aSI6IjA1YTlhMjhkLWRiZjMtNDMzYS1hZWJlLTIxZmFiYTA4ZGM0MCIsIm5hbWUiOiJ1c2VyX3Rlc3QiLCJyb2xlcyI6bnVsbCwic3ViIjoiNWM2YWMzZGI2NmNjNDE4OGMxYWM1MmZmIn0.8fAuA8OInQrUQZZv9EgPrhqYXccoTurBToxZpTXAiZ0",
 							"protocol": "http",
 							"host": [
 								"{{url}}"
@@ -31,7 +47,7 @@
 							"query": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOiIyMDE5LTAyLTE4VDE5OjU2OjI1KzAxOjAwIiwiaWF0IjoiMjAxOS0wMi0xN1QxOTo1NjoyNSswMTowMCIsImlzcyI6InNlcnZlci1vYXV0aCIsImp0aSI6IjZjN2RkZGM1LTQ2MTYtNDU4Mi1hNzQ3LTRkZTZmZDllOTNkMyIsIm5hbWUiOiJ1c2VyX3Rlc3QiLCJyb2xlcyI6bnVsbCwic3ViIjoiNWM2N2JmNDJiMzk2M2RkYjg2ZjlkYWI3In0._tZfPaHudZXJVTHnKf_4xAWrnj_NnLMLnWNgRVtAS28"
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOiIyMDE5LTAyLTE5VDE2OjQ3OjM4KzAxOjAwIiwiaWF0IjoiMjAxOS0wMi0xOFQxNjo0NzozOCswMTowMCIsImlzcyI6InNlcnZlci1vYXV0aCIsImp0aSI6IjA1YTlhMjhkLWRiZjMtNDMzYS1hZWJlLTIxZmFiYTA4ZGM0MCIsIm5hbWUiOiJ1c2VyX3Rlc3QiLCJyb2xlcyI6bnVsbCwic3ViIjoiNWM2YWMzZGI2NmNjNDE4OGMxYWM1MmZmIn0.8fAuA8OInQrUQZZv9EgPrhqYXccoTurBToxZpTXAiZ0"
 								}
 							]
 						}
@@ -88,6 +104,7 @@
 		},
 		{
 			"name": "Roles",
+			"description": null,
 			"item": [
 				{
 					"name": "GetAll",
@@ -204,6 +221,7 @@
 		},
 		{
 			"name": "Users",
+			"description": null,
 			"item": [
 				{
 					"name": "GetAll",
@@ -240,7 +258,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": \"user_test2\",\n    \"email\": \"user.test2@example.com\",\n    \"password\": \"1234\"\n}"
+							"raw": "{\n    \"name\": \"user_test3\",\n    \"email\": \"user.test3@example.com\",\n    \"password\": \"1234\"\n}"
 						},
 						"url": {
 							"raw": "http://{{url}}:8080/users",
@@ -339,6 +357,38 @@
 					}
 				}
 			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOiIyMDE5LTAyLTE5VDE2OjQzOjQxKzAxOjAwIiwiaWF0IjoiMjAxOS0wMi0xOFQxNjo0Mzo0MSswMTowMCIsImlzcyI6InNlcnZlci1vYXV0aCIsImp0aSI6Ijc5MGM1ZWEzLTA2ZDgtNDJlZS1hNDVmLTIxNjAyNTA5NmJhMyIsIm5hbWUiOiJ1c2VyX3Rlc3QiLCJyb2xlcyI6bnVsbCwic3ViIjoiNWM2YWMzZGI2NmNjNDE4OGMxYWM1MmZmIn0.zk_cs5WMHYjgySXJaVxDrcNxqRoOUCKWZ96Ky5tFKsc",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "9a42c3f8-2e4a-4152-919d-aaeb5d6426d4",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "ccd814ca-7fd4-44ec-8641-3aadefe132b4",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
 		}
 	]
 }
