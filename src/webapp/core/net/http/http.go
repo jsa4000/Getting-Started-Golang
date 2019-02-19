@@ -58,7 +58,7 @@ func NewServer() *Server {
 		Addr:         fmt.Sprintf("0.0.0.0:%d", serverConfig.Port),
 		WriteTimeout: time.Second * time.Duration(serverConfig.WriteTimeout),
 		ReadTimeout:  time.Second * time.Duration(serverConfig.ReadTimeout),
-		IdleTimeout:  time.Second * serverConfig.IdleTimeout,
+		IdleTimeout:  time.Second * time.Duration(serverConfig.IdleTimeout),
 	}
 
 	return &Server{

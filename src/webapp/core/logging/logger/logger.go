@@ -5,8 +5,8 @@ import (
 	"io"
 	"log"
 	"os"
-	"time"
 	"webapp/core/logging"
+	"webapp/core/time"
 )
 
 // Logger struct log placeholder
@@ -57,11 +57,11 @@ func getLevelString(level logging.Level) string {
 }
 
 func getPrefix(level logging.Level) string {
-	return fmt.Sprintf("%s [%s]:", time.Now().Format(time.RFC3339), getLevelString(level))
+	return fmt.Sprintf("%s [%s]:", time.String(time.Now()), getLevelString(level))
 }
 
 func getPrefixWithFields(level logging.Level, fields logging.Fields) string {
-	return fmt.Sprintf("%s [%s]: %s, ", time.Now().Format(time.RFC3339), getLevelString(level), fields)
+	return fmt.Sprintf("%s [%s]: %s, ", time.String(time.Now()), getLevelString(level), fields)
 }
 
 // Debugf log

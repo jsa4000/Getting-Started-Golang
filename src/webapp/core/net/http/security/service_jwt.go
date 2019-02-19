@@ -4,9 +4,10 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"time"
+	date "time"
 	cerr "webapp/core/errors"
 	net "webapp/core/net/http"
+	"webapp/core/time"
 
 	jwt "github.com/dgrijalva/jwt-go"
 	uuid "github.com/satori/go.uuid"
@@ -45,15 +46,15 @@ func (s *ServiceJwt) CreateToken(ctx context.Context, req *CreateTokenRequest) (
 		return nil, herr
 	}
 
-	expireTime := time.Now().Add(time.Second * time.Duration(s.config.ExpirationTime))
+	expirationTime := time.Time{Time: time.Now().Add(date.Second * date.Duration(s.config.ExpirationTime))}
 	claims := jwt.MapClaims{
 		"jti":   uuid.NewV4().String(),
 		"iss":   s.config.Issuer,
 		"sub":   user.ID,
 		"name":  user.Name,
 		"roles": user.Roles,
-		"exp":   expireTime.Format(time.RFC3339),
-		"iat":   time.Now().Format(time.RFC3339),
+		"exp":   expirationTime.Unix(),
+		"iat":   time.Unix(),
 	}
 	if s.config.tc != nil {
 
@@ -64,8 +65,8 @@ func (s *ServiceJwt) CreateToken(ctx context.Context, req *CreateTokenRequest) (
 		return nil, net.ErrInternalServer.From(err)
 	}
 	return &CreateTokenResponse{
-		Token:      tokenString,
-		ExpireTime: expireTime,
+		Token:          tokenString,
+		ExpirationTime: expirationTime,
 	}, nil
 }
 
@@ -80,12 +81,6 @@ func (s *ServiceJwt) CheckToken(ctx context.Context, req *CheckTokenRequest) (*C
 	if err != nil {
 		return nil, net.ErrInternalServer.From(err)
 	}
-	/*
-		expirationTime, err := time.Parse(time.RFC3339, token.Claims()
-		if err != nil {
-			return nil, net.ErrInternalServer.From(err)
-		}
-	*/
 	return &CheckTokenResponse{
 		Data:  token,
 		Valid: token.Valid,

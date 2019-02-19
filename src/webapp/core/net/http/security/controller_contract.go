@@ -1,6 +1,6 @@
 package security
 
-import "time"
+import "webapp/core/time"
 
 // CreateTokenRequest request
 type CreateTokenRequest struct {
@@ -13,8 +13,8 @@ type CreateTokenRequest struct {
 
 // CreateTokenResponse Response
 type CreateTokenResponse struct {
-	Token      string
-	ExpireTime time.Time
+	Token          string
+	ExpirationTime time.Time
 }
 
 // CheckTokenRequest struct request

@@ -5,7 +5,8 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
-	"time"
+	date "time"
+	"webapp/core/time"
 
 	log "webapp/core/logging"
 )
@@ -42,7 +43,7 @@ func StartApp(ctx context.Context, app App) {
 	end := time.Now()
 
 	// Create a new context to shutdown the application
-	ctx, cancel := context.WithTimeout(context.TODO(), 5*time.Second)
+	ctx, cancel := context.WithTimeout(context.TODO(), 5*date.Second)
 	defer cancel()
 
 	// Shutdown the app
