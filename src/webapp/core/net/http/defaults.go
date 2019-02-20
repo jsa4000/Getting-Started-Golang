@@ -2,8 +2,8 @@ package http
 
 import (
 	"net/http"
+	"time"
 	log "webapp/core/logging"
-	"webapp/core/time"
 )
 
 var (

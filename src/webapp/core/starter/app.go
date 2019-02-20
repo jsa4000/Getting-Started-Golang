@@ -5,10 +5,10 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
-	date "time"
-	"webapp/core/time"
+	"time"
 
 	log "webapp/core/logging"
+	global "webapp/core/time"
 )
 
 // App interface for generic Application
@@ -19,7 +19,7 @@ type App interface {
 
 // StartApp main function
 func StartApp(ctx context.Context, app App) {
-	start := time.Now()
+	start := global.Now()
 
 	// Initialize the default components: config, logging, validation, etc..
 	Init(ctx)
@@ -40,10 +40,10 @@ func StartApp(ctx context.Context, app App) {
 	// Waits until an interrupt is sent from the OS
 	<-stop
 
-	end := time.Now()
+	end := global.Now()
 
 	// Create a new context to shutdown the application
-	ctx, cancel := context.WithTimeout(context.TODO(), 5*date.Second)
+	ctx, cancel := context.WithTimeout(context.TODO(), 5*time.Second)
 	defer cancel()
 
 	// Shutdown the app

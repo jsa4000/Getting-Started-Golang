@@ -20,7 +20,7 @@ type Wrapper struct {
 
 var wrapper *Wrapper
 
-// Set Global component
+// SetGlobal set global component component
 func SetGlobal(w *Wrapper) {
 	wrapper = w
 }
@@ -83,8 +83,8 @@ func (w *Wrapper) Unsubscribe(id string) error {
 	return nil
 }
 
-// Connect to Mongodb database
-func (w *Wrapper) checkConnection(ctx context.Context) {
+// check the connection to Mongodb database
+func (w *Wrapper) check(ctx context.Context) {
 	for {
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 		defer cancel()
@@ -111,7 +111,7 @@ func (w *Wrapper) Connect(ctx context.Context, conn string) error {
 		return err
 	}
 	w.Client = client
-	go w.checkConnection(ctx)
+	go w.check(ctx)
 	return nil
 }
 

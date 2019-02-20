@@ -1,6 +1,6 @@
 package security
 
-import "webapp/core/time"
+import "time"
 
 // CreateTokenRequest request
 type CreateTokenRequest struct {

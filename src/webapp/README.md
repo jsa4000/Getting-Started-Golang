@@ -10,7 +10,9 @@ Install the dependencies
 
 Run the server (configuration by default)
 
-    go run main.go
+    go run .
+
+> `go run main.go` throws an exception since there are more files to be loaded in root
 
 To generate the binary use ``go build``
 

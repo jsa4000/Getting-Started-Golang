@@ -4,10 +4,10 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	date "time"
+	"time"
 	cerr "webapp/core/errors"
 	net "webapp/core/net/http"
-	"webapp/core/time"
+	global "webapp/core/time"
 
 	jwt "github.com/dgrijalva/jwt-go"
 	uuid "github.com/satori/go.uuid"
@@ -46,7 +46,7 @@ func (s *ServiceJwt) CreateToken(ctx context.Context, req *CreateTokenRequest) (
 		return nil, herr
 	}
 
-	expirationTime := time.Time{Time: time.Now().Add(date.Second * date.Duration(s.config.ExpirationTime))}
+	expirationTime := global.Now().Add(time.Second * time.Duration(s.config.ExpirationTime))
 	claims := jwt.MapClaims{
 		"jti":   uuid.NewV4().String(),
 		"iss":   s.config.Issuer,
@@ -54,7 +54,7 @@ func (s *ServiceJwt) CreateToken(ctx context.Context, req *CreateTokenRequest) (
 		"name":  user.Name,
 		"roles": user.Roles,
 		"exp":   expirationTime.Unix(),
-		"iat":   time.Unix(),
+		"iat":   global.Unix(),
 	}
 	if s.config.tc != nil {
 
