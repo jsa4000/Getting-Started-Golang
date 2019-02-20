@@ -21,12 +21,12 @@ var (
 // AuthHandlerMiddleware returns LogginMiddleware struct
 type AuthHandlerMiddleware struct {
 	net.MiddlewareBase
-	service Service
+	service TokenService
 	config  *Config
 }
 
 // NewAuthHandlerMiddleware creation
-func NewAuthHandlerMiddleware(c *Config, service Service) net.Middleware {
+func NewAuthHandlerMiddleware(c *Config, service TokenService) net.Middleware {
 	return &AuthHandlerMiddleware{
 		net.MiddlewareBase{
 			Hdlr: nil,
@@ -65,7 +65,7 @@ func (a *AuthHandlerMiddleware) jwtHandler(w http.ResponseWriter, r *http.Reques
 	}
 	token := strings.TrimPrefix(basicAuth[0], bearerPreffix)
 	fmt.Println(token)
-	resp, err := a.service.CheckToken(r.Context(), &CheckTokenRequest{Token: token})
+	resp, err := a.service.Check(r.Context(), &CheckTokenRequest{Token: token})
 	if err != nil || !resp.Valid {
 		return net.ErrUnauthorized.From(errors.New("Authorization Beared invalid"))
 	}

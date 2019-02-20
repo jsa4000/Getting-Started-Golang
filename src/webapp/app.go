@@ -37,7 +37,7 @@ func (a *App) Startup(ctx context.Context) {
 
 	// Security Config
 	secConfig := httpSec.NewConfigBuilder().
-		WithUserCallback(usersService).
+		WithUserFetcher(usersService).
 		Build()
 
 	// Create The HTTP Server

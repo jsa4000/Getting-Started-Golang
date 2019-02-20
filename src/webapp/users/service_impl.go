@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"strings"
 	net "webapp/core/net/http"
 	security "webapp/core/net/http/security"
 )
@@ -64,31 +65,20 @@ func (s *ServiceImpl) DeleteByID(ctx context.Context, req *DeleteByIDRequest) (*
 	return &DeleteByIDResponse{}, nil
 }
 
-// GetUserByName implements usercallback interface
-func (s *ServiceImpl) GetUserByName(ctx context.Context, name string) (*security.UserData, error) {
-	user, err := s.Repository.FindByName(ctx, name)
+// Fetch implements UserFetcher interface
+func (s *ServiceImpl) Fetch(ctx context.Context, userID string) (*security.UserData, error) {
+	var user *User
+	var err error
+	if strings.Contains(userID, "@") {
+		user, err = s.Repository.FindByEmail(ctx, userID)
+	} else {
+		user, err = s.Repository.FindByName(ctx, userID)
+	}
 	if err != nil {
 		return nil, net.ErrInternalServer.From(err)
 	}
 	if user == nil {
-		return nil, net.ErrNotFound.From(errors.New("User has not been found with name " + name))
-	}
-	return &security.UserData{
-		ID:       fmt.Sprintf("%v", user.ID),
-		Name:     user.Name,
-		Email:    user.Email,
-		Password: user.Password,
-	}, nil
-}
-
-// GetUserByEmail implements usercallback interface
-func (s *ServiceImpl) GetUserByEmail(ctx context.Context, email string) (*security.UserData, error) {
-	user, err := s.Repository.FindByEmail(ctx, email)
-	if err != nil {
-		return nil, net.ErrInternalServer.From(err)
-	}
-	if user == nil {
-		return nil, net.ErrNotFound.From(errors.New("User has not been found with email " + email))
+		return nil, net.ErrNotFound.From(fmt.Errorf("User %s has not been found", userID))
 	}
 	return &security.UserData{
 		ID:       fmt.Sprintf("%v", user.ID),

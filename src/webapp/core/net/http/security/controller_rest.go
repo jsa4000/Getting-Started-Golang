@@ -7,19 +7,14 @@ import (
 	net "webapp/core/net/http"
 )
 
-const (
-	// BasicAuthHeader from http request
-	BasicAuthHeader = "Basic "
-)
-
 // RestController for http transport
 type RestController struct {
 	net.RestController
-	Service Service
+	Service TokenService
 }
 
 // NewRestController create new RestController
-func NewRestController(service Service) net.Controller {
+func NewRestController(service TokenService) net.Controller {
 	return &RestController{
 		Service: service,
 	}
@@ -48,7 +43,7 @@ func (c *RestController) CreateToken(w http.ResponseWriter, r *http.Request) {
 		c.WriteError(w, err)
 		return
 	}
-	res, err := c.Service.CreateToken(r.Context(), &req)
+	res, err := c.Service.Create(r.Context(), &req)
 	if err != nil {
 		c.WriteError(w, err)
 		return
@@ -60,7 +55,7 @@ func (c *RestController) CreateToken(w http.ResponseWriter, r *http.Request) {
 // CheckToken handler to request the
 func (c *RestController) CheckToken(w http.ResponseWriter, r *http.Request) {
 	req := CheckTokenRequest{Token: r.FormValue("token")}
-	res, err := c.Service.CheckToken(r.Context(), &req)
+	res, err := c.Service.Check(r.Context(), &req)
 	if err != nil {
 		c.WriteError(w, err)
 		return

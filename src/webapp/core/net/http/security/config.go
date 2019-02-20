@@ -11,8 +11,8 @@ type Config struct {
 	SecretKey      string `config:"security.secretkey:mypassword$"`
 	ClientID       string `config:"security.clientid:trusted-client"`
 	ClientSecret   string `config:"security.clientsecret:mypassword$"`
-	uc             UserCallback
-	tc             TokenCallback
+	UserFetcher    UserFetcher
+	TokenEnhancer  TokenEnhancer
 }
 
 // ConfigBuilder main app configuration
@@ -64,15 +64,15 @@ func (c *ConfigBuilder) WithClientSecret(val string) *ConfigBuilder {
 	return c
 }
 
-// WithUserCallback set User Callback
-func (c *ConfigBuilder) WithUserCallback(uc UserCallback) *ConfigBuilder {
-	c.uc = uc
+// WithUserFetcher set User Callback
+func (c *ConfigBuilder) WithUserFetcher(fecther UserFetcher) *ConfigBuilder {
+	c.UserFetcher = fecther
 	return c
 }
 
-// WithTokenCallback set User Callback
-func (c *ConfigBuilder) WithTokenCallback(tc TokenCallback) *ConfigBuilder {
-	c.tc = tc
+// WithTokenEnhancer set User Callback
+func (c *ConfigBuilder) WithTokenEnhancer(enchancer TokenEnhancer) *ConfigBuilder {
+	c.TokenEnhancer = enchancer
 	return c
 }
 
