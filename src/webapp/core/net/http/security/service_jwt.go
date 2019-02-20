@@ -14,21 +14,19 @@ import (
 
 // TokenServiceJwt Implementation used for the service
 type TokenServiceJwt struct {
-	config *Config
+	*Config
 }
 
 // NewTokenServiceJwt Create a new ServiceImpl
 func NewTokenServiceJwt(config *Config) *TokenServiceJwt {
-	return &TokenServiceJwt{
-		config: config,
-	}
+	return &TokenServiceJwt{config}
 }
 
 // Create create the token - HMAC (HS256) based with secret key
 // Check https://github.com/dgrijalva/jwt-go and 'Signing Methods and Key Types'
 func (s *TokenServiceJwt) Create(ctx context.Context, req *CreateTokenRequest) (*CreateTokenResponse, error) {
 	var err error
-	user, err := s.config.UserFetcher.Fetch(ctx, req.UserName)
+	user, err := s.UserFetcher.Fetch(ctx, req.UserName)
 	if err != nil {
 		herr, ok := err.(*cerr.Error)
 		if !ok {
@@ -37,21 +35,21 @@ func (s *TokenServiceJwt) Create(ctx context.Context, req *CreateTokenRequest) (
 		return nil, herr
 	}
 
-	expirationTime := global.Now().Add(time.Second * time.Duration(s.config.ExpirationTime))
+	expirationTime := global.Now().Add(time.Second * time.Duration(s.ExpirationTime))
 	claims := jwt.MapClaims{
 		"jti":   uuid.NewV4().String(),
-		"iss":   s.config.Issuer,
+		"iss":   s.Issuer,
 		"sub":   user.ID,
 		"name":  user.Name,
 		"roles": user.Roles,
 		"exp":   expirationTime.Unix(),
 		"iat":   global.Unix(),
 	}
-	if s.config.TokenEnhancer != nil {
+	if s.TokenEnhancer != nil {
 
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	tokenString, err := token.SignedString([]byte(s.config.SecretKey))
+	tokenString, err := token.SignedString([]byte(s.SecretKey))
 	if err != nil {
 		return nil, net.ErrInternalServer.From(err)
 	}
@@ -67,7 +65,7 @@ func (s *TokenServiceJwt) Check(ctx context.Context, req *CheckTokenRequest) (*C
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
 		}
-		return []byte(s.config.SecretKey), nil
+		return []byte(s.SecretKey), nil
 	})
 	if err != nil {
 		ve, ok := err.(*jwt.ValidationError)

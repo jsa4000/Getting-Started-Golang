@@ -11,6 +11,7 @@ type Config struct {
 	SecretKey      string `config:"security.secretkey:mypassword$"`
 	ClientID       string `config:"security.clientid:trusted-client"`
 	ClientSecret   string `config:"security.clientsecret:mypassword$"`
+	Service        TokenService
 	UserFetcher    UserFetcher
 	TokenEnhancer  TokenEnhancer
 }

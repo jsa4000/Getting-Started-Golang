@@ -1,6 +1,12 @@
 package security
 
-import "context"
+import (
+	"context"
+	"net/http"
+)
+
+// AuthHandler handler to manage the authorization methods available
+type AuthHandler func(w http.ResponseWriter, r *http.Request, config *Config) error
 
 // TokenData data structure for token generation (claims)
 type TokenData map[string]interface{}
