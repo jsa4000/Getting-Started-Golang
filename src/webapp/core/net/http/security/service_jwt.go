@@ -79,7 +79,10 @@ func (s *ServiceJwt) CheckToken(ctx context.Context, req *CheckTokenRequest) (*C
 		return []byte(s.config.SecretKey), nil
 	})
 	if err != nil {
-		return nil, net.ErrInternalServer.From(err)
+		ve, ok := err.(*jwt.ValidationError)
+		if !ok || ve.Errors&(jwt.ValidationErrorExpired|jwt.ValidationErrorNotValidYet) == 0 {
+			return nil, net.ErrInternalServer.From(err)
+		}
 	}
 	return &CheckTokenResponse{
 		Data:  token,

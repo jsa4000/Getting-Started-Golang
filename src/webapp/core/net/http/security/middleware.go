@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"net/http"
 	"strings"
-	log "webapp/core/logging"
 	net "webapp/core/net/http"
 )
 
@@ -44,7 +43,6 @@ func (a *AuthHandlerMiddleware) Handler() net.HandlerMid {
 // AuthHandler decorator (closure)
 func (a *AuthHandlerMiddleware) AuthHandler(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		log.Debugf("Verify security for request uri=%s", r.RequestURI)
 		if net.Contains(r.RequestURI, basicAuth) {
 			if err := a.basicAuthHandler(w, r); err != nil {
 				a.WriteError(w, err)

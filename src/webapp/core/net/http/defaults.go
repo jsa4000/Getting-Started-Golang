@@ -43,7 +43,7 @@ func NewCustomHeadersMiddleware() Middleware {
 // LoggingHandler decorator (closure)
 func LoggingHandler(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		log.Infof("Received Request uri=%s args=%s ", r.RequestURI, Vars(r))
+		log.Debugf("Received Request uri=%s args=%s ", r.RequestURI, Vars(r))
 		start := time.Now()
 		defer func() {
 			log.Debugf("Processed Response in %d ns", time.Since(start).Nanoseconds())
@@ -55,7 +55,6 @@ func LoggingHandler(next http.Handler) http.Handler {
 // CustomHeadersHandler decorator (closure)
 func CustomHeadersHandler(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		log.Debugf("Setting custom headers for request uri=%s", r.RequestURI)
 		if !Contains(r.RequestURI, filters) {
 			w.Header().Set("Content-Type", "application/json")
 		}
