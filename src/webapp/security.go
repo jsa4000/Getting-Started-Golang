@@ -6,6 +6,7 @@ import (
 	"webapp/core/net/http/security/basic"
 	"webapp/core/net/http/security/jwt"
 	"webapp/core/net/http/security/open"
+	"webapp/core/net/http/security/role"
 )
 
 func jwtService(uf security.UserFetcher) *jwt.Service {
@@ -28,11 +29,18 @@ func openAuthService() security.AuthHandler {
 		Build()
 }
 
+func roleAuthService() security.AuthHandler {
+	return role.NewBuilder().
+		WithTargets([]string{"/users"}...).
+		Build()
+}
+
 // Security creates the security model
 func Security(uf security.UserFetcher) http.Security {
 	jwtService := jwtService(uf)
 	return security.NewBuilder().
 		WithTokenService(jwtService).
-		WithHandlers(openAuthService(), basicAuthService(uf), jwtService).
+		WithAuthenticationHandlers(openAuthService(), basicAuthService(uf), jwtService).
+		WithAuthorizationHandlers(roleAuthService()).
 		Build()
 }

@@ -17,7 +17,12 @@ import (
 	uuid "github.com/satori/go.uuid"
 )
 
+type key string
+
 const (
+	// JwtKey Key to get data from context in basicAuth
+	JwtKey key = "JwtKey"
+
 	bearerPreffix = "Bearer "
 	authHeader    = "Authorization"
 )
@@ -100,6 +105,7 @@ func (s *Service) Handle(w http.ResponseWriter, r *http.Request) error {
 	if err != nil || !resp.Valid {
 		return net.ErrUnauthorized.From(errors.New("Authorization Beared invalid"))
 	}
+	r.WithContext(context.WithValue(r.Context(), JwtKey, resp.Data))
 	return nil
 }
 

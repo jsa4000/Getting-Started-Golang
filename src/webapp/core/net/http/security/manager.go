@@ -7,15 +7,22 @@ import (
 // Manager returns struct
 type Manager struct {
 	*Config
-	handlers     []AuthHandler
-	middleware   net.Middleware
-	controller   net.Controller
-	tokenService TokenService
+	authentication net.Middleware
+	authorization  net.Middleware
+	controller     net.Controller
+	tokenService   TokenService
 }
 
 // Middleware returns the middleware for the security implementation
-func (c *Manager) Middleware() net.Middleware {
-	return c.middleware
+func (c *Manager) Middleware() []net.Middleware {
+	result := make([]net.Middleware, 0)
+	if c.authentication != nil {
+		result = append(result, c.authentication)
+	}
+	if c.authorization != nil {
+		result = append(result, c.authorization)
+	}
+	return result
 }
 
 // Controller returns the controller for the security implementation
@@ -26,15 +33,18 @@ func (c *Manager) Controller() net.Controller {
 // ManagerBuilder returns struct
 type ManagerBuilder struct {
 	*Manager
+	authenticationHndls []AuthHandler
+	authorizationHndls  []AuthHandler
 }
 
 // NewBuilder returns new security config
 func NewBuilder() *ManagerBuilder {
 	return &ManagerBuilder{
-		&Manager{
-			Config:   NewConfig(),
-			handlers: make([]AuthHandler, 0),
+		Manager: &Manager{
+			Config: NewConfig(),
 		},
+		authenticationHndls: make([]AuthHandler, 0),
+		authorizationHndls:  make([]AuthHandler, 0),
 	}
 }
 
@@ -44,9 +54,15 @@ func (c *ManagerBuilder) WithConfig(config *Config) *ManagerBuilder {
 	return c
 }
 
-// WithHandlers set middleware to use for security
-func (c *ManagerBuilder) WithHandlers(method ...AuthHandler) *ManagerBuilder {
-	c.handlers = append(c.handlers, method...)
+// WithAuthenticationHandlers set middleware to use for security
+func (c *ManagerBuilder) WithAuthenticationHandlers(method ...AuthHandler) *ManagerBuilder {
+	c.authenticationHndls = append(c.authenticationHndls, method...)
+	return c
+}
+
+// WithAuthorizationHandlers set middleware to use for security
+func (c *ManagerBuilder) WithAuthorizationHandlers(method ...AuthHandler) *ManagerBuilder {
+	c.authorizationHndls = append(c.authorizationHndls, method...)
 	return c
 }
 
@@ -59,6 +75,11 @@ func (c *ManagerBuilder) WithTokenService(ts TokenService) *ManagerBuilder {
 // Build returns manager build
 func (c *ManagerBuilder) Build() *Manager {
 	c.controller = NewRestController(c.tokenService)
-	c.middleware = NewMiddleware(c.handlers)
+	if len(c.authenticationHndls) > 0 {
+		c.authentication = NewMiddleware(c.authenticationHndls, net.PriorityAuthentication)
+	}
+	if len(c.authorizationHndls) > 0 {
+		c.authorization = NewMiddleware(c.authorizationHndls, net.PriorityAuthorization)
+	}
 	return c.Manager
 }

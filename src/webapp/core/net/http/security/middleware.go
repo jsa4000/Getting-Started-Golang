@@ -5,18 +5,18 @@ import (
 	net "webapp/core/net/http"
 )
 
-// Middleware returns LogginMiddleware struct
+// Middleware  middleware struct
 type Middleware struct {
 	net.MiddlewareBase
 	handlers []AuthHandler
 }
 
-// NewMiddleware creation for Athentication Middleware
-func NewMiddleware(handlers []AuthHandler) net.Middleware {
+// NewMiddleware creation for Auth
+func NewMiddleware(handlers []AuthHandler, priority int) net.Middleware {
 	return &Middleware{
 		MiddlewareBase: net.MiddlewareBase{
 			Hdlr: nil,
-			Prio: net.PriorityAuthentication,
+			Prio: priority,
 		},
 		handlers: handlers,
 	}
