@@ -5,49 +5,38 @@ import (
 	net "webapp/core/net/http"
 )
 
-const (
-	bearerPreffix = "Bearer "
-	authHeader    = "Authorization"
-)
-
-var (
-	noAuth    = []string{"/swagger/"}
-	basicAuth = []string{"/oauth/"}
-)
-
-// AuthHandlerMiddleware returns LogginMiddleware struct
-type AuthHandlerMiddleware struct {
+// Middleware returns LogginMiddleware struct
+type Middleware struct {
 	net.MiddlewareBase
-	config *Config
+	handlers []AuthHandler
 }
 
-// NewAuthHandlerMiddleware creation
-func NewAuthHandlerMiddleware(c *Config) net.Middleware {
-	return &AuthHandlerMiddleware{
-		net.MiddlewareBase{
+// NewMiddleware creation for Athentication Middleware
+func NewMiddleware(handlers []AuthHandler) net.Middleware {
+	return &Middleware{
+		MiddlewareBase: net.MiddlewareBase{
 			Hdlr: nil,
-			Prio: net.PrioritySecurity,
-		}, c,
+			Prio: net.PriorityAuthentication,
+		},
+		handlers: handlers,
 	}
 }
 
 // Handler returns the HandlerMid
-func (a *AuthHandlerMiddleware) Handler() net.HandlerMid {
-	return a.AuthHandler
+func (a *Middleware) Handler() net.HandlerMid {
+	return a.handler
 }
 
 // AuthHandler decorator (closure)
-func (a *AuthHandlerMiddleware) AuthHandler(next http.Handler) http.Handler {
+func (a *Middleware) handler(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if net.Contains(r.RequestURI, basicAuth) {
-			if err := BasicAuthHandler(w, r, a.config); err != nil {
-				a.WriteError(w, err)
-				return
-			}
-		} else if !net.Contains(r.RequestURI, noAuth) {
-			if err := JwtHandler(w, r, a.config); err != nil {
-				a.WriteError(w, err)
-				return
+		for _, handler := range a.handlers {
+			if net.Contains(r.RequestURI, handler.Targets()) {
+				if err := handler.Handle(w, r); err != nil {
+					a.WriteError(w, err)
+					return
+				}
+				break
 			}
 		}
 		next.ServeHTTP(w, r)

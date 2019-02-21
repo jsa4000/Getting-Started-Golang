@@ -5,12 +5,6 @@ import (
 	"net/http"
 )
 
-// AuthHandler handler to manage the authorization methods available
-type AuthHandler func(w http.ResponseWriter, r *http.Request, config *Config) error
-
-// TokenData data structure for token generation (claims)
-type TokenData map[string]interface{}
-
 // UserFetcher Interface
 type UserFetcher interface {
 	Fetch(ctx context.Context, userID string) (*UserData, error)
@@ -19,6 +13,12 @@ type UserFetcher interface {
 // TokenEnhancer Interface
 type TokenEnhancer interface {
 	Write(t *TokenData)
+}
+
+// AuthHandler interface to manage the authorization method
+type AuthHandler interface {
+	Handle(w http.ResponseWriter, r *http.Request) error
+	Targets() []string
 }
 
 // TokenService Interface for Users

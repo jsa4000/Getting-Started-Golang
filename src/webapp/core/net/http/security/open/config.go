@@ -1,4 +1,4 @@
-package security
+package open
 
 import (
 	"webapp/core/config"
@@ -6,7 +6,6 @@ import (
 
 // Config main app configuration
 type Config struct {
-	Enabled string `config:"security.enabled:true"`
 }
 
 // NewConfig creates new config

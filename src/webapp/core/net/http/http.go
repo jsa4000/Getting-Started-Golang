@@ -83,8 +83,8 @@ func (h *Server) WithRoutes(routes ...Route) *Server {
 
 // WithSecurity to the router
 func (h *Server) WithSecurity(s Security) *Server {
-	router.Use(s.Middleware()...)
-	h.WithControllers(s.Controllers()...)
+	router.Use(s.Middleware())
+	h.WithControllers(s.Controller())
 	return h
 }
 

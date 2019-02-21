@@ -2,6 +2,13 @@ package security
 
 import "time"
 
+// Grant Types: OAuth 2 provides several "grant types" for different use cases.
+// The grant types defined are:
+// - Authorization Code
+// - Password
+// - Client credentials
+// - Implicit
+
 // CreateTokenRequest request
 type CreateTokenRequest struct {
 	UserName string   `json:"username" validate:"min=0,max=255,required"`

@@ -76,6 +76,9 @@ func SortMiddleware(m []Middleware, asc bool) []Middleware {
 // Contains function to short middleware by priority
 func Contains(source string, values []string) bool {
 	for _, substr := range values {
+		if strings.HasSuffix(substr, "*") {
+			substr = strings.TrimSuffix(substr, "*")
+		}
 		if strings.Contains(source, substr) {
 			return true
 		}

@@ -5,7 +5,6 @@ import (
 	log "webapp/core/logging"
 	net "webapp/core/net/http"
 	pprof "webapp/core/net/http/pprof"
-	httpSec "webapp/core/net/http/security"
 
 	// Go-Core Starters
 	_ "webapp/core/config/viper/starter"
@@ -35,11 +34,6 @@ func (a *App) Startup(ctx context.Context) {
 	rolesService := roles.NewServiceImpl(rolesRepository)
 	usersService := users.NewServiceImpl(usersRepository)
 
-	// Security Config
-	secConfig := httpSec.NewConfigBuilder().
-		WithUserFetcher(usersService).
-		Build()
-
 	// Create The HTTP Server
 	a.httpServer = net.NewServer().
 		WithControllers(pprof.NewController()).                                       // Add Controller for Profiling
@@ -47,7 +41,7 @@ func (a *App) Startup(ctx context.Context) {
 		WithControllers(users.NewRestController(usersService)).                       // Add users controller
 		WithStatic("/swagger/", "./static/swaggerui/").                               // Create swagger static content '/swagger/index.html'
 		WithMiddleware(net.NewLoggingMiddleware(), net.NewCustomHeadersMiddleware()). // Add global middlewares
-		WithSecurity(httpSec.New(secConfig)).                                         // Add security to http requests
+		WithSecurity(Security(usersService)).                                         // Add security to HTTP Requests
 		Start()                                                                       // Start the HTTP server
 }
 

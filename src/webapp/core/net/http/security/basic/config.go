@@ -1,4 +1,4 @@
-package security
+package basic
 
 import (
 	"webapp/core/config"
@@ -6,7 +6,8 @@ import (
 
 // Config main app configuration
 type Config struct {
-	Enabled string `config:"security.enabled:true"`
+	ClientID     string `config:"security.clientid:trusted-client"`
+	ClientSecret string `config:"security.clientsecret:mypassword$"`
 }
 
 // NewConfig creates new config

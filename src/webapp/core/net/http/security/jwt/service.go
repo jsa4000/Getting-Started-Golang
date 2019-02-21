@@ -1,32 +1,40 @@
-package security
+package jwt
 
 import (
 	"context"
+	"errors"
 	"fmt"
+	"net/http"
+	"strings"
 	"time"
 	cerr "webapp/core/errors"
+	log "webapp/core/logging"
 	net "webapp/core/net/http"
+	"webapp/core/net/http/security"
 	global "webapp/core/time"
 
 	jwt "github.com/dgrijalva/jwt-go"
 	uuid "github.com/satori/go.uuid"
 )
 
-// TokenServiceJwt Implementation used for the service
-type TokenServiceJwt struct {
-	*Config
-}
+const (
+	bearerPreffix = "Bearer "
+	authHeader    = "Authorization"
+)
 
-// NewTokenServiceJwt Create a new ServiceImpl
-func NewTokenServiceJwt(config *Config) *TokenServiceJwt {
-	return &TokenServiceJwt{config}
+// Service Implementation used for the service
+type Service struct {
+	*Config
+	targets       []string
+	userFetcher   security.UserFetcher
+	tokenEnhancer security.TokenEnhancer
 }
 
 // Create create the token - HMAC (HS256) based with secret key
 // Check https://github.com/dgrijalva/jwt-go and 'Signing Methods and Key Types'
-func (s *TokenServiceJwt) Create(ctx context.Context, req *CreateTokenRequest) (*CreateTokenResponse, error) {
+func (s *Service) Create(ctx context.Context, req *security.CreateTokenRequest) (*security.CreateTokenResponse, error) {
 	var err error
-	user, err := s.UserFetcher.Fetch(ctx, req.UserName)
+	user, err := s.userFetcher.Fetch(ctx, req.UserName)
 	if err != nil {
 		herr, ok := err.(*cerr.Error)
 		if !ok {
@@ -45,7 +53,7 @@ func (s *TokenServiceJwt) Create(ctx context.Context, req *CreateTokenRequest) (
 		"exp":   expirationTime.Unix(),
 		"iat":   global.Unix(),
 	}
-	if s.TokenEnhancer != nil {
+	if s.tokenEnhancer != nil {
 
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
@@ -53,14 +61,14 @@ func (s *TokenServiceJwt) Create(ctx context.Context, req *CreateTokenRequest) (
 	if err != nil {
 		return nil, net.ErrInternalServer.From(err)
 	}
-	return &CreateTokenResponse{
+	return &security.CreateTokenResponse{
 		Token:          tokenString,
 		ExpirationTime: expirationTime,
 	}, nil
 }
 
 // Check returns deserialized token
-func (s *TokenServiceJwt) Check(ctx context.Context, req *CheckTokenRequest) (*CheckTokenResponse, error) {
+func (s *Service) Check(ctx context.Context, req *security.CheckTokenRequest) (*security.CheckTokenResponse, error) {
 	token, err := jwt.Parse(req.Token, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
@@ -73,8 +81,29 @@ func (s *TokenServiceJwt) Check(ctx context.Context, req *CheckTokenRequest) (*C
 			return nil, net.ErrInternalServer.From(err)
 		}
 	}
-	return &CheckTokenResponse{
+	return &security.CheckTokenResponse{
 		Data:  token,
 		Valid: token.Valid,
 	}, nil
+}
+
+// Handle handler to manage basic authenticaiton method
+func (s *Service) Handle(w http.ResponseWriter, r *http.Request) error {
+	log.Debugf("Handle JWT Request for %s", r.RequestURI)
+	basicAuth, ok := r.Header[authHeader]
+	if !ok {
+		return net.ErrUnauthorized.From(errors.New("Authorization has not been found"))
+	}
+	resp, err := s.Check(r.Context(), &security.CheckTokenRequest{
+		Token: strings.TrimPrefix(basicAuth[0], bearerPreffix),
+	})
+	if err != nil || !resp.Valid {
+		return net.ErrUnauthorized.From(errors.New("Authorization Beared invalid"))
+	}
+	return nil
+}
+
+//Targets returns the targets or urls the auth applies for
+func (s *Service) Targets() []string {
+	return s.targets
 }
