@@ -1,4 +1,4 @@
-package role
+package scopes
 
 import (
 	"net/http"
@@ -7,29 +7,18 @@ import (
 	"webapp/core/net/http/security"
 )
 
-// Service struct to handle basic authentication
+// Service struct to handle resource authorization by scopes
 type Service struct {
 	*Config
-	targets     []string
-	userFetcher security.UserFetcher
+	targets []string
 }
 
-// Handle handler to manage basic authenticaiton method
+// Handle handler to manage scopes authorization method
 func (s *Service) Handle(w http.ResponseWriter, r *http.Request) error {
 	log.Debugf("Handle Role Based Authorization Request for %s", net.RemoveParams(r.RequestURI))
-
-	if value := r.Context().Value(security.UserNameKey); value != nil {
-		log.Debugf("UserName %v", value)
-	}
-
-	if value := r.Context().Value(security.UserIDKey); value != nil {
-		log.Debugf("UserID %v", value)
-	}
-
 	if value := r.Context().Value(security.UserRolesKey); value != nil {
 		log.Debugf("Roles %v", value)
 	}
-
 	return nil
 }
 

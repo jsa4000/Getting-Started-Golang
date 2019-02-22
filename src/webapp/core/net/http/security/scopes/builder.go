@@ -1,4 +1,4 @@
-package role
+package scopes
 
 // Builder main app configuration
 type Builder struct {

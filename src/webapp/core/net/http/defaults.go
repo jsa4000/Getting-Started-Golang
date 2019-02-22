@@ -7,7 +7,7 @@ import (
 )
 
 var (
-	filters = []string{"/debug/pprof/", "/swagger/"}
+	filters = []string{"/debug/pprof/", "/swaggerui/"}
 )
 
 // LoggingMiddleware returns LogginMiddleware struct

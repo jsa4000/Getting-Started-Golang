@@ -1,4 +1,4 @@
-package role
+package scopes
 
 import (
 	"webapp/core/config"

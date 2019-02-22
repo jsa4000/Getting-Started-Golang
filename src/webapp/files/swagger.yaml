@@ -235,6 +235,13 @@ definitions:
         type: string
       message:
         type: string
+securityDefinitions:
+  bearerAuth:
+    type: apiKey
+    name: Authorization
+    in: header
+security:
+  - bearerAuth: []  
 externalDocs:
   description: Find out more about WebApp
   url: http://localhost:8080/index.html

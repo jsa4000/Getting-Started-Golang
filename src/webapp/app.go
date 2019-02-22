@@ -39,7 +39,7 @@ func (a *App) Startup(ctx context.Context) {
 		WithControllers(pprof.NewController()).                                       // Add Controller for Profiling
 		WithControllers(roles.NewRestController(rolesService)).                       // Add roles controller
 		WithControllers(users.NewRestController(usersService)).                       // Add users controller
-		WithStatic("/swagger/", "./static/swaggerui/").                               // Create swagger static content '/swagger/index.html'
+		WithStatic("/swaggerui/", "./static/swaggerui/").                             // Create swagger static content '/swagger/index.html'
 		WithMiddleware(net.NewLoggingMiddleware(), net.NewCustomHeadersMiddleware()). // Add global middlewares
 		WithSecurity(Security(usersService)).                                         // Add security to HTTP Requests
 		Start()                                                                       // Start the HTTP server

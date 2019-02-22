@@ -6,7 +6,7 @@ import (
 	"webapp/core/net/http/security/basic"
 	"webapp/core/net/http/security/jwt"
 	"webapp/core/net/http/security/open"
-	"webapp/core/net/http/security/role"
+	"webapp/core/net/http/security/scopes"
 )
 
 func jwtService(uf security.UserFetcher) *jwt.Service {
@@ -25,12 +25,12 @@ func basicAuthService(uf security.UserFetcher) security.AuthHandler {
 
 func openAuthService() security.AuthHandler {
 	return open.NewBuilder().
-		WithTargets([]string{"/swagger/*"}...).
+		WithTargets([]string{"/swaggerui/*"}...).
 		Build()
 }
 
-func roleAuthService() security.AuthHandler {
-	return role.NewBuilder().
+func scopesAuthService() security.AuthHandler {
+	return scopes.NewBuilder().
 		WithTargets([]string{"/users", "/oauth"}...).
 		Build()
 }
@@ -41,6 +41,6 @@ func Security(uf security.UserFetcher) http.Security {
 	return security.NewBuilder().
 		WithTokenService(jwtService).
 		WithAuthenticationHandlers(openAuthService(), basicAuthService(uf), jwtService).
-		WithAuthorizationHandlers(roleAuthService()).
+		WithAuthorizationHandlers(scopesAuthService()).
 		Build()
 }
