@@ -14,7 +14,7 @@ http:
 
 security:
   issuer: server-oauth
-  expirationtime: 60         # seconds. 86400 = 1 day
+  expirationtime: 86400        # seconds. 86400 = 1 day
   secretkey: mypassword$
   clientid: trusted-client
   clientsecret: mypassword$

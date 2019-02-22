@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"net/http"
 	"sort"
-	"strings"
 	"webapp/core/errors"
 	log "webapp/core/logging"
 )
@@ -71,17 +70,4 @@ func SortMiddleware(m []Middleware, asc bool) []Middleware {
 	}
 	sort.Sort(byPriority(result))
 	return result
-}
-
-// Contains function to short middleware by priority
-func Contains(source string, values []string) bool {
-	for _, substr := range values {
-		if strings.HasSuffix(substr, "*") {
-			substr = strings.TrimSuffix(substr, "*")
-		}
-		if strings.Contains(source, substr) {
-			return true
-		}
-	}
-	return false
 }

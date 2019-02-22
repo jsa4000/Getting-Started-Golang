@@ -7,7 +7,7 @@ import (
 
 // UserFetcher Interface
 type UserFetcher interface {
-	Fetch(ctx context.Context, userID string) (*UserData, error)
+	Fetch(ctx context.Context, username string) (*UserData, error)
 }
 
 // TokenEnhancer Interface

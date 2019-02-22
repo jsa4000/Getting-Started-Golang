@@ -17,14 +17,20 @@ import (
 	uuid "github.com/satori/go.uuid"
 )
 
-type key string
-
 const (
-	// JwtKey Key to get data from context in basicAuth
-	JwtKey key = "JwtKey"
+	// AuthKey Key to get data from context in basicAuth
+	AuthKey security.ContextKey = "kwt-auth-key"
 
 	bearerPreffix = "Bearer "
 	authHeader    = "Authorization"
+
+	jsontokenIDfield    = "jti"
+	issuerField         = "iss"
+	subjectField        = "sub"
+	userNameField       = "name"
+	rolesField          = "roles"
+	expirationDateField = "exp"
+	issuedAtField       = "iat"
 )
 
 // Service Implementation used for the service
@@ -50,13 +56,13 @@ func (s *Service) Create(ctx context.Context, req *security.CreateTokenRequest) 
 
 	expirationTime := global.Now().Add(time.Second * time.Duration(s.ExpirationTime))
 	claims := jwt.MapClaims{
-		"jti":   uuid.NewV4().String(),
-		"iss":   s.Issuer,
-		"sub":   user.ID,
-		"name":  user.Name,
-		"roles": user.Roles,
-		"exp":   expirationTime.Unix(),
-		"iat":   global.Unix(),
+		jsontokenIDfield:    uuid.NewV4().String(),
+		issuerField:         s.Issuer,
+		subjectField:        user.ID,
+		userNameField:       user.Name,
+		rolesField:          user.Roles,
+		expirationDateField: expirationTime.Unix(),
+		issuedAtField:       global.Unix(),
 	}
 	if s.tokenEnhancer != nil {
 
@@ -94,7 +100,7 @@ func (s *Service) Check(ctx context.Context, req *security.CheckTokenRequest) (*
 
 // Handle handler to manage basic authenticaiton method
 func (s *Service) Handle(w http.ResponseWriter, r *http.Request) error {
-	log.Debugf("Handle JWT Request for %s", r.RequestURI)
+	log.Debugf("Handle JWT Request for %s", net.RemoveParams(r.RequestURI))
 	basicAuth, ok := r.Header[authHeader]
 	if !ok {
 		return net.ErrUnauthorized.From(errors.New("Authorization has not been found"))
@@ -105,7 +111,21 @@ func (s *Service) Handle(w http.ResponseWriter, r *http.Request) error {
 	if err != nil || !resp.Valid {
 		return net.ErrUnauthorized.From(errors.New("Authorization Beared invalid"))
 	}
-	r.WithContext(context.WithValue(r.Context(), JwtKey, resp.Data))
+	security.SetContextValue(r, AuthKey, new(security.ContextValue))
+	if token := resp.Data.(*jwt.Token); token != nil {
+		claims := token.Claims.(jwt.MapClaims)
+		security.SetUserName(r, claims[userNameField].(string))
+		security.SetUserID(r, claims[subjectField].(string))
+		if val, ok := claims[rolesField]; ok {
+			if iroles, err := val.([]interface{}); !err {
+				roles := make([]string, len(iroles))
+				for _, role := range iroles {
+					roles = append(roles, role.(string))
+				}
+				security.SetRoles(r, roles)
+			}
+		}
+	}
 	return nil
 }
 

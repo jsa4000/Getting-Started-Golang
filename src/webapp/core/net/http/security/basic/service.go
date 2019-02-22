@@ -1,7 +1,6 @@
 package basic
 
 import (
-	"context"
 	"errors"
 	"net/http"
 	log "webapp/core/logging"
@@ -9,11 +8,9 @@ import (
 	"webapp/core/net/http/security"
 )
 
-type key string
-
 const (
-	// BasicAuthKey Key to get data from context in basicAuth
-	BasicAuthKey key = "BasicAuthKey"
+	// AuthKey Key to get data from context in basicAuth
+	AuthKey security.ContextKey = "basic-auth-key"
 )
 
 // Service struct to handle basic authentication
@@ -25,7 +22,7 @@ type Service struct {
 
 // Handle handler to manage basic authenticaiton method
 func (s *Service) Handle(w http.ResponseWriter, r *http.Request) error {
-	log.Debugf("Handle Basic Auth Request for %s", r.RequestURI)
+	log.Debugf("Handle Basic Auth Request for %s", net.RemoveParams(r.RequestURI))
 	user, password, hasAuth := r.BasicAuth()
 	if !hasAuth {
 		return net.ErrUnauthorized.From(errors.New("Authorization has not been found"))
@@ -33,7 +30,8 @@ func (s *Service) Handle(w http.ResponseWriter, r *http.Request) error {
 	if user != s.Config.ClientID && password != s.Config.ClientSecret {
 		return net.ErrUnauthorized.From(errors.New("Credentials are not valid for client #{user}"))
 	}
-	r.WithContext(context.WithValue(r.Context(), BasicAuthKey, user))
+	security.SetContextValue(r, AuthKey, new(security.ContextValue))
+	security.SetUserName(r, user)
 	return nil
 }
 

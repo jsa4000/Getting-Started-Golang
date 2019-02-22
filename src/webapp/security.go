@@ -31,7 +31,7 @@ func openAuthService() security.AuthHandler {
 
 func roleAuthService() security.AuthHandler {
 	return role.NewBuilder().
-		WithTargets([]string{"/users"}...).
+		WithTargets([]string{"/users", "/oauth"}...).
 		Build()
 }
 

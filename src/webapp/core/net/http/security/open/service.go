@@ -3,6 +3,7 @@ package open
 import (
 	"net/http"
 	log "webapp/core/logging"
+	net "webapp/core/net/http"
 )
 
 // Service struct to handle basic authentication
@@ -13,7 +14,7 @@ type Service struct {
 
 // Handle handler to manage basic authenticaiton method
 func (s *Service) Handle(w http.ResponseWriter, r *http.Request) error {
-	log.Debugf("Handle Open Request for %s", r.RequestURI)
+	log.Debugf("Handle Open Request for %s", net.RemoveParams(r.RequestURI))
 	return nil
 }
 

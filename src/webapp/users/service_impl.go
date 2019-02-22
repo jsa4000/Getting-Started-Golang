@@ -66,19 +66,19 @@ func (s *ServiceImpl) DeleteByID(ctx context.Context, req *DeleteByIDRequest) (*
 }
 
 // Fetch implements UserFetcher interface
-func (s *ServiceImpl) Fetch(ctx context.Context, userID string) (*security.UserData, error) {
+func (s *ServiceImpl) Fetch(ctx context.Context, username string) (*security.UserData, error) {
 	var user *User
 	var err error
-	if strings.Contains(userID, "@") {
-		user, err = s.Repository.FindByEmail(ctx, userID)
+	if strings.Contains(username, "@") {
+		user, err = s.Repository.FindByEmail(ctx, username)
 	} else {
-		user, err = s.Repository.FindByName(ctx, userID)
+		user, err = s.Repository.FindByName(ctx, username)
 	}
 	if err != nil {
 		return nil, net.ErrInternalServer.From(err)
 	}
 	if user == nil {
-		return nil, net.ErrNotFound.From(fmt.Errorf("User %s has not been found", userID))
+		return nil, net.ErrNotFound.From(fmt.Errorf("User %s has not been found", username))
 	}
 	return &security.UserData{
 		ID:       fmt.Sprintf("%v", user.ID),
