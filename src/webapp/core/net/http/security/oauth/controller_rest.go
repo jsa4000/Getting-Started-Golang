@@ -1,4 +1,4 @@
-package security
+package oauth
 
 import (
 	"encoding/json"
@@ -10,11 +10,11 @@ import (
 // RestController for http transport
 type RestController struct {
 	net.RestController
-	Service TokenService
+	Service Service
 }
 
 // NewRestController create new RestController
-func NewRestController(service TokenService) net.Controller {
+func NewRestController(service Service) net.Controller {
 	return &RestController{
 		Service: service,
 	}

@@ -10,7 +10,7 @@ type Manager struct {
 	authentication net.Middleware
 	authorization  net.Middleware
 	controller     net.Controller
-	tokenService   TokenService
+	//tokenService   TokenService
 }
 
 // Middleware returns the middleware for the security implementation
@@ -54,27 +54,29 @@ func (c *ManagerBuilder) WithConfig(config *Config) *ManagerBuilder {
 	return c
 }
 
-// WithAuthenticationHandlers set middleware to use for security
-func (c *ManagerBuilder) WithAuthenticationHandlers(method ...AuthHandler) *ManagerBuilder {
+// WithAuhtorizationHandlers set middleware to use for security
+func (c *ManagerBuilder) WithAuhtorizationHandlers(method ...AuthHandler) *ManagerBuilder {
 	c.authenticationHndls = append(c.authenticationHndls, method...)
 	return c
 }
 
-// WithAuthorizationHandlers set middleware to use for security
-func (c *ManagerBuilder) WithAuthorizationHandlers(method ...AuthHandler) *ManagerBuilder {
+// WithResourceHandlers set middleware to use for security
+func (c *ManagerBuilder) WithResourceHandlers(method ...AuthHandler) *ManagerBuilder {
 	c.authorizationHndls = append(c.authorizationHndls, method...)
 	return c
 }
 
+/*
 // WithTokenService set the interface to use for fetch user info
 func (c *ManagerBuilder) WithTokenService(ts TokenService) *ManagerBuilder {
 	c.tokenService = ts
 	return c
 }
+*/
 
 // Build returns manager build
 func (c *ManagerBuilder) Build() *Manager {
-	c.controller = NewRestController(c.tokenService)
+	//c.controller = NewRestController(c.tokenService)
 	if len(c.authenticationHndls) > 0 {
 		c.authentication = NewMiddleware(c.authenticationHndls, net.PriorityAuthentication)
 	}

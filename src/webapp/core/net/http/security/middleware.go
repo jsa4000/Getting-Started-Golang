@@ -5,6 +5,8 @@ import (
 	net "webapp/core/net/http"
 )
 
+// TODO: Order middleware by Priorities
+
 // Middleware  middleware struct
 type Middleware struct {
 	net.MiddlewareBase
