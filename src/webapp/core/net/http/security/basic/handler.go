@@ -2,7 +2,9 @@ package basic
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
+	cerr "webapp/core/errors"
 	log "webapp/core/logging"
 	net "webapp/core/net/http"
 	"webapp/core/net/http/security"
@@ -23,15 +25,24 @@ type AuthHandler struct {
 // Handle handler to manage basic authenticaiton method
 func (s *AuthHandler) Handle(w http.ResponseWriter, r *http.Request) error {
 	log.Debugf("Handle Basic Auth Request for %s", net.RemoveURLParams(r.RequestURI))
-	user, password, hasAuth := r.BasicAuth()
+	username, password, hasAuth := r.BasicAuth()
 	if !hasAuth {
 		return net.ErrUnauthorized.From(errors.New("Authorization is required"))
 	}
-	if user != s.Config.ClientID && password != s.Config.ClientSecret {
-		return net.ErrUnauthorized.From(errors.New("Credentials are not valid for client #{user}"))
+	var err error
+	user, err := s.provider.Fetch(r.Context(), username)
+	if err != nil {
+		herr, ok := err.(*cerr.Error)
+		if !ok {
+			herr = net.ErrInternalServer.From(err)
+		}
+		return herr
+	}
+	if username != user.Name && password != user.Password {
+		return net.ErrUnauthorized.From(fmt.Errorf("Credentials are not valid for client %s", user))
 	}
 	security.SetContextValue(r, AuthKey, new(security.ContextValue))
-	security.SetUserName(r, user)
+	security.SetUserName(r, username)
 	return nil
 }
 

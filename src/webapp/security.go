@@ -9,9 +9,8 @@ import (
 	"webapp/core/net/http/security/token/jwt"
 )
 
-func jwtHandler(provider security.UserInfoProvider) security.AuthHandler {
+func jwtHandler() security.AuthHandler {
 	return jwt.NewBuilder().
-		WithUserInfoProvider(provider).
 		WithTargets([]string{"/*"}...).
 		Build()
 }
@@ -22,9 +21,11 @@ func jwtService(provider security.UserInfoProvider) *jwt.Service {
 		Build()
 }
 
-func basicAuthHandler(provider security.UserInfoProvider) security.AuthHandler {
+func basicAuthHandler() security.AuthHandler {
 	return basic.NewBuilder().
-		WithUserInfoProvider(provider).
+		WithUserInfoProvider(security.NewUserProviderBuilder().
+			WithUser("client-trusted", "mypassword$").
+			WithUser("client-readonly", "mypassword$").Build()).
 		WithTargets([]string{"/oauth/*"}...).
 		Build()
 }
@@ -45,7 +46,7 @@ func scopesAuthHandler() security.AuthHandler {
 func Security(provider security.UserInfoProvider) http.Security {
 	return security.NewBuilder().
 		WithTokenService(jwtService(provider)).
-		WithAuthorization(openAuthHandler(), basicAuthHandler(provider), jwtHandler(provider)).
+		WithAuthorization(openAuthHandler(), basicAuthHandler(), jwtHandler()).
 		WithResourceFilter(scopesAuthHandler()).
 		Build()
 }
