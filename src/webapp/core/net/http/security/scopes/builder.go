@@ -2,13 +2,13 @@ package scopes
 
 // Builder main app configuration
 type Builder struct {
-	*Service
+	*AuthHandler
 }
 
 // NewBuilder Create a new ServiceImpl
 func NewBuilder() *Builder {
 	return &Builder{
-		&Service{
+		&AuthHandler{
 			Config:  NewConfig(),
 			targets: make([]string, 0),
 		},
@@ -28,6 +28,6 @@ func (c *Builder) WithTargets(target ...string) *Builder {
 }
 
 // Build set User Callback
-func (c *Builder) Build() *Service {
-	return c.Service
+func (c *Builder) Build() *AuthHandler {
+	return c.AuthHandler
 }

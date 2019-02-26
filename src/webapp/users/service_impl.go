@@ -66,7 +66,7 @@ func (s *ServiceImpl) DeleteByID(ctx context.Context, req *DeleteByIDRequest) (*
 }
 
 // Fetch implements UserFetcher interface
-func (s *ServiceImpl) Fetch(ctx context.Context, username string) (*security.UserData, error) {
+func (s *ServiceImpl) Fetch(ctx context.Context, username string) (*security.UserInfo, error) {
 	var user *User
 	var err error
 	if strings.Contains(username, "@") {
@@ -80,7 +80,7 @@ func (s *ServiceImpl) Fetch(ctx context.Context, username string) (*security.Use
 	if user == nil {
 		return nil, net.ErrNotFound.From(fmt.Errorf("User %s has not been found", username))
 	}
-	return &security.UserData{
+	return &security.UserInfo{
 		ID:       fmt.Sprintf("%v", user.ID),
 		Name:     user.Name,
 		Email:    user.Email,

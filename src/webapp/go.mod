@@ -21,6 +21,7 @@ require (
 	github.com/jessevdk/go-flags v1.4.0
 	github.com/julienschmidt/httprouter v1.2.0
 	github.com/justinas/alice v0.0.0-20171023064455-03f45bd4b7da
+	github.com/kr/pretty v0.1.0 // indirect
 	github.com/leodido/go-urn v1.1.0 // indirect
 	github.com/magiconair/properties v1.8.0
 	github.com/mongodb/mongo-go-driver v0.3.0

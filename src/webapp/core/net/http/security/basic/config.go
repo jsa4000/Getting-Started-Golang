@@ -6,8 +6,6 @@ import (
 
 // Config main app configuration
 type Config struct {
-	ClientID     string `config:"security.clientid:trusted-client"`
-	ClientSecret string `config:"security.clientsecret:mypassword$"`
 }
 
 // NewConfig creates new config

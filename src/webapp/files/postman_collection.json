@@ -16,13 +16,13 @@
 							"type": "basic",
 							"basic": [
 								{
-									"key": "password",
-									"value": "mypassword$",
+									"key": "username",
+									"value": "client-trusted",
 									"type": "string"
 								},
 								{
-									"key": "username",
-									"value": "client-trusted",
+									"key": "password",
+									"value": "mypassword$",
 									"type": "string"
 								}
 							]
@@ -34,7 +34,7 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "http://{{url}}:8080/oauth/check_token?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NTA5MjI3MjAsImlhdCI6MTU1MDgzNjMyMCwiaXNzIjoic2VydmVyLW9hdXRoIiwianRpIjoiZjU5MTA2NDYtZTU1Yi00YTMxLThmZjItMjg5OGY4ZGQ3NjMxIiwibmFtZSI6InVzZXJfdGVzdCIsInJvbGVzIjpbIlJPTEVfQURNSU4iLCJST0xFX1VTRVIiXSwic3ViIjoiNWM2ZDEyMTJlODcxNzVmYzYyMjk3ZDliIn0.UXMOWncb8ozXWCeLcqcMuOSv1a8BW-etWcUPF7frzH8",
+							"raw": "http://{{url}}:8080/oauth/check_token?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NTEyNzQ2MjMsImlhdCI6MTU1MTE4ODIyMywiaXNzIjoid2ViYXBwLmRvbWFpbi5jb20iLCJqdGkiOiI3ZTQ3MDg3YS0yNzZhLTQwODEtOTRkYS04NTc1MDVlYzFlNTAiLCJuYW1lIjoidXNlcl90ZXN0Iiwicm9sZXMiOm51bGwsInN1YiI6IjVjNzU0MGRmNWUzZjU3MzAwMGZmMmFjOSJ9.NhHecnuttLVVqIyMHxeF83NJdcrLOeODpKKPrTEFrx0",
 							"protocol": "http",
 							"host": [
 								"{{url}}"
@@ -47,7 +47,7 @@
 							"query": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NTA5MjI3MjAsImlhdCI6MTU1MDgzNjMyMCwiaXNzIjoic2VydmVyLW9hdXRoIiwianRpIjoiZjU5MTA2NDYtZTU1Yi00YTMxLThmZjItMjg5OGY4ZGQ3NjMxIiwibmFtZSI6InVzZXJfdGVzdCIsInJvbGVzIjpbIlJPTEVfQURNSU4iLCJST0xFX1VTRVIiXSwic3ViIjoiNWM2ZDEyMTJlODcxNzVmYzYyMjk3ZDliIn0.UXMOWncb8ozXWCeLcqcMuOSv1a8BW-etWcUPF7frzH8"
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NTEyNzQ2MjMsImlhdCI6MTU1MTE4ODIyMywiaXNzIjoid2ViYXBwLmRvbWFpbi5jb20iLCJqdGkiOiI3ZTQ3MDg3YS0yNzZhLTQwODEtOTRkYS04NTc1MDVlYzFlNTAiLCJuYW1lIjoidXNlcl90ZXN0Iiwicm9sZXMiOm51bGwsInN1YiI6IjVjNzU0MGRmNWUzZjU3MzAwMGZmMmFjOSJ9.NhHecnuttLVVqIyMHxeF83NJdcrLOeODpKKPrTEFrx0"
 								}
 							]
 						}
@@ -62,7 +62,7 @@
 							"basic": [
 								{
 									"key": "username",
-									"value": "trusted-client",
+									"value": "client-trusted",
 									"type": "string"
 								},
 								{
@@ -362,7 +362,7 @@
 		"bearer": [
 			{
 				"key": "token",
-				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NTA5MjU4MzAsImlhdCI6MTU1MDgzOTQzMCwiaXNzIjoic2VydmVyLW9hdXRoIiwianRpIjoiNTY3OTQ0ZTUtYTI4Yi00ZWIzLTg5YzQtNGNiOTRmNjg1ZTg5IiwibmFtZSI6InVzZXJfdGVzdCIsInJvbGVzIjpudWxsLCJzdWIiOiI1YzZkMTIxMmU4NzE3NWZjNjIyOTdkOWIifQ.sFcVws9bo3MaLkuBRWROROeaqtndw7h_JHeJciYFsS8",
+				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NTEyNzQ2MjMsImlhdCI6MTU1MTE4ODIyMywiaXNzIjoid2ViYXBwLmRvbWFpbi5jb20iLCJqdGkiOiI3ZTQ3MDg3YS0yNzZhLTQwODEtOTRkYS04NTc1MDVlYzFlNTAiLCJuYW1lIjoidXNlcl90ZXN0Iiwicm9sZXMiOm51bGwsInN1YiI6IjVjNzU0MGRmNWUzZjU3MzAwMGZmMmFjOSJ9.NhHecnuttLVVqIyMHxeF83NJdcrLOeODpKKPrTEFrx0",
 				"type": "string"
 			}
 		]

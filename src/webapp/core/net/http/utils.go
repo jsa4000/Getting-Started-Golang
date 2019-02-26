@@ -23,7 +23,7 @@ func Matches(url string, values []string) bool {
 	return false
 }
 
-// RemoveParams function that returns if any value matches with the url provided
-func RemoveParams(url string) string {
+// RemoveURLParams function that returns if any value matches with the url provided
+func RemoveURLParams(url string) string {
 	return strings.TrimRight(strings.SplitAfterN(url, "?", 2)[0], "?")
 }

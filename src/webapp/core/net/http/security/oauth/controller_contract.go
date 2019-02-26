@@ -1,11 +1,12 @@
-package security
+package oauth
 
 import "time"
 
 // Grant Types: OAuth 2 provides several "grant types" for different use cases.
+
 // The grant types defined are:
 // - Authorization Code
-// - Password
+// - Password (Resource Owner password credentials grant)
 // - Client credentials
 // - Implicit
 

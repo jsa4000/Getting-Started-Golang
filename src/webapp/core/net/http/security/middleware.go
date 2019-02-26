@@ -5,6 +5,8 @@ import (
 	net "webapp/core/net/http"
 )
 
+// TODO: Order middleware by Priorities
+
 // Middleware  middleware struct
 type Middleware struct {
 	net.MiddlewareBase
@@ -31,7 +33,7 @@ func (a *Middleware) Handler() net.HandlerMid {
 func (a *Middleware) handler(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		for _, handler := range a.handlers {
-			if net.Matches(net.RemoveParams(r.RequestURI), handler.Targets()) {
+			if net.Matches(net.RemoveURLParams(r.RequestURI), handler.Targets()) {
 				if err := handler.Handle(w, r); err != nil {
 					a.WriteError(w, err)
 					return
