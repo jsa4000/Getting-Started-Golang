@@ -13,19 +13,19 @@ const (
 	AuthKey security.ContextKey = "basic-auth-key"
 )
 
-// Service struct to handle basic authentication
-type Service struct {
+// AuthHandler struct to handle basic authentication
+type AuthHandler struct {
 	*Config
-	targets     []string
-	userFetcher security.UserFetcher
+	targets  []string
+	provider security.UserInfoProvider
 }
 
 // Handle handler to manage basic authenticaiton method
-func (s *Service) Handle(w http.ResponseWriter, r *http.Request) error {
-	log.Debugf("Handle Basic Auth Request for %s", net.RemoveParams(r.RequestURI))
+func (s *AuthHandler) Handle(w http.ResponseWriter, r *http.Request) error {
+	log.Debugf("Handle Basic Auth Request for %s", net.RemoveURLParams(r.RequestURI))
 	user, password, hasAuth := r.BasicAuth()
 	if !hasAuth {
-		return net.ErrUnauthorized.From(errors.New("Authorization has not been found"))
+		return net.ErrUnauthorized.From(errors.New("Authorization is required"))
 	}
 	if user != s.Config.ClientID && password != s.Config.ClientSecret {
 		return net.ErrUnauthorized.From(errors.New("Credentials are not valid for client #{user}"))
@@ -36,6 +36,6 @@ func (s *Service) Handle(w http.ResponseWriter, r *http.Request) error {
 }
 
 //Targets returns the targets or urls the auth applies for
-func (s *Service) Targets() []string {
+func (s *AuthHandler) Targets() []string {
 	return s.targets
 }

@@ -1,7 +1,9 @@
-package token
+package security
 
-// UserData structure to retrieve (fetch) the user information
-type UserData struct {
+import "context"
+
+// UserInfo structure to retrieve (fetch) the user information
+type UserInfo struct {
 	ID        string                 `json:"id"`
 	Name      string                 `json:"name"`
 	Email     string                 `json:"email"`
@@ -10,5 +12,7 @@ type UserData struct {
 	Resources map[string]interface{} `json:"resources"`
 }
 
-// Claims data structure for token enhacements and generation
-type Claims map[string]interface{}
+// UserInfoProvider Interface
+type UserInfoProvider interface {
+	Fetch(ctx context.Context, username string) (*UserInfo, error)
+}

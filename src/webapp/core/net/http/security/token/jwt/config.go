@@ -7,8 +7,6 @@ type Config struct {
 	Issuer         string `config:"security.issuer:webapp-oauth"`
 	ExpirationTime int    `config:"security.expirationtime:60000"`
 	SecretKey      string `config:"security.secretkey:mypassword$"`
-	ClientID       string `config:"security.clientid:trusted-client"`
-	ClientSecret   string `config:"security.clientsecret:mypassword$"`
 }
 
 // NewConfig creates new config

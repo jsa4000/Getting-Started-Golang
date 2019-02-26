@@ -2,6 +2,8 @@ package security
 
 import (
 	net "webapp/core/net/http"
+	"webapp/core/net/http/security/oauth"
+	"webapp/core/net/http/security/token"
 )
 
 // Manager returns struct
@@ -10,7 +12,7 @@ type Manager struct {
 	authentication net.Middleware
 	authorization  net.Middleware
 	controller     net.Controller
-	//tokenService   TokenService
+	tokenService   token.Service
 }
 
 // Middleware returns the middleware for the security implementation
@@ -33,8 +35,8 @@ func (c *Manager) Controller() net.Controller {
 // ManagerBuilder returns struct
 type ManagerBuilder struct {
 	*Manager
-	authenticationHndls []AuthHandler
 	authorizationHndls  []AuthHandler
+	resourceFilterHndls []AuthHandler
 }
 
 // NewBuilder returns new security config
@@ -43,8 +45,8 @@ func NewBuilder() *ManagerBuilder {
 		Manager: &Manager{
 			Config: NewConfig(),
 		},
-		authenticationHndls: make([]AuthHandler, 0),
 		authorizationHndls:  make([]AuthHandler, 0),
+		resourceFilterHndls: make([]AuthHandler, 0),
 	}
 }
 
@@ -54,34 +56,32 @@ func (c *ManagerBuilder) WithConfig(config *Config) *ManagerBuilder {
 	return c
 }
 
-// WithAuhtorizationHandlers set middleware to use for security
-func (c *ManagerBuilder) WithAuhtorizationHandlers(method ...AuthHandler) *ManagerBuilder {
-	c.authenticationHndls = append(c.authenticationHndls, method...)
-	return c
-}
-
-// WithResourceHandlers set middleware to use for security
-func (c *ManagerBuilder) WithResourceHandlers(method ...AuthHandler) *ManagerBuilder {
+// WithAuhtorization set middleware to use for authorization
+func (c *ManagerBuilder) WithAuthorization(method ...AuthHandler) *ManagerBuilder {
 	c.authorizationHndls = append(c.authorizationHndls, method...)
 	return c
 }
 
-/*
+// WithResourceFilter set middleware to use for resource filtering
+func (c *ManagerBuilder) WithResourceFilter(method ...AuthHandler) *ManagerBuilder {
+	c.resourceFilterHndls = append(c.resourceFilterHndls, method...)
+	return c
+}
+
 // WithTokenService set the interface to use for fetch user info
-func (c *ManagerBuilder) WithTokenService(ts TokenService) *ManagerBuilder {
+func (c *ManagerBuilder) WithTokenService(ts token.Service) *ManagerBuilder {
 	c.tokenService = ts
 	return c
 }
-*/
 
 // Build returns manager build
 func (c *ManagerBuilder) Build() *Manager {
-	//c.controller = NewRestController(c.tokenService)
-	if len(c.authenticationHndls) > 0 {
-		c.authentication = NewMiddleware(c.authenticationHndls, net.PriorityAuthentication)
-	}
+	c.controller = oauth.NewRestController(c.tokenService)
 	if len(c.authorizationHndls) > 0 {
-		c.authorization = NewMiddleware(c.authorizationHndls, net.PriorityAuthorization)
+		c.authentication = NewMiddleware(c.authorizationHndls, net.PriorityAuthorization)
+	}
+	if len(c.resourceFilterHndls) > 0 {
+		c.authorization = NewMiddleware(c.resourceFilterHndls, net.PriorityResourceFilters)
 	}
 	return c.Manager
 }

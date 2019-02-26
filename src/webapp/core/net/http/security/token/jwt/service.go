@@ -2,50 +2,30 @@ package jwt
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"net/http"
-	"strings"
 	"time"
 	cerr "webapp/core/errors"
-	log "webapp/core/logging"
 	net "webapp/core/net/http"
 	"webapp/core/net/http/security"
+	service "webapp/core/net/http/security/token"
 	global "webapp/core/time"
 
 	jwt "github.com/dgrijalva/jwt-go"
 	uuid "github.com/satori/go.uuid"
 )
 
-const (
-	// AuthKey Key to get data from context in basicAuth
-	AuthKey security.ContextKey = "kwt-auth-key"
-
-	bearerPreffix = "Bearer "
-	authHeader    = "Authorization"
-
-	jsontokenIDfield    = "jti"
-	issuerField         = "iss"
-	subjectField        = "sub"
-	userNameField       = "name"
-	rolesField          = "roles"
-	expirationDateField = "exp"
-	issuedAtField       = "iat"
-)
-
 // Service Implementation used for the service
 type Service struct {
 	*Config
-	targets       []string
-	userFetcher   security.UserFetcher
-	tokenEnhancer security.TokenEnhancer
+	provider security.UserInfoProvider
+	enhancer ClaimsEnhancer
 }
 
 // Create create the token - HMAC (HS256) based with secret key
 // Check https://github.com/dgrijalva/jwt-go and 'Signing Methods and Key Types'
-func (s *Service) Create(ctx context.Context, req *security.CreateTokenRequest) (*security.CreateTokenResponse, error) {
+func (s *Service) Create(ctx context.Context, req *service.CreateTokenRequest) (*service.CreateTokenResponse, error) {
 	var err error
-	user, err := s.userFetcher.Fetch(ctx, req.UserName)
+	user, err := s.provider.Fetch(ctx, req.UserName)
 	if err != nil {
 		herr, ok := err.(*cerr.Error)
 		if !ok {
@@ -55,6 +35,8 @@ func (s *Service) Create(ctx context.Context, req *security.CreateTokenRequest) 
 	}
 
 	expirationTime := global.Now().Add(time.Second * time.Duration(s.ExpirationTime))
+	issueAt := global.Now()
+
 	claims := jwt.MapClaims{
 		jsontokenIDfield:    uuid.NewV4().String(),
 		issuerField:         s.Issuer,
@@ -62,9 +44,9 @@ func (s *Service) Create(ctx context.Context, req *security.CreateTokenRequest) 
 		userNameField:       user.Name,
 		rolesField:          user.Roles,
 		expirationDateField: expirationTime.Unix(),
-		issuedAtField:       global.Unix(),
+		issuedAtField:       issueAt.Unix(),
 	}
-	if s.tokenEnhancer != nil {
+	if s.enhancer != nil {
 
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
@@ -72,14 +54,14 @@ func (s *Service) Create(ctx context.Context, req *security.CreateTokenRequest) 
 	if err != nil {
 		return nil, net.ErrInternalServer.From(err)
 	}
-	return &security.CreateTokenResponse{
+	return &service.CreateTokenResponse{
 		Token:          tokenString,
-		ExpirationTime: expirationTime,
+		ExpirationTime: expirationTime.Sub(issueAt),
 	}, nil
 }
 
 // Check returns deserialized token
-func (s *Service) Check(ctx context.Context, req *security.CheckTokenRequest) (*security.CheckTokenResponse, error) {
+func (s *Service) Check(ctx context.Context, req *service.CheckTokenRequest) (*service.CheckTokenResponse, error) {
 	token, err := jwt.Parse(req.Token, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
@@ -92,44 +74,8 @@ func (s *Service) Check(ctx context.Context, req *security.CheckTokenRequest) (*
 			return nil, net.ErrInternalServer.From(err)
 		}
 	}
-	return &security.CheckTokenResponse{
+	return &service.CheckTokenResponse{
 		Data:  token,
 		Valid: token.Valid,
 	}, nil
-}
-
-// Handle handler to manage basic authenticaiton method
-func (s *Service) Handle(w http.ResponseWriter, r *http.Request) error {
-	log.Debugf("Handle JWT Request for %s", net.RemoveParams(r.RequestURI))
-	basicAuth, ok := r.Header[authHeader]
-	if !ok {
-		return net.ErrUnauthorized.From(errors.New("Authorization has not been found"))
-	}
-	resp, err := s.Check(r.Context(), &security.CheckTokenRequest{
-		Token: strings.TrimPrefix(basicAuth[0], bearerPreffix),
-	})
-	if err != nil || !resp.Valid {
-		return net.ErrUnauthorized.From(errors.New("Authorization Beared invalid"))
-	}
-	security.SetContextValue(r, AuthKey, new(security.ContextValue))
-	if token := resp.Data.(*jwt.Token); token != nil {
-		claims := token.Claims.(jwt.MapClaims)
-		security.SetUserName(r, claims[userNameField].(string))
-		security.SetUserID(r, claims[subjectField].(string))
-		if val, ok := claims[rolesField]; ok {
-			if iroles, err := val.([]interface{}); !err {
-				roles := make([]string, len(iroles))
-				for _, role := range iroles {
-					roles = append(roles, role.(string))
-				}
-				security.SetRoles(r, roles)
-			}
-		}
-	}
-	return nil
-}
-
-//Targets returns the targets or urls the auth applies for
-func (s *Service) Targets() []string {
-	return s.targets
 }

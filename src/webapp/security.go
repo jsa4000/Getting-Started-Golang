@@ -4,43 +4,48 @@ import (
 	"webapp/core/net/http"
 	"webapp/core/net/http/security"
 	"webapp/core/net/http/security/basic"
-	"webapp/core/net/http/security/jwt"
 	"webapp/core/net/http/security/open"
 	"webapp/core/net/http/security/scopes"
+	"webapp/core/net/http/security/token/jwt"
 )
 
-func jwtService(uf security.UserFetcher) *jwt.Service {
+func jwtHandler(provider security.UserInfoProvider) security.AuthHandler {
 	return jwt.NewBuilder().
-		WithUserFetcher(uf).
+		WithUserInfoProvider(provider).
 		WithTargets([]string{"/*"}...).
 		Build()
 }
 
-func basicAuthService(uf security.UserFetcher) security.AuthHandler {
+func jwtService(provider security.UserInfoProvider) *jwt.Service {
+	return jwt.NewServiceBuilder().
+		WithUserInfoProvider(provider).
+		Build()
+}
+
+func basicAuthHandler(provider security.UserInfoProvider) security.AuthHandler {
 	return basic.NewBuilder().
-		WithUserFetcher(uf).
+		WithUserInfoProvider(provider).
 		WithTargets([]string{"/oauth/*"}...).
 		Build()
 }
 
-func openAuthService() security.AuthHandler {
+func openAuthHandler() security.AuthHandler {
 	return open.NewBuilder().
 		WithTargets([]string{"/swaggerui/*"}...).
 		Build()
 }
 
-func scopesAuthService() security.AuthHandler {
+func scopesAuthHandler() security.AuthHandler {
 	return scopes.NewBuilder().
 		WithTargets([]string{"/users", "/oauth"}...).
 		Build()
 }
 
 // Security creates the security model
-func Security(uf security.UserFetcher) http.Security {
-	jwtService := jwtService(uf)
+func Security(provider security.UserInfoProvider) http.Security {
 	return security.NewBuilder().
-		WithTokenService(jwtService).
-		WithAuthenticationHandlers(openAuthService(), basicAuthService(uf), jwtService).
-		WithAuthorizationHandlers(scopesAuthService()).
+		WithTokenService(jwtService(provider)).
+		WithAuthorization(openAuthHandler(), basicAuthHandler(provider), jwtHandler(provider)).
+		WithResourceFilter(scopesAuthHandler()).
 		Build()
 }

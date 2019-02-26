@@ -13,7 +13,7 @@ http:
   idleTimeout: 60
 
 security:
-  issuer: server-oauth
+  issuer: webapp.domain.com
   expirationtime: 86400        # seconds. 86400 = 1 day
   secretkey: mypassword$
   clientid: trusted-client

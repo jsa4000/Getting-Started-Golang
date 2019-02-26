@@ -5,16 +5,17 @@ import (
 	"net/http"
 
 	net "webapp/core/net/http"
+	"webapp/core/net/http/security/token"
 )
 
 // RestController for http transport
 type RestController struct {
 	net.RestController
-	Service Service
+	Service token.Service
 }
 
 // NewRestController create new RestController
-func NewRestController(service Service) net.Controller {
+func NewRestController(service token.Service) net.Controller {
 	return &RestController{
 		Service: service,
 	}
@@ -43,7 +44,9 @@ func (c *RestController) CreateToken(w http.ResponseWriter, r *http.Request) {
 		c.WriteError(w, err)
 		return
 	}
-	res, err := c.Service.Create(r.Context(), &req)
+	res, err := c.Service.Create(r.Context(), &token.CreateTokenRequest{
+		UserName: req.UserName,
+	})
 	if err != nil {
 		c.WriteError(w, err)
 		return
@@ -55,7 +58,9 @@ func (c *RestController) CreateToken(w http.ResponseWriter, r *http.Request) {
 // CheckToken handler to request the
 func (c *RestController) CheckToken(w http.ResponseWriter, r *http.Request) {
 	req := CheckTokenRequest{Token: r.FormValue("token")}
-	res, err := c.Service.Check(r.Context(), &req)
+	res, err := c.Service.Check(r.Context(), &token.CheckTokenRequest{
+		Token: req.Token,
+	})
 	if err != nil {
 		c.WriteError(w, err)
 		return
