@@ -22,10 +22,10 @@ func jwtService(provider security.UserInfoProvider) *jwt.Service {
 }
 
 func basicAuthHandler() security.AuthHandler {
-	return basic.NewBuilder().
-		WithUserInfoProvider(security.NewUserProviderBuilder().
-			WithUser("client-trusted", "mypassword$").
-			WithUser("client-readonly", "mypassword$").Build()).
+	return basic.NewBuilder().WithLocalUsers().
+		WithUser("client-trusted").WithPassword("mypassword$").
+		WithUser("client-readonly").WithPassword("mypassword$").
+		And().
 		WithTargets([]string{"/oauth/*"}...).
 		Build()
 }

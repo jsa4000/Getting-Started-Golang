@@ -19,6 +19,7 @@ const (
 type AuthHandler struct {
 	*Config
 	targets  []string
+	local    security.UserInfoProvider
 	provider security.UserInfoProvider
 }
 
@@ -30,7 +31,7 @@ func (s *AuthHandler) Handle(w http.ResponseWriter, r *http.Request) error {
 		return net.ErrUnauthorized.From(errors.New("Authorization is required"))
 	}
 	var err error
-	user, err := s.provider.Fetch(r.Context(), username)
+	user, err := s.local.Fetch(r.Context(), username)
 	if err != nil {
 		herr, ok := err.(*cerr.Error)
 		if !ok {
