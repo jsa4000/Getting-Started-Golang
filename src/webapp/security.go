@@ -15,9 +15,9 @@ func jwtHandler() security.AuthHandler {
 		Build()
 }
 
-func jwtService(provider security.UserInfoProvider) *jwt.Service {
+func jwtService(provider security.UserInfoService) *jwt.Service {
 	return jwt.NewServiceBuilder().
-		WithUserInfoProvider(provider).
+		WithUserInfoService(provider).
 		Build()
 }
 
@@ -43,7 +43,7 @@ func scopesAuthHandler() security.AuthHandler {
 }
 
 // Security creates the security model
-func Security(provider security.UserInfoProvider) http.Security {
+func Security(provider security.UserInfoService) http.Security {
 	return security.NewBuilder().
 		WithTokenService(jwtService(provider)).
 		WithAuthorization(openAuthHandler(), basicAuthHandler(), jwtHandler()).

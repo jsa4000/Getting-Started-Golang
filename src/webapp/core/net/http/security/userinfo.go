@@ -12,7 +12,7 @@ type UserInfo struct {
 	Resources map[string]interface{} `json:"resources"`
 }
 
-// UserInfoProvider Interface
-type UserInfoProvider interface {
+// UserInfoService Interface
+type UserInfoService interface {
 	Fetch(ctx context.Context, username string) (*UserInfo, error)
 }

@@ -5,12 +5,12 @@ import "webapp/core/net/http/security"
 // Builder main app configuration
 type Builder struct {
 	*AuthHandler
-	usersBuilder *NestedDefaultUsersBuilder
+	usersBuilder *NestedAuthorizedUsersBuilder
 }
 
-// NestedDefaultUsersBuilder build struct
-type NestedDefaultUsersBuilder struct {
-	*DefaultUsersBuilder
+// NestedAuthorizedUsersBuilder build struct
+type NestedAuthorizedUsersBuilder struct {
+	*security.AuthorizedUsersBuilder
 	builder *Builder
 }
 
@@ -24,10 +24,10 @@ func NewBuilder() *Builder {
 	}
 }
 
-// NewDefaultUsersBuilder Create a new DefaultUsersBuilder
-func newNestedDefaultUsersBuilder(builder *Builder) *NestedDefaultUsersBuilder {
-	return &NestedDefaultUsersBuilder{
-		NewDefaultUsersBuilder(),
+// NewAuthorizedUsersBuilder Create a new AuthorizedUsersBuilder
+func newNestedAuthorizedUsersBuilder(builder *Builder) *NestedAuthorizedUsersBuilder {
+	return &NestedAuthorizedUsersBuilder{
+		security.NewAuthorizedUsersBuilder(),
 		builder,
 	}
 }
@@ -45,13 +45,13 @@ func (c *Builder) WithTargets(target ...string) *Builder {
 }
 
 // WithLocalUsers set the interface to use for fetching user info
-func (c *Builder) WithLocalUsers() *NestedDefaultUsersBuilder {
-	c.usersBuilder = newNestedDefaultUsersBuilder(c)
+func (c *Builder) WithLocalUsers() *NestedAuthorizedUsersBuilder {
+	c.usersBuilder = newNestedAuthorizedUsersBuilder(c)
 	return c.usersBuilder
 }
 
-// WithUserInfoProvider set the interface to use for fetching user info
-func (c *Builder) WithUserInfoProvider(provider security.UserInfoProvider) *Builder {
+// WithUserInfoService set the interface to use for fetching user info
+func (c *Builder) WithUserInfoService(provider security.UserInfoService) *Builder {
 	c.provider = provider
 	return c
 }
@@ -59,31 +59,31 @@ func (c *Builder) WithUserInfoProvider(provider security.UserInfoProvider) *Buil
 // Build set User Callback
 func (c *Builder) Build() *AuthHandler {
 	if len(c.usersBuilder.Users) > 0 {
-		c.local = c.usersBuilder.DefaultUsers
+		c.local = c.usersBuilder.AuthorizedUsers
 	}
 	return c.AuthHandler
 }
 
 // WithUser set the interface to use for fetching user info
-func (c *NestedDefaultUsersBuilder) WithUser(name string) *NestedDefaultUsersBuilder {
-	c.DefaultUsersBuilder.WithUser(name)
+func (c *NestedAuthorizedUsersBuilder) WithUser(name string) *NestedAuthorizedUsersBuilder {
+	c.AuthorizedUsersBuilder.WithUser(name)
 	return c
 }
 
 // WithPassword set the interface to use for fetching user info
-func (c *NestedDefaultUsersBuilder) WithPassword(password string) *NestedDefaultUsersBuilder {
-	c.DefaultUsersBuilder.WithPassword(password)
+func (c *NestedAuthorizedUsersBuilder) WithPassword(password string) *NestedAuthorizedUsersBuilder {
+	c.AuthorizedUsersBuilder.WithPassword(password)
 	return c
 }
 
 // WithRoles set the interface to use for fetching user info
-func (c *NestedDefaultUsersBuilder) WithRoles(roles []string) *NestedDefaultUsersBuilder {
-	c.DefaultUsersBuilder.WithRoles(roles)
+func (c *NestedAuthorizedUsersBuilder) WithRoles(roles []string) *NestedAuthorizedUsersBuilder {
+	c.AuthorizedUsersBuilder.WithRoles(roles)
 	return c
 }
 
 // And set the interface to use for fetching user info
-func (c *NestedDefaultUsersBuilder) And() *Builder {
+func (c *NestedAuthorizedUsersBuilder) And() *Builder {
 	c.Build()
 	return c.builder
 }

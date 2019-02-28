@@ -17,7 +17,7 @@ import (
 type AuthHandler struct {
 	*Config
 	targets  []string
-	provider security.UserInfoProvider
+	provider security.UserInfoService
 }
 
 // Handle handler to authorize the JWT method

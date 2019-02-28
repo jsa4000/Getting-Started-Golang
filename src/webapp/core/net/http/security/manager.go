@@ -56,7 +56,13 @@ func (c *ManagerBuilder) WithConfig(config *Config) *ManagerBuilder {
 	return c
 }
 
-// WithAuhtorization set middleware to use for authorization
+// WithAuthentication set middleware to use for authorization
+func (c *ManagerBuilder) WithAuthentication(authManager *AuthenticationManager) *ManagerBuilder {
+
+	return c
+}
+
+// WithAuthorization set middleware to use for authorization
 func (c *ManagerBuilder) WithAuthorization(method ...AuthHandler) *ManagerBuilder {
 	c.authorizationHndls = append(c.authorizationHndls, method...)
 	return c

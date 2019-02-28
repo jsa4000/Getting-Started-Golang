@@ -19,8 +19,8 @@ const (
 type AuthHandler struct {
 	*Config
 	targets  []string
-	local    security.UserInfoProvider
-	provider security.UserInfoProvider
+	local    security.UserInfoService
+	provider security.UserInfoService
 }
 
 // Handle handler to manage basic authenticaiton method

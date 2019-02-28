@@ -29,8 +29,8 @@ func (c *Builder) WithTargets(target ...string) *Builder {
 	return c
 }
 
-// WithUserInfoProvider set the interface to use for fetching user info
-func (c *Builder) WithUserInfoProvider(provider security.UserInfoProvider) *Builder {
+// WithUserInfoService set the interface to use for fetching user info
+func (c *Builder) WithUserInfoService(provider security.UserInfoService) *Builder {
 	c.provider = provider
 	return c
 }
@@ -60,8 +60,8 @@ func (c *ServiceBuilder) Withconfig(config *Config) *ServiceBuilder {
 	return c
 }
 
-// WithUserInfoProvider set the interface to use for fetching user info
-func (c *ServiceBuilder) WithUserInfoProvider(provider security.UserInfoProvider) *ServiceBuilder {
+// WithUserInfoService set the interface to use for fetching user info
+func (c *ServiceBuilder) WithUserInfoService(provider security.UserInfoService) *ServiceBuilder {
 	c.provider = provider
 	return c
 }

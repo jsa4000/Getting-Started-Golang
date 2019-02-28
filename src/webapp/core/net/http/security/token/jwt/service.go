@@ -17,7 +17,7 @@ import (
 // Service Implementation used for the service
 type Service struct {
 	*Config
-	provider security.UserInfoProvider
+	provider security.UserInfoService
 	enhancer ClaimsEnhancer
 }
 
