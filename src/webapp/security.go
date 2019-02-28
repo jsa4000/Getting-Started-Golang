@@ -23,8 +23,8 @@ func jwtService(provider security.UserInfoProvider) *jwt.Service {
 
 func basicAuthHandler() security.AuthHandler {
 	return basic.NewBuilder().WithLocalUsers().
-		WithUser("client-trusted").WithPassword("mypassword$").
-		WithUser("client-readonly").WithPassword("mypassword$").
+		WithUser("client-trusted").WithPassword("mypassword$").WithRoles([]string{"ADMIN", "WRITE", "READ"}).
+		WithUser("client-readonly").WithPassword("mypassword$").WithRoles([]string{"READ"}).
 		And().
 		WithTargets([]string{"/oauth/*"}...).
 		Build()

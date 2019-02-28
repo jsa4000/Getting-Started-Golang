@@ -5,22 +5,13 @@ import "webapp/core/net/http/security"
 // Builder main app configuration
 type Builder struct {
 	*AuthHandler
-	usersBuilder *LocalUserBuilder
+	usersBuilder *NestedDefaultUsersBuilder
 }
 
-// LocalUserBuilder main app configuration
-type LocalUserBuilder struct {
+// NestedDefaultUsersBuilder build struct
+type NestedDefaultUsersBuilder struct {
+	*DefaultUsersBuilder
 	builder *Builder
-	users   *LocalUsers
-	current *security.UserInfo
-}
-
-// NewBuilder Create a new ServiceImpl
-func newLocalUserBuilder(builder *Builder) *LocalUserBuilder {
-	return &LocalUserBuilder{
-		builder: builder,
-		users:   NewlocalUsers(),
-	}
 }
 
 // NewBuilder Create a new ServiceImpl
@@ -30,6 +21,14 @@ func NewBuilder() *Builder {
 			Config:  NewConfig(),
 			targets: make([]string, 0),
 		},
+	}
+}
+
+// NewDefaultUsersBuilder Create a new DefaultUsersBuilder
+func newNestedDefaultUsersBuilder(builder *Builder) *NestedDefaultUsersBuilder {
+	return &NestedDefaultUsersBuilder{
+		NewDefaultUsersBuilder(),
+		builder,
 	}
 }
 
@@ -46,8 +45,8 @@ func (c *Builder) WithTargets(target ...string) *Builder {
 }
 
 // WithLocalUsers set the interface to use for fetching user info
-func (c *Builder) WithLocalUsers() *LocalUserBuilder {
-	c.usersBuilder = newLocalUserBuilder(c)
+func (c *Builder) WithLocalUsers() *NestedDefaultUsersBuilder {
+	c.usersBuilder = newNestedDefaultUsersBuilder(c)
 	return c.usersBuilder
 }
 
@@ -59,33 +58,32 @@ func (c *Builder) WithUserInfoProvider(provider security.UserInfoProvider) *Buil
 
 // Build set User Callback
 func (c *Builder) Build() *AuthHandler {
-	if len(c.usersBuilder.users.Users) > 0 {
-		c.local = c.usersBuilder.users
+	if len(c.usersBuilder.Users) > 0 {
+		c.local = c.usersBuilder.DefaultUsers
 	}
 	return c.AuthHandler
 }
 
 // WithUser set the interface to use for fetching user info
-func (c *LocalUserBuilder) WithUser(name string) *LocalUserBuilder {
-	if c.current != nil {
-		c.users.Users[c.current.Name] = c.current
-	}
-	c.current = &security.UserInfo{
-		Name: name,
-	}
+func (c *NestedDefaultUsersBuilder) WithUser(name string) *NestedDefaultUsersBuilder {
+	c.DefaultUsersBuilder.WithUser(name)
 	return c
 }
 
 // WithPassword set the interface to use for fetching user info
-func (c *LocalUserBuilder) WithPassword(password string) *LocalUserBuilder {
-	c.current.Password = password
+func (c *NestedDefaultUsersBuilder) WithPassword(password string) *NestedDefaultUsersBuilder {
+	c.DefaultUsersBuilder.WithPassword(password)
+	return c
+}
+
+// WithRoles set the interface to use for fetching user info
+func (c *NestedDefaultUsersBuilder) WithRoles(roles []string) *NestedDefaultUsersBuilder {
+	c.DefaultUsersBuilder.WithRoles(roles)
 	return c
 }
 
 // And set the interface to use for fetching user info
-func (c *LocalUserBuilder) And() *Builder {
-	if c.current != nil {
-		c.users.Users[c.current.Name] = c.current
-	}
+func (c *NestedDefaultUsersBuilder) And() *Builder {
+	c.Build()
 	return c.builder
 }
