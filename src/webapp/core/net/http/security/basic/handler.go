@@ -18,12 +18,11 @@ const (
 // AuthHandler struct to handle basic authentication
 type AuthHandler struct {
 	*Config
-	targets  []string
-	local    security.UserInfoService
-	provider security.UserInfoService
+	targets []string
+	service security.UserInfoService
 }
 
-// Handle handler to manage basic authenticaiton method
+// Handle handler to manage basic authentication method
 func (s *AuthHandler) Handle(w http.ResponseWriter, r *http.Request) error {
 	log.Debugf("Handle Basic Auth Request for %s", net.RemoveURLParams(r.RequestURI))
 	username, password, hasAuth := r.BasicAuth()
@@ -31,7 +30,7 @@ func (s *AuthHandler) Handle(w http.ResponseWriter, r *http.Request) error {
 		return net.ErrUnauthorized.From(errors.New("Authorization is required"))
 	}
 	var err error
-	user, err := s.local.Fetch(r.Context(), username)
+	user, err := s.service.Fetch(r.Context(), username)
 	if err != nil {
 		herr, ok := err.(*cerr.Error)
 		if !ok {

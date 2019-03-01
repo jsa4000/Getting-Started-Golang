@@ -9,6 +9,10 @@ import (
 	"webapp/core/net/http/security/token/jwt"
 )
 
+var (
+	authManager = authenticationManager()
+)
+
 func jwtHandler() security.AuthHandler {
 	return jwt.NewBuilder().
 		WithTargets([]string{"/*"}...).
@@ -21,11 +25,9 @@ func jwtService(provider security.UserInfoService) *jwt.Service {
 		Build()
 }
 
-func basicAuthHandler() security.AuthHandler {
-	return basic.NewBuilder().WithLocalUsers().
-		WithUser("client-trusted").WithPassword("mypassword$").WithRoles([]string{"ADMIN", "WRITE", "READ"}).
-		WithUser("client-readonly").WithPassword("mypassword$").WithRoles([]string{"READ"}).
-		And().
+func basicAuthHandler(authManager *security.AuthenticationManager) security.AuthHandler {
+	return basic.NewBuilder().
+		WithUserInfoService(authManager).
 		WithTargets([]string{"/oauth/*"}...).
 		Build()
 }
@@ -33,6 +35,15 @@ func basicAuthHandler() security.AuthHandler {
 func openAuthHandler() security.AuthHandler {
 	return open.NewBuilder().
 		WithTargets([]string{"/swaggerui/*"}...).
+		Build()
+}
+
+func authenticationManager() *security.AuthenticationManager {
+	return security.NewAuthenticationManagerBuilder().
+		WithInMemoryUsers().
+		WithUser("client-trusted").WithPassword("mypassword$").WithRoles([]string{"ADMIN", "WRITE", "READ"}).
+		WithUser("client-readonly").WithPassword("mypassword$").WithRoles([]string{"READ"}).
+		And().
 		Build()
 }
 
@@ -46,7 +57,7 @@ func scopesAuthHandler() security.AuthHandler {
 func Security(provider security.UserInfoService) http.Security {
 	return security.NewBuilder().
 		WithTokenService(jwtService(provider)).
-		WithAuthorization(openAuthHandler(), basicAuthHandler(), jwtHandler()).
+		WithAuthorization(openAuthHandler(), basicAuthHandler(authManager), jwtHandler()).
 		WithResourceFilter(scopesAuthHandler()).
 		Build()
 }

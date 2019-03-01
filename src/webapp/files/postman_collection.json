@@ -1,13 +1,12 @@
 {
 	"info": {
-		"_postman_id": "ea70de80-ab87-4ac0-98b8-89cccec9beed",
+		"_postman_id": "f4d7a5d7-fa25-416e-91f4-a7f1b8547aae",
 		"name": "GoWebApp",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
 		{
 			"name": "OAuth",
-			"description": null,
 			"item": [
 				{
 					"name": "CheckToken",
@@ -17,7 +16,7 @@
 							"basic": [
 								{
 									"key": "username",
-									"value": "client-trusted",
+									"value": "client-readonly",
 									"type": "string"
 								},
 								{
@@ -34,7 +33,7 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "http://{{url}}:8080/oauth/check_token?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NTEyNzQ2MjMsImlhdCI6MTU1MTE4ODIyMywiaXNzIjoid2ViYXBwLmRvbWFpbi5jb20iLCJqdGkiOiI3ZTQ3MDg3YS0yNzZhLTQwODEtOTRkYS04NTc1MDVlYzFlNTAiLCJuYW1lIjoidXNlcl90ZXN0Iiwicm9sZXMiOm51bGwsInN1YiI6IjVjNzU0MGRmNWUzZjU3MzAwMGZmMmFjOSJ9.NhHecnuttLVVqIyMHxeF83NJdcrLOeODpKKPrTEFrx0",
+							"raw": "http://{{url}}:8080/oauth/check_token?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NTE1NDM2NDYsImlhdCI6MTU1MTQ1NzI0NiwiaXNzIjoid2ViYXBwLmRvbWFpbi5jb20iLCJqdGkiOiJjZDI5M2JhNS1hODI0LTRmYzUtYjZkMy1jZDgwMjg0M2UxNzQiLCJuYW1lIjoidXNlcl90ZXN0Iiwicm9sZXMiOm51bGwsInN1YiI6IjVjNjdiZjQyYjM5NjNkZGI4NmY5ZGFiNyJ9.ZkYf8gYJeh7FL__CL2dyMMV55ubcvqOT7awq6V7IrcU",
 							"protocol": "http",
 							"host": [
 								"{{url}}"
@@ -47,7 +46,7 @@
 							"query": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NTEyNzQ2MjMsImlhdCI6MTU1MTE4ODIyMywiaXNzIjoid2ViYXBwLmRvbWFpbi5jb20iLCJqdGkiOiI3ZTQ3MDg3YS0yNzZhLTQwODEtOTRkYS04NTc1MDVlYzFlNTAiLCJuYW1lIjoidXNlcl90ZXN0Iiwicm9sZXMiOm51bGwsInN1YiI6IjVjNzU0MGRmNWUzZjU3MzAwMGZmMmFjOSJ9.NhHecnuttLVVqIyMHxeF83NJdcrLOeODpKKPrTEFrx0"
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NTE1NDM2NDYsImlhdCI6MTU1MTQ1NzI0NiwiaXNzIjoid2ViYXBwLmRvbWFpbi5jb20iLCJqdGkiOiJjZDI5M2JhNS1hODI0LTRmYzUtYjZkMy1jZDgwMjg0M2UxNzQiLCJuYW1lIjoidXNlcl90ZXN0Iiwicm9sZXMiOm51bGwsInN1YiI6IjVjNjdiZjQyYjM5NjNkZGI4NmY5ZGFiNyJ9.ZkYf8gYJeh7FL__CL2dyMMV55ubcvqOT7awq6V7IrcU"
 								}
 							]
 						}
@@ -102,7 +101,6 @@
 		},
 		{
 			"name": "Roles",
-			"description": null,
 			"item": [
 				{
 					"name": "GetAll",
@@ -219,7 +217,6 @@
 		},
 		{
 			"name": "Users",
-			"description": null,
 			"item": [
 				{
 					"name": "GetAll",
@@ -362,7 +359,7 @@
 		"bearer": [
 			{
 				"key": "token",
-				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NTEyNzQ2MjMsImlhdCI6MTU1MTE4ODIyMywiaXNzIjoid2ViYXBwLmRvbWFpbi5jb20iLCJqdGkiOiI3ZTQ3MDg3YS0yNzZhLTQwODEtOTRkYS04NTc1MDVlYzFlNTAiLCJuYW1lIjoidXNlcl90ZXN0Iiwicm9sZXMiOm51bGwsInN1YiI6IjVjNzU0MGRmNWUzZjU3MzAwMGZmMmFjOSJ9.NhHecnuttLVVqIyMHxeF83NJdcrLOeODpKKPrTEFrx0",
+				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NTA5NDY1MjAsImlhdCI6MTU1MDg2MDEyMCwiaXNzIjoic2VydmVyLW9hdXRoIiwianRpIjoiZTcxZjJjNDgtMjNmYS00ZTk4LTg2M2UtOTU3ZjdlNWFhYTA3IiwibmFtZSI6InVzZXJfdGVzdCIsInJvbGVzIjpudWxsLCJzdWIiOiI1YzY3YmY0MmIzOTYzZGRiODZmOWRhYjcifQ.tDR32FHhvMrz3T3yV3ivFbCpJQ39q7r8iAF2pbvZT9w",
 				"type": "string"
 			}
 		]
