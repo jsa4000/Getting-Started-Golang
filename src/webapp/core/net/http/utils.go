@@ -2,23 +2,32 @@ package http
 
 import "strings"
 
-// Matches function that returns if any value matches with the url provided
-func Matches(url string, values []string) bool {
+// MatchesURLs function that returns if any value matches with the url provided
+func MatchesURLs(url string, values []string) bool {
 	url = strings.SplitAfterN(url, "?", 1)[0]
 	for _, substr := range values {
-		if strings.HasSuffix(substr, "*") {
-			substr = strings.TrimSuffix(substr, "*")
-			if strings.HasPrefix(url, substr) {
-				return true
-			}
-		} else if strings.HasPrefix(substr, "*") {
-			substr = strings.TrimPrefix(substr, "*")
-			if strings.HasSuffix(url, substr) {
-				return true
-			}
-		} else if strings.Contains(url, substr) {
+		if MatchesURL(url, substr) {
 			return true
 		}
+	}
+	return false
+}
+
+// MatchesURL function that returns if any value matches with the url provided
+func MatchesURL(url string, value string) bool {
+	url = strings.SplitAfterN(url, "?", 1)[0]
+	if strings.HasSuffix(value, "*") {
+		value = strings.TrimSuffix(value, "*")
+		if strings.HasPrefix(url, value) {
+			return true
+		}
+	} else if strings.HasPrefix(value, "*") {
+		value = strings.TrimPrefix(value, "*")
+		if strings.HasSuffix(url, value) {
+			return true
+		}
+	} else if strings.Contains(url, value) {
+		return true
 	}
 	return false
 }

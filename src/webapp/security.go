@@ -10,7 +10,7 @@ import (
 )
 
 var (
-	authManager = authenticationManager()
+	authManager = AuthManager()
 )
 
 func jwtHandler() security.AuthHandler {
@@ -25,7 +25,7 @@ func jwtService(provider security.UserInfoService) *jwt.Service {
 		Build()
 }
 
-func basicAuthHandler(authManager *security.AuthenticationManager) security.AuthHandler {
+func basicAuthHandler(authManager *security.AuthManager) security.AuthHandler {
 	return basic.NewBuilder().
 		WithUserInfoService(authManager).
 		WithTargets([]string{"/oauth/*"}...).
@@ -38,8 +38,8 @@ func openAuthHandler() security.AuthHandler {
 		Build()
 }
 
-func authenticationManager() *security.AuthenticationManager {
-	return security.NewAuthenticationManagerBuilder().
+func AuthManager() *security.AuthManager {
+	return security.NewAuthManagerBuilder().
 		WithInMemoryUsers().
 		WithUser("client-trusted").WithPassword("mypassword$").WithRoles([]string{"ADMIN", "WRITE", "READ"}).
 		WithUser("client-readonly").WithPassword("mypassword$").WithRoles([]string{"READ"}).

@@ -18,7 +18,7 @@ const (
 // AuthHandler struct to handle basic authentication
 type AuthHandler struct {
 	*Config
-	targets []string
+	targets *security.Targets
 	service security.UserInfoService
 }
 
@@ -47,6 +47,6 @@ func (s *AuthHandler) Handle(w http.ResponseWriter, r *http.Request) error {
 }
 
 //Targets returns the targets or urls the auth applies for
-func (s *AuthHandler) Targets() []string {
+func (s *AuthHandler) Targets() *security.Targets {
 	return s.targets
 }
