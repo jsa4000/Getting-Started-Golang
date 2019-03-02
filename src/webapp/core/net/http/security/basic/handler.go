@@ -18,7 +18,7 @@ const (
 // AuthHandler struct to handle basic authentication
 type AuthHandler struct {
 	*Config
-	targets []string
+	*security.Targets
 	service security.UserInfoService
 }
 
@@ -38,15 +38,10 @@ func (s *AuthHandler) Handle(w http.ResponseWriter, r *http.Request) error {
 		}
 		return herr
 	}
-	if username != user.Name && password != user.Password {
+	if !security.ValidateUser(user, username, password) {
 		return net.ErrUnauthorized.From(fmt.Errorf("Credentials are not valid for client %s", user))
 	}
 	security.SetContextValue(r, AuthKey, new(security.ContextValue))
 	security.SetUserName(r, username)
 	return nil
-}
-
-//Targets returns the targets or urls the auth applies for
-func (s *AuthHandler) Targets() []string {
-	return s.targets
 }

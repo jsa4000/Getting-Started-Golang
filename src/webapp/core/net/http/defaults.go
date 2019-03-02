@@ -55,7 +55,7 @@ func LoggingHandler(next http.Handler) http.Handler {
 // CustomHeadersHandler decorator (closure)
 func CustomHeadersHandler(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if !Matches(RemoveURLParams(r.RequestURI), filters) {
+		if !MatchesURLs(RemoveURLParams(r.RequestURI), filters) {
 			w.Header().Set("Content-Type", "application/json")
 		}
 		//defaultHeaders(w)

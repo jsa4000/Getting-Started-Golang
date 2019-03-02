@@ -9,13 +9,11 @@ import (
 	"webapp/core/net/http/security/token/jwt"
 )
 
-var (
-	authManager = authenticationManager()
-)
-
 func jwtHandler() security.AuthHandler {
 	return jwt.NewBuilder().
-		WithTargets([]string{"/*"}...).
+		WithTargets().
+		WithURL("/*").
+		And().
 		Build()
 }
 
@@ -25,38 +23,47 @@ func jwtService(provider security.UserInfoService) *jwt.Service {
 		Build()
 }
 
-func basicAuthHandler(authManager *security.AuthenticationManager) security.AuthHandler {
+func basicAuthHandler(authManager *security.AuthManager) security.AuthHandler {
 	return basic.NewBuilder().
 		WithUserInfoService(authManager).
-		WithTargets([]string{"/oauth/*"}...).
+		WithTargets().
+		WithURL("/oauth/*").
+		And().
 		Build()
 }
 
 func openAuthHandler() security.AuthHandler {
 	return open.NewBuilder().
-		WithTargets([]string{"/swaggerui/*"}...).
+		WithTargets().
+		WithURL("/swaggerui/*").
+		And().
 		Build()
 }
 
-func authenticationManager() *security.AuthenticationManager {
-	return security.NewAuthenticationManagerBuilder().
+func authManager(service security.UserInfoService) *security.AuthManager {
+	return security.NewAuthManagerBuilder().
 		WithInMemoryUsers().
 		WithUser("client-trusted").WithPassword("mypassword$").WithRoles([]string{"ADMIN", "WRITE", "READ"}).
 		WithUser("client-readonly").WithPassword("mypassword$").WithRoles([]string{"READ"}).
 		And().
+		WithUserService(service).
 		Build()
 }
 
 func scopesAuthHandler() security.AuthHandler {
 	return scopes.NewBuilder().
-		WithTargets([]string{"/users", "/oauth"}...).
+		WithTargets().
+		WithURL("/users").
+		WithURL("/oauth").
+		And().
 		Build()
 }
 
 // Security creates the security model
-func Security(provider security.UserInfoService) http.Security {
+func Security(us security.UserInfoService) http.Security {
+	authManager := authManager(us)
 	return security.NewBuilder().
-		WithTokenService(jwtService(provider)).
+		WithTokenService(jwtService(us)).
 		WithAuthorization(openAuthHandler(), basicAuthHandler(authManager), jwtHandler()).
 		WithResourceFilter(scopesAuthHandler()).
 		Build()

@@ -16,7 +16,7 @@ import (
 // AuthHandler Implementation used for the service
 type AuthHandler struct {
 	*Config
-	targets  []string
+	*security.Targets
 	provider security.UserInfoService
 }
 
@@ -45,11 +45,6 @@ func (s *AuthHandler) Handle(w http.ResponseWriter, r *http.Request) error {
 		}
 	}
 	return nil
-}
-
-//Targets returns the targets or urls the auth applies for
-func (s *AuthHandler) Targets() []string {
-	return s.targets
 }
 
 // Check returns deserialized token
