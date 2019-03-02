@@ -1,13 +1,32 @@
 package security
 
+import (
+	net "webapp/core/net/http"
+)
+
 // Target structure to retrieve (fetch) the Target information
 type Target struct {
 	URL         string   `json:"url"`
 	Authorities []string `json:"authorities"`
 }
 
-// Targets to implement the UserinfoProvider
+// Matcher Interface
+type Matcher interface {
+	Matches(url string) (*Target, bool)
+}
+
+// Targets to implement the Matcher interface
 type Targets []*Target
+
+// Matches any target with the given URL
+func (c *Targets) Matches(url string) (*Target, bool) {
+	for _, substr := range *c {
+		if net.MatchesURL(url, substr.URL) {
+			return nil, true
+		}
+	}
+	return nil, false
+}
 
 // TargetsBuilder build struct
 type TargetsBuilder struct {
@@ -20,12 +39,6 @@ func NewTargetsBuilder() *TargetsBuilder {
 	return &TargetsBuilder{
 		Targets: make([]*Target, 0),
 	}
-}
-
-// Matches any target with the given URL
-func (c *Targets) Matches(url string) (*Target, bool) {
-
-	return nil, false
 }
 
 // WithURL set the interface to use for fetching user info

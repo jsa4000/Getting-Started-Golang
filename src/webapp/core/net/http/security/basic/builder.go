@@ -51,7 +51,7 @@ func (c *Builder) WithUserInfoService(s security.UserInfoService) *Builder {
 
 // Build set User Callback
 func (c *Builder) Build() *AuthHandler {
-	c.targets = c.targetsBuilder.Build()
+	c.Targets = c.targetsBuilder.Build()
 	return c.AuthHandler
 }
 

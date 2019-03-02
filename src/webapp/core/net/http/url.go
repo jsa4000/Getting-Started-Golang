@@ -4,7 +4,7 @@ import "strings"
 
 // MatchesURLs function that returns if any value matches with the url provided
 func MatchesURLs(url string, values []string) bool {
-	url = strings.SplitAfterN(url, "?", 1)[0]
+	url = RemoveURLParams(url)
 	for _, substr := range values {
 		if MatchesURL(url, substr) {
 			return true
@@ -15,7 +15,7 @@ func MatchesURLs(url string, values []string) bool {
 
 // MatchesURL function that returns if any value matches with the url provided
 func MatchesURL(url string, value string) bool {
-	url = strings.SplitAfterN(url, "?", 1)[0]
+	url = RemoveURLParams(url)
 	if strings.HasSuffix(value, "*") {
 		value = strings.TrimSuffix(value, "*")
 		if strings.HasPrefix(url, value) {

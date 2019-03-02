@@ -1,6 +1,8 @@
 package users
 
-import "golang.org/x/crypto/bcrypt"
+import (
+	pcrypt "webapp/core/crypto/password"
+)
 
 // User struct to define an User
 type User struct {
@@ -13,10 +15,9 @@ type User struct {
 
 // New Creates a new User
 func New(name, email, password string) *User {
-	p, _ := bcrypt.GenerateFromPassword([]byte(password), 10)
 	return &User{
 		Name:     name,
 		Email:    email,
-		Password: string(p),
+		Password: pcrypt.New(password),
 	}
 }

@@ -10,7 +10,7 @@ import (
 // AuthHandler struct to handle resource authorization by scopes
 type AuthHandler struct {
 	*Config
-	targets []string
+	*security.Targets
 }
 
 // Handle handler to manage scopes authorization method
@@ -20,9 +20,4 @@ func (s *AuthHandler) Handle(w http.ResponseWriter, r *http.Request) error {
 		log.Debugf("Roles %v", value)
 	}
 	return nil
-}
-
-//Targets returns the targets or urls the auth applies for
-func (s *AuthHandler) Targets() []string {
-	return s.targets
 }
