@@ -22,6 +22,12 @@ type UserInfoService interface {
 	Fetch(ctx context.Context, username string) (*UserInfo, error)
 }
 
+// ValidateUser compares the username and password to be the same as the userinfo
+func ValidateUser(user *UserInfo, username, password string) bool {
+	return (username == user.Name || username == user.Email) &&
+		pcrypt.Compare(user.Password, password)
+}
+
 // AuthUsers to implement the UserinfoProvider
 type AuthUsers struct {
 	Users map[string]*UserInfo
@@ -69,8 +75,8 @@ func (c *AuthUsersBuilder) WithPassword(password string) *AuthUsersBuilder {
 }
 
 // WithRoles set the interface to use for fetching user info
-func (c *AuthUsersBuilder) WithRoles(roles []string) *AuthUsersBuilder {
-	c.current.Roles = roles
+func (c *AuthUsersBuilder) WithRoles(roles ...string) *AuthUsersBuilder {
+	c.current.Roles = append(c.current.Roles, roles...)
 	return c
 }
 
@@ -80,10 +86,4 @@ func (c *AuthUsersBuilder) Build() *AuthUsers {
 		c.Users[c.current.Name] = c.current
 	}
 	return c.AuthUsers
-}
-
-// ValidateUser compares the username and password to be the same as the userinfo
-func ValidateUser(user *UserInfo, username, password string) bool {
-	return (username == user.Name || username == user.Email) &&
-		pcrypt.Compare(user.Password, password)
 }
