@@ -75,8 +75,8 @@ func (c *TargetsBuilder) WithURL(url string) *TargetsBuilder {
 	return c
 }
 
-// WithAuthorities set the interface to use for fetching user info
-func (c *TargetsBuilder) WithAuthorities(authorities ...string) *TargetsBuilder {
+// WithAuthority set the interface to use for fetching user info
+func (c *TargetsBuilder) WithAuthority(authorities ...string) *TargetsBuilder {
 	c.current.Authorities = append(c.current.Authorities, authorities...)
 	return c
 }

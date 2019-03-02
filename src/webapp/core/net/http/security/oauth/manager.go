@@ -14,9 +14,9 @@ type Manager struct {
 	controller   net.Controller
 }
 
-// Controller returns the controller for the security implementation
-func (m *Manager) Controller() net.Controller {
-	return m.controller
+// Controllers returns the controller for the security implementation
+func (m *Manager) Controllers() []net.Controller {
+	return []net.Controller{m.controller}
 }
 
 // Fetch Add In memory user service
@@ -99,8 +99,8 @@ func (c *NestedClientsBuilder) WithSecret(secret string) *NestedClientsBuilder {
 }
 
 // WithScopes set the interface to use for fetching user info
-func (c *NestedClientsBuilder) WithScopes(roles ...string) *NestedClientsBuilder {
-	c.ClientsBuilder.WithScopes(roles...)
+func (c *NestedClientsBuilder) WithScope(scopes ...string) *NestedClientsBuilder {
+	c.ClientsBuilder.WithScope(scopes...)
 	return c
 }
 

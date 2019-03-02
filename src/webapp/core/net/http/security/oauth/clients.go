@@ -67,8 +67,8 @@ func (c *ClientsBuilder) WithSecret(secret string) *ClientsBuilder {
 	return c
 }
 
-// WithScopes set the interface to use for fetching user info
-func (c *ClientsBuilder) WithScopes(scopes ...string) *ClientsBuilder {
+// WithScope set the interface to use for fetching user info
+func (c *ClientsBuilder) WithScope(scopes ...string) *ClientsBuilder {
 	c.current.Scopes = append(c.current.Scopes, scopes...)
 	return c
 }

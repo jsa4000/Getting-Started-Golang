@@ -83,9 +83,9 @@ func (c *NestedAuthUsersBuilder) WithPassword(password string) *NestedAuthUsersB
 	return c
 }
 
-// WithRoles set the interface to use for fetching user info
-func (c *NestedAuthUsersBuilder) WithRoles(roles ...string) *NestedAuthUsersBuilder {
-	c.AuthUsersBuilder.WithRoles(roles...)
+// WithRole set the interface to use for fetching user info
+func (c *NestedAuthUsersBuilder) WithRole(roles ...string) *NestedAuthUsersBuilder {
+	c.AuthUsersBuilder.WithRole(roles...)
 	return c
 }
 

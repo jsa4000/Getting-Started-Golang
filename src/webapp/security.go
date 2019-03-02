@@ -28,7 +28,7 @@ func basicAuthHandler(authManager *security.AuthManager) security.AuthHandler {
 		WithUserInfoService(authManager).
 		WithTargets().
 		WithURL("/oauth/*").
-		WithAuthorities("ADMIN", "WRITE", "READ").
+		WithAuthority("ADMIN", "WRITE", "READ").
 		And().
 		Build()
 }
@@ -44,8 +44,8 @@ func openAuthHandler() security.AuthHandler {
 func oAuthManager(jwt *jwt.Service) *oauth.Manager {
 	return oauth.NewManagerBuilder().
 		WithInMemoryClients().
-		WithClient("client-trusted").WithSecret("mypassword$").WithScopes([]string{"ADMIN", "WRITE", "READ"}...).
-		WithClient("client-readonly").WithSecret("mypassword$").WithScopes([]string{"READ"}...).
+		WithClient("client-trusted").WithSecret("mypassword$").WithScope("admin", "roles", "users").
+		WithClient("client-readonly").WithSecret("mypassword$").WithScope("read").
 		And().
 		WithTokenService(jwt).
 		Build()
@@ -54,8 +54,8 @@ func oAuthManager(jwt *jwt.Service) *oauth.Manager {
 func authManager(service security.UserInfoService) *security.AuthManager {
 	return security.NewAuthManagerBuilder().
 		WithInMemoryUsers().
-		WithUser("user-trusted").WithPassword("mypassword$").WithRoles([]string{"ADMIN", "WRITE", "READ"}...).
-		WithUser("user-readonly").WithPassword("mypassword$").WithRoles([]string{"READ"}...).
+		WithUser("user-trusted").WithPassword("mypassword$").WithRole("ADMIN", "WRITE", "READ").
+		WithUser("user-readonly").WithPassword("mypassword$").WithRole("READ").
 		And().
 		WithUserService(service).
 		Build()
@@ -68,6 +68,6 @@ func Security(us security.UserInfoService) http.Security {
 	return security.NewBuilder().
 		WithAuthentication(oAuthManager(jwtService)).
 		WithAuthorization(openAuthHandler(), basicAuthHandler(authManager), jwtHandler()).
-		//WithResourceFilter(scopesAuthHandler()).
+		//WithFilter(scopesAuthHandler()).
 		Build()
 }

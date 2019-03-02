@@ -4,9 +4,9 @@ import (
 	net "webapp/core/net/http"
 )
 
-// AuthController interface for components to register
-type AuthController interface {
-	Controller() net.Controller
+// AuthFacade interface for components to register
+type AuthFacade interface {
+	Controllers() []net.Controller
 }
 
 // Manager returns struct
@@ -14,7 +14,7 @@ type Manager struct {
 	*Config
 	authHandlers   net.Middleware
 	filterHandlers net.Middleware
-	authentication AuthController
+	facades        []AuthFacade
 }
 
 // Middleware returns the middleware for the security implementation
@@ -29,9 +29,13 @@ func (c *Manager) Middleware() []net.Middleware {
 	return result
 }
 
-// Controller returns the controller for the security implementation
-func (c *Manager) Controller() net.Controller {
-	return c.authentication.Controller()
+// Controllers returns the controller for the security implementation
+func (c *Manager) Controllers() []net.Controller {
+	cc := make([]net.Controller, 0)
+	for _, f := range c.facades {
+		cc = append(cc, f.Controllers()...)
+	}
+	return cc
 }
 
 // ManagerBuilder returns struct
@@ -45,7 +49,8 @@ type ManagerBuilder struct {
 func NewBuilder() *ManagerBuilder {
 	return &ManagerBuilder{
 		Manager: &Manager{
-			Config: NewConfig(),
+			Config:  NewConfig(),
+			facades: make([]AuthFacade, 0),
 		},
 		authHndls:   make([]AuthHandler, 0),
 		filterHndls: make([]FilterHandler, 0),
@@ -59,8 +64,8 @@ func (c *ManagerBuilder) WithConfig(config *Config) *ManagerBuilder {
 }
 
 // WithAuthentication set middleware to use for authorization
-func (c *ManagerBuilder) WithAuthentication(ctrl AuthController) *ManagerBuilder {
-	c.authentication = ctrl
+func (c *ManagerBuilder) WithAuthentication(facades ...AuthFacade) *ManagerBuilder {
+	c.facades = append(c.facades, facades...)
 	return c
 }
 
@@ -70,8 +75,8 @@ func (c *ManagerBuilder) WithAuthorization(method ...AuthHandler) *ManagerBuilde
 	return c
 }
 
-// WithResourceFilter set middleware to use for resource filtering
-func (c *ManagerBuilder) WithResourceFilter(method ...FilterHandler) *ManagerBuilder {
+// WithFilter set middleware to use for resource filtering
+func (c *ManagerBuilder) WithFilter(method ...FilterHandler) *ManagerBuilder {
 	c.filterHndls = append(c.filterHndls, method...)
 	return c
 }

@@ -74,8 +74,8 @@ func (c *AuthUsersBuilder) WithPassword(password string) *AuthUsersBuilder {
 	return c
 }
 
-// WithRoles set the interface to use for fetching user info
-func (c *AuthUsersBuilder) WithRoles(roles ...string) *AuthUsersBuilder {
+// WithRole set the interface to use for fetching user info
+func (c *AuthUsersBuilder) WithRole(roles ...string) *AuthUsersBuilder {
 	c.current.Roles = append(c.current.Roles, roles...)
 	return c
 }
