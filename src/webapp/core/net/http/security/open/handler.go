@@ -14,7 +14,7 @@ type AuthHandler struct {
 }
 
 // Handle handler to manage basic authenticaiton method
-func (s *AuthHandler) Handle(w http.ResponseWriter, r *http.Request) error {
+func (s *AuthHandler) Handle(w http.ResponseWriter, r *http.Request, target *security.Target) error {
 	log.Debugf("Handle Open Request for %s", net.RemoveURLParams(r.RequestURI))
 	return nil
 }

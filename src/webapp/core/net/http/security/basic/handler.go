@@ -23,7 +23,7 @@ type AuthHandler struct {
 }
 
 // Handle handler to manage basic authentication method
-func (s *AuthHandler) Handle(w http.ResponseWriter, r *http.Request) error {
+func (s *AuthHandler) Handle(w http.ResponseWriter, r *http.Request, target *security.Target) error {
 	log.Debugf("Handle Basic Auth Request for %s", net.RemoveURLParams(r.RequestURI))
 	username, password, hasAuth := r.BasicAuth()
 	if !hasAuth {
@@ -39,9 +39,14 @@ func (s *AuthHandler) Handle(w http.ResponseWriter, r *http.Request) error {
 		return herr
 	}
 	if !security.ValidateUser(user, username, password) {
-		return net.ErrUnauthorized.From(fmt.Errorf("Credentials are not valid for client %s", user))
+		return net.ErrUnauthorized.From(fmt.Errorf("Invalid credentials for user %s", user))
+	}
+	if !target.Any(user.Roles) {
+		return net.ErrForbidden.From(fmt.Errorf("User %s has not enough privileges", user))
 	}
 	security.SetContextValue(r, AuthKey, new(security.ContextValue))
 	security.SetUserName(r, username)
+	security.SetUserID(r, user.ID)
+	security.SetUserRoles(r, user.Roles)
 	return nil
 }

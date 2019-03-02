@@ -35,7 +35,7 @@ func SetUserID(r *http.Request, id string) {
 	*r = *r.WithContext(context.WithValue(r.Context(), UserIDKey, id))
 }
 
-// SetRoles set user id into Context
-func SetRoles(r *http.Request, roles []string) {
+// SettUsersRoles set user id into Context
+func SetUserRoles(r *http.Request, roles []string) {
 	*r = *r.WithContext(context.WithValue(r.Context(), UserRolesKey, roles))
 }

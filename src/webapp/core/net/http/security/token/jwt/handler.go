@@ -21,7 +21,7 @@ type AuthHandler struct {
 }
 
 // Handle handler to authorize the JWT method
-func (s *AuthHandler) Handle(w http.ResponseWriter, r *http.Request) error {
+func (s *AuthHandler) Handle(w http.ResponseWriter, r *http.Request, target *security.Target) error {
 	log.Debugf("Handle JWT Request for %s", net.RemoveURLParams(r.RequestURI))
 	basicAuth, ok := r.Header[authHeader]
 	if !ok {
@@ -41,7 +41,7 @@ func (s *AuthHandler) Handle(w http.ResponseWriter, r *http.Request) error {
 			for _, role := range iroles {
 				roles = append(roles, role.(string))
 			}
-			security.SetRoles(r, roles)
+			security.SetUserRoles(r, roles)
 		}
 	}
 	return nil

@@ -5,7 +5,6 @@ import (
 	"webapp/core/net/http/security"
 	"webapp/core/net/http/security/basic"
 	"webapp/core/net/http/security/open"
-	"webapp/core/net/http/security/scopes"
 	"webapp/core/net/http/security/token/jwt"
 )
 
@@ -28,6 +27,7 @@ func basicAuthHandler(authManager *security.AuthManager) security.AuthHandler {
 		WithUserInfoService(authManager).
 		WithTargets().
 		WithURL("/oauth/*").
+		WithAuthorities("ADMIN", "WRITE", "READ").
 		And().
 		Build()
 }
@@ -50,21 +50,12 @@ func authManager(service security.UserInfoService) *security.AuthManager {
 		Build()
 }
 
-func scopesAuthHandler() security.AuthHandler {
-	return scopes.NewBuilder().
-		WithTargets().
-		WithURL("/users").
-		WithURL("/oauth").
-		And().
-		Build()
-}
-
 // Security creates the security model
 func Security(us security.UserInfoService) http.Security {
 	authManager := authManager(us)
 	return security.NewBuilder().
 		WithTokenService(jwtService(us)).
 		WithAuthorization(openAuthHandler(), basicAuthHandler(authManager), jwtHandler()).
-		WithResourceFilter(scopesAuthHandler()).
+		//WithResourceFilter(scopesAuthHandler()).
 		Build()
 }

@@ -11,10 +11,8 @@ type AuthHandler = FilterHandler
 // FilterHandler interface to manage the authorization method
 type FilterHandler interface {
 	Matcher
-	Handle(w http.ResponseWriter, r *http.Request) error
+	Handle(w http.ResponseWriter, r *http.Request, target *Target) error
 }
-
-// TODO: Order middleware by Priorities
 
 // Middleware  middleware struct
 type Middleware struct {
@@ -42,8 +40,8 @@ func (a *Middleware) Handler() net.HandlerMid {
 func (a *Middleware) handler(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		for _, handler := range a.handlers {
-			if _, ok := handler.Matches(r.RequestURI); ok {
-				if err := handler.Handle(w, r); err != nil {
+			if t, ok := handler.Matches(r.RequestURI); ok {
+				if err := handler.Handle(w, r, t); err != nil {
 					a.WriteError(w, err)
 					return
 				}
