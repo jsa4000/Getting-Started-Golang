@@ -8,10 +8,10 @@ const (
 	PriorityLogging = -99
 	// PriorityHeaders Headers init priority
 	PriorityHeaders = -89
-	// PriorityAuthorization Security init priority
-	PriorityAuthorization = -79
-	// PriorityResourceFilters Security init priority
-	PriorityResourceFilters = -69
+	// PriorityAuth Security init priority
+	PriorityAuth = -79
+	// PriorityFilters Security init priority
+	PriorityFilters = -69
 
 	//PriorityNormal
 	PriorityNormal = 0
