@@ -2,7 +2,18 @@ package security
 
 import (
 	"net/http"
+	log "webapp/core/logging"
 	net "webapp/core/net/http"
+)
+
+// MiddlewareType type of middleware to process
+type MiddlewareType int32
+
+const (
+	// ExitOnMatch exists middleware on targets match
+	ExitOnMatch MiddlewareType = iota
+	// ContinueOnMatch continue with other filters even on match
+	ContinueOnMatch
 )
 
 // AuthHandler type redefinition
@@ -18,16 +29,18 @@ type FilterHandler interface {
 type Middleware struct {
 	net.MiddlewareBase
 	handlers []FilterHandler
+	mtype    MiddlewareType
 }
 
 // NewMiddleware creation for Auth
-func NewMiddleware(handlers []FilterHandler, priority int) net.Middleware {
+func NewMiddleware(handlers []FilterHandler, priority int, mtype MiddlewareType) net.Middleware {
 	return &Middleware{
 		MiddlewareBase: net.MiddlewareBase{
 			Hdlr: nil,
 			Prio: priority,
 		},
 		handlers: handlers,
+		mtype:    mtype,
 	}
 }
 
@@ -42,10 +55,15 @@ func (a *Middleware) handler(next http.Handler) http.Handler {
 		for _, handler := range a.handlers {
 			if t, ok := handler.Matches(r.RequestURI); ok {
 				if err := handler.Handle(w, r, t); err != nil {
-					a.WriteError(w, err)
-					return
+					if a.mtype == ExitOnMatch {
+						a.Error(w, err)
+						return
+					}
+					log.Error(err)
 				}
-				break
+				if a.mtype == ExitOnMatch {
+					break
+				}
 			}
 		}
 		next.ServeHTTP(w, r)

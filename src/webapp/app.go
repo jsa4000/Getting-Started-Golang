@@ -36,13 +36,13 @@ func (a *App) Startup(ctx context.Context) {
 
 	// Create The HTTP Server
 	a.httpServer = net.NewServer().
-		WithControllers(pprof.NewController()).                                       // Add Controller for Profiling
-		WithControllers(roles.NewRestController(rolesService)).                       // Add roles controller
-		WithControllers(users.NewRestController(usersService)).                       // Add users controller
-		WithStatic("/swaggerui/", "./static/swaggerui/").                             // Create swagger static content '/swagger/index.html'
-		WithMiddleware(net.NewLoggingMiddleware(), net.NewCustomHeadersMiddleware()). // Add global middlewares
-		WithSecurity(Security(usersService)).                                         // Add security to HTTP Requests
-		Start()                                                                       // Start the HTTP server
+		WithControllers(pprof.NewController()).                 // Add Controller for Profiling
+		WithControllers(roles.NewRestController(rolesService)). // Add roles controller
+		WithControllers(users.NewRestController(usersService)). // Add users controller
+		WithStatic("/swaggerui/", "./static/swaggerui/").       // Create swagger static content '/swagger/index.html'
+		WithMiddleware(net.NewLoggingMiddleware()).             // Add global middlewares
+		WithSecurity(Security(usersService)).                   // Add security to HTTP Requests
+		Start()                                                 // Start the HTTP server
 }
 
 // Shutdown the server

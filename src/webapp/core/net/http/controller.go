@@ -4,8 +4,6 @@ import (
 	"encoding/json"
 	"net/http"
 
-	errors "webapp/core/errors"
-	log "webapp/core/logging"
 	valid "webapp/core/validation"
 )
 
@@ -13,15 +11,14 @@ import (
 type RestController struct {
 }
 
-// WriteError Sets the error from inner layers
-func (c *RestController) WriteError(w http.ResponseWriter, err error) {
-	herr, ok := err.(*errors.Error)
-	if !ok {
-		herr = ErrInternalServer.From(err)
-	}
-	w.WriteHeader(herr.Code)
-	json.NewEncoder(w).Encode(herr)
-	log.Error(herr)
+// Error Sets the error from inner layers
+func (c *RestController) Error(w http.ResponseWriter, err error) {
+	Error(w, err)
+}
+
+// JSON Sets the error from inner layers
+func (c *RestController) JSON(w http.ResponseWriter, body interface{}, code int) {
+	JSON(w, body, code)
 }
 
 // Decode decode and validates. Also it sets the error for upper layers

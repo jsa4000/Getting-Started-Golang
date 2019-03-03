@@ -1,7 +1,6 @@
 package oauth
 
 import (
-	"encoding/json"
 	"net/http"
 
 	net "webapp/core/net/http"
@@ -41,18 +40,17 @@ func (c *RestController) GetRoutes() []net.Route {
 func (c *RestController) CreateToken(w http.ResponseWriter, r *http.Request) {
 	var req CreateTokenRequest
 	if err := c.Decode(w, r, &req); err != nil {
-		c.WriteError(w, err)
+		c.Error(w, err)
 		return
 	}
 	res, err := c.Service.Create(r.Context(), &token.CreateTokenRequest{
 		UserName: req.UserName,
 	})
 	if err != nil {
-		c.WriteError(w, err)
+		c.Error(w, err)
 		return
 	}
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(res)
+	c.JSON(w, res, http.StatusOK)
 }
 
 // CheckToken handler to request the
@@ -62,9 +60,8 @@ func (c *RestController) CheckToken(w http.ResponseWriter, r *http.Request) {
 		Token: req.Token,
 	})
 	if err != nil {
-		c.WriteError(w, err)
+		c.Error(w, err)
 		return
 	}
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(res.Data)
+	c.JSON(w, res.Data, http.StatusOK)
 }

@@ -1,11 +1,8 @@
 package http
 
 import (
-	"encoding/json"
 	"net/http"
 	"sort"
-	"webapp/core/errors"
-	log "webapp/core/logging"
 )
 
 // HandlerMid for handle the requests
@@ -15,19 +12,6 @@ type HandlerMid func(http.Handler) http.Handler
 type Middleware interface {
 	Handler() HandlerMid
 	Priority() int
-}
-
-// byPriority array for Middleware
-type byPriority []Middleware
-
-func (c byPriority) Len() int {
-	return len(c)
-}
-func (c byPriority) Swap(i, j int) {
-	c[i], c[j] = c[j], c[i]
-}
-func (c byPriority) Less(i, j int) bool {
-	return c[i].Priority() < c[j].Priority()
 }
 
 // MiddlewareBase interface for components to register
@@ -46,15 +30,27 @@ func (m *MiddlewareBase) Priority() int {
 	return m.Prio
 }
 
-// WriteError response
-func (m *MiddlewareBase) WriteError(w http.ResponseWriter, err error) {
-	herr, ok := err.(*errors.Error)
-	if !ok {
-		herr = ErrInternalServer.From(err)
-	}
-	w.WriteHeader(herr.Code)
-	json.NewEncoder(w).Encode(herr)
-	log.Error(herr)
+// Write response
+func (m *MiddlewareBase) Error(w http.ResponseWriter, err error) {
+	Error(w, err)
+}
+
+// JSON Sets the error from inner layers
+func (m *MiddlewareBase) JSON(w http.ResponseWriter, body interface{}, code int) {
+	JSON(w, body, code)
+}
+
+// byPriority array for Middleware
+type byPriority []Middleware
+
+func (c byPriority) Len() int {
+	return len(c)
+}
+func (c byPriority) Swap(i, j int) {
+	c[i], c[j] = c[j], c[i]
+}
+func (c byPriority) Less(i, j int) bool {
+	return c[i].Priority() < c[j].Priority()
 }
 
 // SortMiddleware function to short middleware by priority

@@ -1,7 +1,6 @@
 package users
 
 import (
-	"encoding/json"
 	"net/http"
 
 	net "webapp/core/net/http"
@@ -50,11 +49,10 @@ func (c *RestController) GetRoutes() []net.Route {
 func (c *RestController) GetAll(w http.ResponseWriter, r *http.Request) {
 	res, err := c.Service.GetAll(r.Context(), &GetAllRequest{})
 	if err != nil {
-		c.WriteError(w, err)
+		c.Error(w, err)
 		return
 	}
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(res.Users)
+	c.JSON(w, res.Users, http.StatusOK)
 }
 
 // GetByID handler to request the
@@ -63,27 +61,25 @@ func (c *RestController) GetByID(w http.ResponseWriter, r *http.Request) {
 	req := GetByIDRequest{ID: vars["id"]}
 	res, err := c.Service.GetByID(r.Context(), &req)
 	if err != nil {
-		c.WriteError(w, err)
+		c.Error(w, err)
 		return
 	}
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(res.User)
+	c.JSON(w, res.User, http.StatusOK)
 }
 
 // Create handler to request the
 func (c *RestController) Create(w http.ResponseWriter, r *http.Request) {
 	var req CreateRequest
 	if err := c.Decode(w, r, &req); err != nil {
-		c.WriteError(w, err)
+		c.Error(w, err)
 		return
 	}
 	res, err := c.Service.Create(r.Context(), &req)
 	if err != nil {
-		c.WriteError(w, err)
+		c.Error(w, err)
 		return
 	}
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(res.User)
+	c.JSON(w, res.User, http.StatusOK)
 }
 
 // DeleteByID handler to request the
@@ -92,7 +88,7 @@ func (c *RestController) DeleteByID(w http.ResponseWriter, r *http.Request) {
 	req := DeleteByIDRequest{ID: vars["id"]}
 	_, err := c.Service.DeleteByID(r.Context(), &req)
 	if err != nil {
-		c.WriteError(w, err)
+		c.Error(w, err)
 		return
 	}
 	w.WriteHeader(http.StatusOK)
