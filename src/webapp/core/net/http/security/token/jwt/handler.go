@@ -15,13 +15,13 @@ import (
 
 // AuthHandler Implementation used for the service
 type AuthHandler struct {
+	security.BaseHandler
 	*Config
-	*security.Targets
 	provider security.UserInfoService
 }
 
 // Handle handler to authorize the JWT method
-func (s *AuthHandler) Handle(w http.ResponseWriter, r *http.Request, target *security.Target) error {
+func (s *AuthHandler) Handle(w http.ResponseWriter, r *http.Request, target security.Target) error {
 	log.Debugf("Handle JWT Request for %s", net.RemoveURLParams(r.RequestURI))
 	basicAuth, ok := r.Header[authHeader]
 	if !ok {

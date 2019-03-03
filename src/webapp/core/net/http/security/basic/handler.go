@@ -17,13 +17,13 @@ const (
 
 // AuthHandler struct to handle basic authentication
 type AuthHandler struct {
+	security.BaseHandler
 	*Config
-	*security.Targets
 	service security.UserInfoService
 }
 
 // Handle handler to manage basic authentication method
-func (s *AuthHandler) Handle(w http.ResponseWriter, r *http.Request, target *security.Target) error {
+func (s *AuthHandler) Handle(w http.ResponseWriter, r *http.Request, target security.Target) error {
 	log.Debugf("Handle Basic Auth Request for %s", net.RemoveURLParams(r.RequestURI))
 	username, password, hasAuth := r.BasicAuth()
 	if !hasAuth {

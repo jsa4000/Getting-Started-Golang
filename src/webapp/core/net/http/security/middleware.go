@@ -6,15 +6,6 @@ import (
 	net "webapp/core/net/http"
 )
 
-// AuthHandler type redefinition
-type AuthHandler = FilterHandler
-
-// FilterHandler interface to manage the authorization method
-type FilterHandler interface {
-	Matcher
-	Handle(w http.ResponseWriter, r *http.Request, target *Target) error
-}
-
 // Middleware  middleware struct
 type Middleware struct {
 	net.MiddlewareBase

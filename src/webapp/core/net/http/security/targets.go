@@ -4,26 +4,42 @@ import (
 	net "webapp/core/net/http"
 )
 
-// Matcher Interface
-type Matcher interface {
-	Matches(url string) (*Target, bool)
+// Target interface to retrieve URL
+type Target interface {
+	Matches(url string) bool
+	Any(authorities []string) bool
 }
 
 // Target structure to retrieve (fetch) the Target information
-type Target struct {
-	URL         string   `json:"url"`
-	Authorities []string `json:"authorities"`
+type target struct {
+	url         string
+	authorities []string
+}
+
+func newTarget(url string) *target {
+	return &target{
+		url:         url,
+		authorities: make([]string, 0),
+	}
+}
+
+// Matches any target with the given URL
+func (t *target) Matches(url string) bool {
+	if net.MatchesURL(url, t.url) {
+		return true
+	}
+	return false
 }
 
 // Any any target with the given URL
-func (t *Target) Any(authorities []string) bool {
-	if len(t.Authorities) == 0 {
+func (t *target) Any(authorities []string) bool {
+	if len(t.authorities) == 0 {
 		return true
 	}
 	if len(authorities) == 0 {
 		return false
 	}
-	for _, ta := range t.Authorities {
+	for _, ta := range t.authorities {
 		for _, a := range authorities {
 			if ta == a {
 				return true
@@ -33,36 +49,19 @@ func (t *Target) Any(authorities []string) bool {
 	return false
 }
 
-func newTarget(url string) *Target {
-	return &Target{
-		URL:         url,
-		Authorities: make([]string, 0),
-	}
-}
-
 // Targets to implement the Matcher interface
-type Targets []*Target
-
-// Matches any target with the given URL
-func (c *Targets) Matches(url string) (*Target, bool) {
-	for _, t := range *c {
-		if net.MatchesURL(url, t.URL) {
-			return t, true
-		}
-	}
-	return nil, false
-}
+type Targets []Target
 
 // TargetsBuilder build struct
 type TargetsBuilder struct {
 	Targets
-	current *Target
+	current *target
 }
 
 // NewTargetsBuilder Create a new DefaultUsersBuilder
 func NewTargetsBuilder() *TargetsBuilder {
 	return &TargetsBuilder{
-		Targets: make([]*Target, 0),
+		Targets: make([]Target, 0),
 	}
 }
 
@@ -77,14 +76,14 @@ func (c *TargetsBuilder) WithURL(url string) *TargetsBuilder {
 
 // WithAuthority set the interface to use for fetching user info
 func (c *TargetsBuilder) WithAuthority(authorities ...string) *TargetsBuilder {
-	c.current.Authorities = append(c.current.Authorities, authorities...)
+	c.current.authorities = append(c.current.authorities, authorities...)
 	return c
 }
 
 // Build default users struct
-func (c *TargetsBuilder) Build() *Targets {
+func (c *TargetsBuilder) Build() Targets {
 	if c.current != nil {
 		c.Targets = append(c.Targets, c.current)
 	}
-	return &c.Targets
+	return c.Targets
 }
