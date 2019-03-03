@@ -1,7 +1,5 @@
 package access
 
-import "webapp/core/net/http/security"
-
 // Builder main app configuration
 type Builder struct {
 	*AuthHandler
@@ -19,14 +17,14 @@ func NewBuilder() *Builder {
 
 // NestedTargetsBuilder build struct
 type NestedTargetsBuilder struct {
-	*security.TargetsBuilder
+	*TargetsBuilder
 	parent *Builder
 }
 
 // NewTargetsBuilder Create a new TargetsBuilder
 func newNestedTargetsBuilder(parent *Builder) *NestedTargetsBuilder {
 	return &NestedTargetsBuilder{
-		security.NewTargetsBuilder(),
+		NewTargetsBuilder(),
 		parent,
 	}
 }
@@ -52,6 +50,18 @@ func (c *Builder) Build() *AuthHandler {
 // WithURL set the interface to use for fetching user info
 func (c *NestedTargetsBuilder) WithURL(url string) *NestedTargetsBuilder {
 	c.TargetsBuilder.WithURL(url)
+	return c
+}
+
+// WithOrigin set the interface to use for fetching user info
+func (c *NestedTargetsBuilder) WithOrigin(origin string) *NestedTargetsBuilder {
+	c.TargetsBuilder.WithOrigin(origin)
+	return c
+}
+
+// Allow set the interface to use for fetching user info
+func (c *NestedTargetsBuilder) Allow() *NestedTargetsBuilder {
+	c.TargetsBuilder.Allow()
 	return c
 }
 

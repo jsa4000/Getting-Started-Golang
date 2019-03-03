@@ -37,7 +37,9 @@ func basicAuthHandler(authManager *security.AuthManager) security.AuthHandler {
 func corsAuthFilter() security.AuthHandler {
 	return access.NewBuilder().
 		WithTargets().
-		WithURL("/auth/*").
+		WithURL("/auth/*").WithOrigin("example.domain.com").Allow().
+		WithURL("/users").WithOrigin("*").Allow().
+		WithURL("/roles").
 		And().
 		Build()
 }

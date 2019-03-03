@@ -10,36 +10,37 @@ type Target interface {
 	Any(authorities []string) bool
 }
 
-// Target structure to retrieve (fetch) the Target information
-type target struct {
-	url         string
-	authorities []string
+// TargetBase structure to retrieve (fetch) the Target information
+type TargetBase struct {
+	URL         string
+	Authorities []string
 }
 
-func newTarget(url string) *target {
-	return &target{
-		url:         url,
-		authorities: make([]string, 0),
+// NewTargetBase Creates new Target Base
+func NewTargetBase(url string) *TargetBase {
+	return &TargetBase{
+		URL:         url,
+		Authorities: make([]string, 0),
 	}
 }
 
 // Matches any target with the given URL
-func (t *target) Matches(url string) bool {
-	if net.MatchesURL(url, t.url) {
+func (t *TargetBase) Matches(url string) bool {
+	if net.MatchesURL(url, t.URL) {
 		return true
 	}
 	return false
 }
 
 // Any any target with the given URL
-func (t *target) Any(authorities []string) bool {
-	if len(t.authorities) == 0 {
+func (t *TargetBase) Any(authorities []string) bool {
+	if len(t.Authorities) == 0 {
 		return true
 	}
 	if len(authorities) == 0 {
 		return false
 	}
-	for _, ta := range t.authorities {
+	for _, ta := range t.Authorities {
 		for _, a := range authorities {
 			if ta == a {
 				return true
@@ -55,7 +56,7 @@ type Targets []Target
 // TargetsBuilder build struct
 type TargetsBuilder struct {
 	Targets
-	current *target
+	current *TargetBase
 }
 
 // NewTargetsBuilder Create a new DefaultUsersBuilder
@@ -70,13 +71,13 @@ func (c *TargetsBuilder) WithURL(url string) *TargetsBuilder {
 	if c.current != nil {
 		c.Targets = append(c.Targets, c.current)
 	}
-	c.current = newTarget(url)
+	c.current = NewTargetBase(url)
 	return c
 }
 
 // WithAuthority set the interface to use for fetching user info
 func (c *TargetsBuilder) WithAuthority(authorities ...string) *TargetsBuilder {
-	c.current.authorities = append(c.current.authorities, authorities...)
+	c.current.Authorities = append(c.current.Authorities, authorities...)
 	return c
 }
 
