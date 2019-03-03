@@ -55,12 +55,6 @@ func (c *NestedTargetsBuilder) WithURL(url string) *NestedTargetsBuilder {
 	return c
 }
 
-// WithAuthority set the interface to use for fetching user info
-func (c *NestedTargetsBuilder) WithAuthority(authorities ...string) *NestedTargetsBuilder {
-	c.TargetsBuilder.WithAuthority(authorities...)
-	return c
-}
-
 // And set the interface to use for fetching user info
 func (c *NestedTargetsBuilder) And() *Builder {
 	return c.parent

@@ -3,6 +3,7 @@ package main
 import (
 	"webapp/core/net/http"
 	"webapp/core/net/http/security"
+	"webapp/core/net/http/security/access"
 	"webapp/core/net/http/security/basic"
 	"webapp/core/net/http/security/oauth"
 	"webapp/core/net/http/security/open"
@@ -27,8 +28,16 @@ func basicAuthHandler(authManager *security.AuthManager) security.AuthHandler {
 	return basic.NewBuilder().
 		WithUserInfoService(authManager).
 		WithTargets().
-		WithURL("/oauth/*").
+		WithURL("/auth/*").
 		WithAuthority("ADMIN", "WRITE", "READ").
+		And().
+		Build()
+}
+
+func corsAuthFilter() security.AuthHandler {
+	return access.NewBuilder().
+		WithTargets().
+		WithURL("/auth/*").
 		And().
 		Build()
 }
@@ -37,6 +46,7 @@ func openAuthHandler() security.AuthHandler {
 	return open.NewBuilder().
 		WithTargets().
 		WithURL("/swaggerui/*").
+		WithURL("/debug/pprof/").
 		And().
 		Build()
 }
@@ -68,6 +78,6 @@ func Security(us security.UserInfoService) http.Security {
 	return security.NewBuilder().
 		WithAuthentication(oAuthManager(jwtService)).
 		WithAuthorization(openAuthHandler(), basicAuthHandler(authManager), jwtHandler()).
-		//WithFilter(scopesAuthHandler()).
+		WithFilter(corsAuthFilter()).
 		Build()
 }

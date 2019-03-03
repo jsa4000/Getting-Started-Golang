@@ -7,15 +7,15 @@ import (
 	"webapp/core/net/http/security"
 )
 
-// AuthHandler struct to handle basic authentication
+// AuthHandler struct to handle access control methods
 type AuthHandler struct {
 	*Config
 	*security.Targets
 }
 
-// Handle handler to manage basic authenticaiton method
+// Handle handler to manage access control methods
 func (s *AuthHandler) Handle(w http.ResponseWriter, r *http.Request, target *security.Target) error {
-	log.Debugf("Handle Open Request for %s", net.RemoveURLParams(r.RequestURI))
+	log.Debugf("Handle Access Request for %s", net.RemoveURLParams(r.RequestURI))
 
 	//defaultHeaders(w)
 	enableCors(w)

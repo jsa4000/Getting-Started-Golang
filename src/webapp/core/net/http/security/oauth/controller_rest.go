@@ -24,12 +24,12 @@ func NewRestController(service token.Service) net.Controller {
 func (c *RestController) GetRoutes() []net.Route {
 	return []net.Route{
 		net.Route{
-			Path:    "/oauth/token",
+			Path:    "/auth/token",
 			Method:  "POST",
 			Handler: c.CreateToken,
 		},
 		net.Route{
-			Path:    "/oauth/check_token",
+			Path:    "/auth/check_token",
 			Method:  "GET",
 			Handler: c.CheckToken,
 		},
