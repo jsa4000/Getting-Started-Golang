@@ -9,11 +9,11 @@
 - Add Oauth grant_types abstraction <sub>[*EPIC Security*]<sub>
 - [DONE] Add controller selection into security manager: oauth, oauth2, next implementations...  <sub>[*EPIC Security*]<sub>
 - [DONE] Move CORS, Content Type, etc.. to another middleware, so it can be enabled or disabled by the manager.
-- Refactor Target to it allows to add more fields than url and authorities. i.e. origins, enabled, methods, scopes, etc...
+- [DONE] Refactor Target to it allows to add more fields than url and authorities. i.e. origins, enabled, methods, scopes, etc...
 
 ## Backlog
 
 - Messaging Systems: NATs, Kafka, RabbitMQ, etc..
 - GRPC abstraction
 - Metrics and health-checks endpoints
-- Create generic sire-car, using envoy for example, to create and ensure lightweight clients.
+- Create generic side-car, using envoy for example, to create and ensure lightweight clients.
