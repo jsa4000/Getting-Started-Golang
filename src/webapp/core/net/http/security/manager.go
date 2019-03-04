@@ -4,8 +4,8 @@ import (
 	net "webapp/core/net/http"
 )
 
-// AuthFacade interface for components to register
-type AuthFacade interface {
+// Facade interface for components to register
+type Facade interface {
 	Controllers() []net.Controller
 }
 
@@ -14,7 +14,7 @@ type Manager struct {
 	*Config
 	authHandlers   net.Middleware
 	filterHandlers net.Middleware
-	facades        []AuthFacade
+	facades        []Facade
 }
 
 // Middleware returns the middleware for the security implementation
@@ -50,7 +50,7 @@ func NewBuilder() *ManagerBuilder {
 	return &ManagerBuilder{
 		Manager: &Manager{
 			Config:  NewConfig(),
-			facades: make([]AuthFacade, 0),
+			facades: make([]Facade, 0),
 		},
 		authHndls:   make([]AuthHandler, 0),
 		filterHndls: make([]FilterHandler, 0),
@@ -64,7 +64,7 @@ func (c *ManagerBuilder) WithConfig(config *Config) *ManagerBuilder {
 }
 
 // WithAuthentication set middleware to use for authorization
-func (c *ManagerBuilder) WithAuthentication(facades ...AuthFacade) *ManagerBuilder {
+func (c *ManagerBuilder) WithAuthentication(facades ...Facade) *ManagerBuilder {
 	c.facades = append(c.facades, facades...)
 	return c
 }

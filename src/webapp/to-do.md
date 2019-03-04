@@ -4,7 +4,7 @@
 
 ### Current
 
-- Order filters used in security middleware by priority (basic, jwt, no auth, ..). Currently this is orderer by order during insertion. <sub>[*EPIC Security*]<sub>
+- [DONE] Order filters used in security middleware by priority (basic, jwt, no auth, ..). Currently this is orderer by order during insertion. <sub>[*EPIC Security*]<sub>
 - [DONE] Add authorities validation inside Basic-Auth, oauth, etc.. <sub>[*EPIC Security*]<sub> 
 - Add Oauth grant_types abstraction <sub>[*EPIC Security*]<sub>
 - [DONE] Add controller selection into security manager: oauth, oauth2, next implementations...  <sub>[*EPIC Security*]<sub>
