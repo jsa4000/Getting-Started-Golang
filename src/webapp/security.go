@@ -11,12 +11,6 @@ import (
 	"webapp/core/net/http/security/users"
 )
 
-func jwtService(provider security.UserInfoService) *jwt.Service {
-	return jwt.NewServiceBuilder().
-		WithUserInfoService(provider).
-		Build()
-}
-
 func jwtHandler() security.AuthHandler {
 	return jwt.NewBuilder().
 		WithTargets().
@@ -74,6 +68,20 @@ func usersManager(service security.UserInfoService) *users.Manager {
 		WithUser("user-readonly").WithPassword("mypassword$").WithRole("READ").
 		And().
 		WithUserService(service).
+		Build()
+}
+
+type tags struct{}
+
+func (t *tags) Write(c jwt.Claims, u *security.UserInfo) {
+	c["region"] = "eu-west-1"
+	c["tags"] = []string{"webapp", "secuity", "token"}
+}
+
+func jwtService(provider security.UserInfoService) *jwt.Service {
+	return jwt.NewServiceBuilder().
+		WithUserInfoService(provider).
+		//WithClaimsEnhancer(&tags{}).
 		Build()
 }
 

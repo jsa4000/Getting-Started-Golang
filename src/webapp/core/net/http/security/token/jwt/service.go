@@ -47,7 +47,7 @@ func (s *Service) Create(ctx context.Context, req *service.CreateTokenRequest) (
 		issuedAtField:       issueAt.Unix(),
 	}
 	if s.enhancer != nil {
-
+		s.enhancer.Write(Claims(claims), user)
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	tokenString, err := token.SignedString([]byte(s.SecretKey))
