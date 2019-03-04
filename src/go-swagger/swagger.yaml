@@ -1,0 +1,247 @@
+---
+swagger: "2.0"
+info:
+  description: "This is a sample WebApp go server" 
+  version: 1.0.0
+  title: WebApp
+  termsOfService: http://swagger.io/terms/
+  contact:
+    email: jsa4000@gmail.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+host: localhost:8080
+basePath: /
+tags:
+- name: Users
+  description: Access to user endpoints
+  externalDocs:
+    description: Documentation at
+    url: http://localhost:8080/docs/users
+- name: Roles
+  description:  Access to role endpoints
+  externalDocs:
+    description: Documentation at
+    url: http://localhost:8080/docs/roles
+schemes:
+- http
+paths:
+  /users:
+    post:
+      tags:
+      - Users
+      summary: Creates a new user
+      operationId: createUser
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: body
+        description: User object that needs to be added
+        required: true
+        schema:
+          $ref: '#/definitions/createUserRequest'
+      responses:
+        405:
+          description: Invalid input
+        500:
+          description: Internal Server Error
+    get:
+      tags:
+      - Users
+      summary: Get All users
+      operationId: getAllUsers
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        200:
+          description: successful operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/User'
+  /users/{id}:
+    get:
+      tags:
+      - Users
+      summary: Find user by ID
+      description: Returns a single user
+      operationId: getUserById
+      produces:
+      - application/json
+      parameters:
+      - name: id
+        in: path
+        description: ID of user to return
+        required: true
+        type: string
+      responses:
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/User'
+        400:
+          description: Invalid ID supplied
+        404:
+          description: User not found
+    delete:
+      tags:
+      - Users
+      summary: Delete user by ID
+      description: Deletes a single user
+      operationId: deleteUserById
+      produces:
+      - application/json
+      parameters:
+      - name: id
+        in: path
+        description: ID of user to delete
+        required: true
+        type: string
+      responses:
+        200:
+          description: successful operation
+        400:
+          description: Invalid ID supplied
+        404:
+          description: User not found
+  /roles:
+    post:
+      tags:
+      - Roles
+      summary: Creates a new role
+      operationId: createRole
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: body
+        description: Role object that needs to be added
+        required: true
+        schema:
+          $ref: '#/definitions/createRoleRequest'
+      responses:
+        405:
+          description: Invalid input
+        500:
+          description: Internal Server Error
+    get:
+      tags:
+      - Roles
+      summary: Get All roles
+      operationId: getAllRoles
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        200:
+          description: successful operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Role'
+  /roles/{id}:
+    get:
+      tags:
+      - Roles
+      summary: Find role by ID
+      description: Returns a single role
+      operationId: getRoleById
+      produces:
+      - application/json
+      parameters:
+      - name: id
+        in: path
+        description: ID of role to return
+        required: true
+        type: string
+      responses:
+        200:
+          description: successful operation
+          schema:
+            $ref: '#/definitions/Role'
+        400:
+          description: Invalid ID supplied
+        404:
+          description: Role not found
+    delete:
+      tags:
+      - Roles
+      summary: Delete role by ID
+      description: Deletes a single role
+      operationId: deleteRoleById
+      produces:
+      - application/json
+      parameters:
+      - name: id
+        in: path
+        description: ID of role to delete
+        required: true
+        type: string
+      responses:
+        200:
+          description: successful operation
+        400:
+          description: Invalid ID supplied
+        404:
+          description: Role not found
+definitions:
+  createUserRequest:
+    type: object
+    properties:
+      name:
+        type: string
+      email:
+        type: string
+      password:
+        type: string
+  createRoleRequest:
+    type: object
+    properties:
+      name:
+        type: string
+  User:
+    type: object
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      email:
+        type: string
+      password:
+        type: string
+  Role:
+    type: object
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+  ApiResponse:
+    type: object
+    properties:
+      code:
+        type: integer
+        format: int32
+      type:
+        type: string
+      message:
+        type: string
+securityDefinitions:
+  bearerAuth:
+    type: apiKey
+    name: Authorization
+    in: header
+security:
+  - bearerAuth: []  
+externalDocs:
+  description: Find out more about WebApp
+  url: http://localhost:8080/index.html

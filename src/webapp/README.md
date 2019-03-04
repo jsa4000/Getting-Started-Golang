@@ -4,11 +4,19 @@
 
 Install Go binaries (+v1.11.x)
 
-Install the dependencies
+Create a new module
+
+    go mod init <name>
+
+**Install** the dependencies in a module (`go.mod`)
 
     go install
 
-Run the server (configuration by default)
+**Update** dependencies
+
+    go get -u all
+
+**Run** the server (configuration by default)
 
     go run .
 
