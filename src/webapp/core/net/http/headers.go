@@ -7,6 +7,15 @@ const (
 	// HeaderTransferEncoding represents a http transfer-encoding header.
 	HeaderTransferEncoding = "Transfer-Encoding"
 
+	// HeaderContentLength specify the content length
+	HeaderContentLength = "Content-Length"
+
+	// HeaderAcceptEncoding specify the encoding accepted
+	HeaderAcceptEncoding = "Accept-Encoding"
+
+	// HeaderXCSRFToken specify the X-CSRF token
+	HeaderXCSRFToken = "X-CSRF-Token"
+
 	// HeaderAccept the Accept header
 	HeaderAccept = "Accept"
 

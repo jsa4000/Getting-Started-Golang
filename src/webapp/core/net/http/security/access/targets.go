@@ -2,14 +2,14 @@ package access
 
 import "webapp/core/net/http/security"
 
-// AllowAnyOrigin allows all domains
-const AllowAnyOrigin string = "*"
-
 // Target structure to retrieve (fetch) the Target information
 type Target struct {
 	security.TargetBase
-	Allow  bool
-	Origin string
+	Allow        bool
+	Origin       string
+	Crendentials int
+	Methods      []string
+	Headers      []string
 }
 
 func newTarget(url string) *Target {
@@ -18,8 +18,11 @@ func newTarget(url string) *Target {
 			URL:         url,
 			Authorities: make([]string, 0),
 		},
-		Allow:  false,
-		Origin: AllowAnyOrigin,
+		Allow:        false,
+		Origin:       AllowAnyOrigin,
+		Crendentials: -1,
+		Methods:      make([]string, 0),
+		Headers:      make([]string, 0),
 	}
 }
 
@@ -51,6 +54,24 @@ func (c *TargetsBuilder) WithOrigin(origin string) *TargetsBuilder {
 	return c
 }
 
+// WithCredentials set the interface to use for fetching user info
+func (c *TargetsBuilder) WithCredentials(enable bool) *TargetsBuilder {
+	c.current.Crendentials = toInt(enable)
+	return c
+}
+
+// WithMethods set the interface to use for fetching user info
+func (c *TargetsBuilder) WithMethods(methods ...string) *TargetsBuilder {
+	c.current.Methods = append(c.current.Methods, methods...)
+	return c
+}
+
+// WithHeaders set the interface to use for fetching user info
+func (c *TargetsBuilder) WithHeaders(headers ...string) *TargetsBuilder {
+	c.current.Headers = append(c.current.Headers, headers...)
+	return c
+}
+
 // Allow set the interface to use for fetching user info
 func (c *TargetsBuilder) Allow() *TargetsBuilder {
 	c.current.Allow = true
@@ -63,4 +84,11 @@ func (c *TargetsBuilder) Build() security.Targets {
 		c.Targets = append(c.Targets, c.current)
 	}
 	return c.Targets
+}
+
+func toInt(enabled bool) int {
+	if enabled {
+		return 1
+	}
+	return 0
 }

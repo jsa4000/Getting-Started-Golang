@@ -65,6 +65,24 @@ func (c *NestedTargetsBuilder) WithOrigin(origin string) *NestedTargetsBuilder {
 	return c
 }
 
+// WithCredentials set the interface to use for fetching user info
+func (c *NestedTargetsBuilder) WithCredentials(enable bool) *NestedTargetsBuilder {
+	c.TargetsBuilder.WithCredentials(enable)
+	return c
+}
+
+// WithMethods set the interface to use for fetching user info
+func (c *NestedTargetsBuilder) WithMethods(methods ...string) *NestedTargetsBuilder {
+	c.TargetsBuilder.WithMethods(methods...)
+	return c
+}
+
+// WithHeaders set the interface to use for fetching user info
+func (c *NestedTargetsBuilder) WithHeaders(headers ...string) *NestedTargetsBuilder {
+	c.TargetsBuilder.WithHeaders(headers...)
+	return c
+}
+
 // Allow set the interface to use for fetching user info
 func (c *NestedTargetsBuilder) Allow() *NestedTargetsBuilder {
 	c.TargetsBuilder.Allow()

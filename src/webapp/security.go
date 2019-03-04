@@ -44,9 +44,9 @@ func openAuthHandler() security.AuthHandler {
 func corsAuthFilter() security.AuthHandler {
 	return access.NewBuilder().
 		WithTargets().
-		WithURL("/auth/*").WithOrigin("example.domain.com").Allow().
-		WithURL("/users").WithOrigin("*").Allow().
-		WithURL("/roles").
+		WithURL("/auth/*").WithOrigin("example.domain.com").WithCredentials(true).Allow().
+		WithURL("/users").WithOrigin("*").WithMethods("POST", "GET", "OPTIONS", "PUT", "DELETE").Allow().
+		WithURL("/roles").WithCredentials(false).Allow().
 		And().
 		Build()
 }
@@ -81,7 +81,7 @@ func (t *tags) Write(c jwt.Claims, u *security.UserInfo) {
 func jwtService(provider security.UserInfoService) *jwt.Service {
 	return jwt.NewServiceBuilder().
 		WithUserInfoService(provider).
-		//WithClaimsEnhancer(&tags{}).
+		WithClaimsEnhancer(&tags{}).
 		Build()
 }
 
