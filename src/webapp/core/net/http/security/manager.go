@@ -84,10 +84,10 @@ func (c *ManagerBuilder) WithFilter(method ...FilterHandler) *ManagerBuilder {
 // Build returns manager build
 func (c *ManagerBuilder) Build() *Manager {
 	if len(c.authHndls) > 0 {
-		c.authHandlers = NewMiddleware(c.authHndls, net.PriorityAuth, true)
+		c.authHandlers = NewMiddleware(SortFilters(c.authHndls, true), net.PriorityAuth, true)
 	}
 	if len(c.filterHndls) > 0 {
-		c.filterHandlers = NewMiddleware(c.filterHndls, net.PriorityFilters, false)
+		c.filterHandlers = NewMiddleware(SortFilters(c.filterHndls, true), net.PriorityFilters, false)
 	}
 	return c.Manager
 }

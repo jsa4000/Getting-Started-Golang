@@ -10,17 +10,18 @@ import (
 	"webapp/core/net/http/security/token/jwt"
 )
 
+func jwtService(provider security.UserInfoService) *jwt.Service {
+	return jwt.NewServiceBuilder().
+		WithUserInfoService(provider).
+		Build()
+}
+
 func jwtHandler() security.AuthHandler {
 	return jwt.NewBuilder().
 		WithTargets().
 		WithURL("/*").
 		And().
-		Build()
-}
-
-func jwtService(provider security.UserInfoService) *jwt.Service {
-	return jwt.NewServiceBuilder().
-		WithUserInfoService(provider).
+		WithPriority(2).
 		Build()
 }
 
@@ -31,6 +32,17 @@ func basicAuthHandler(authManager *security.AuthManager) security.AuthHandler {
 		WithURL("/auth/*").
 		WithAuthority("ADMIN", "WRITE", "READ").
 		And().
+		WithPriority(1).
+		Build()
+}
+
+func openAuthHandler() security.AuthHandler {
+	return open.NewBuilder().
+		WithTargets().
+		WithURL("/swaggerui/*").
+		WithURL("/debug/pprof/").
+		And().
+		WithPriority(0).
 		Build()
 }
 
@@ -40,15 +52,6 @@ func corsAuthFilter() security.AuthHandler {
 		WithURL("/auth/*").WithOrigin("example.domain.com").Allow().
 		WithURL("/users").WithOrigin("*").Allow().
 		WithURL("/roles").
-		And().
-		Build()
-}
-
-func openAuthHandler() security.AuthHandler {
-	return open.NewBuilder().
-		WithTargets().
-		WithURL("/swaggerui/*").
-		WithURL("/debug/pprof/").
 		And().
 		Build()
 }

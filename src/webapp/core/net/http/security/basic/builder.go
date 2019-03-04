@@ -31,9 +31,15 @@ func newNestedTargetsBuilder(parent *Builder) *NestedTargetsBuilder {
 	}
 }
 
-// Withconfig set the interface to use for fetching user info
-func (c *Builder) Withconfig(config *Config) *Builder {
+// WithConfig set the interface to use for fetching user info
+func (c *Builder) WithConfig(config *Config) *Builder {
 	c.Config = config
+	return c
+}
+
+// WithPriority set the interface to use for fetching user info
+func (c *Builder) WithPriority(priority int) *Builder {
+	c.Prior = priority
 	return c
 }
 

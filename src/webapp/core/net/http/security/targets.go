@@ -1,6 +1,7 @@
 package security
 
 import (
+	"fmt"
 	net "webapp/core/net/http"
 )
 
@@ -52,6 +53,16 @@ func (t *TargetBase) Any(authorities []string) bool {
 
 // Targets to implement the Matcher interface
 type Targets []Target
+
+func (t Targets) String() string {
+	result := ""
+	for _, item := range t {
+		if target, ok := item.(*TargetBase); ok {
+			result += fmt.Sprintf("%v", target)
+		}
+	}
+	return result
+}
 
 // TargetsBuilder build struct
 type TargetsBuilder struct {
