@@ -8,6 +8,7 @@ import (
 	"webapp/core/net/http/security/oauth"
 	"webapp/core/net/http/security/open"
 	"webapp/core/net/http/security/token/jwt"
+	"webapp/core/net/http/security/users"
 )
 
 func jwtService(provider security.UserInfoService) *jwt.Service {
@@ -25,9 +26,9 @@ func jwtHandler() security.AuthHandler {
 		Build()
 }
 
-func basicAuthHandler(authManager *security.AuthManager) security.AuthHandler {
+func basicAuthHandler(usersManager *users.Manager) security.AuthHandler {
 	return basic.NewBuilder().
-		WithUserInfoService(authManager).
+		WithUserInfoService(usersManager).
 		WithTargets().
 		WithURL("/auth/*").
 		WithAuthority("ADMIN", "WRITE", "READ").
@@ -66,8 +67,8 @@ func oAuthManager(jwt *jwt.Service) *oauth.Manager {
 		Build()
 }
 
-func authManager(service security.UserInfoService) *security.AuthManager {
-	return security.NewAuthManagerBuilder().
+func usersManager(service security.UserInfoService) *users.Manager {
+	return users.NewManagerBuilder().
 		WithInMemoryUsers().
 		WithUser("user-trusted").WithPassword("mypassword$").WithRole("ADMIN", "WRITE", "READ").
 		WithUser("user-readonly").WithPassword("mypassword$").WithRole("READ").
@@ -78,11 +79,11 @@ func authManager(service security.UserInfoService) *security.AuthManager {
 
 // Security creates the security model
 func Security(us security.UserInfoService) http.Security {
-	authManager := authManager(us)
-	jwtService := jwtService(authManager)
+	usersManager := usersManager(us)
+	jwtService := jwtService(usersManager)
 	return security.NewBuilder().
 		WithAuthentication(oAuthManager(jwtService)).
-		WithAuthorization(openAuthHandler(), basicAuthHandler(authManager), jwtHandler()).
+		WithAuthorization(openAuthHandler(), basicAuthHandler(usersManager), jwtHandler()).
 		WithFilter(corsAuthFilter()).
 		Build()
 }

@@ -28,37 +28,33 @@ func ValidateUser(user *UserInfo, username, password string) bool {
 		pcrypt.Compare(user.Password, password)
 }
 
-// AuthUsers to implement the UserinfoProvider
-type AuthUsers struct {
-	Users map[string]*UserInfo
-}
+// Users to implement the UserinfoProvider
+type Users map[string]*UserInfo
 
 // Fetch LocalUserProvider UserInfoService interface
-func (c *AuthUsers) Fetch(ctx context.Context, username string) (*UserInfo, error) {
-	user, ok := c.Users[username]
+func (c Users) Fetch(ctx context.Context, username string) (*UserInfo, error) {
+	user, ok := c[username]
 	if !ok {
 		return nil, net.ErrNotFound.From(fmt.Errorf("User %s has not been found", username))
 	}
 	return user, nil
 }
 
-// AuthUsersBuilder build struct
-type AuthUsersBuilder struct {
-	*AuthUsers
+// UsersBuilder build struct
+type UsersBuilder struct {
+	Users
 	current *UserInfo
 }
 
-// NewAuthUsersBuilder Create a new DefaultUsersBuilder
-func NewAuthUsersBuilder() *AuthUsersBuilder {
-	return &AuthUsersBuilder{
-		AuthUsers: &AuthUsers{
-			Users: make(map[string]*UserInfo),
-		},
+// NewUsersBuilder Create a new DefaultUsersBuilder
+func NewUsersBuilder() *UsersBuilder {
+	return &UsersBuilder{
+		Users: make(map[string]*UserInfo),
 	}
 }
 
 // WithUser set the interface to use for fetching user info
-func (c *AuthUsersBuilder) WithUser(name string) *AuthUsersBuilder {
+func (c *UsersBuilder) WithUser(name string) *UsersBuilder {
 	if c.current != nil {
 		c.Users[c.current.Name] = c.current
 	}
@@ -69,21 +65,21 @@ func (c *AuthUsersBuilder) WithUser(name string) *AuthUsersBuilder {
 }
 
 // WithPassword set the interface to use for fetching user info
-func (c *AuthUsersBuilder) WithPassword(password string) *AuthUsersBuilder {
+func (c *UsersBuilder) WithPassword(password string) *UsersBuilder {
 	c.current.Password = pcrypt.New(password)
 	return c
 }
 
 // WithRole set the interface to use for fetching user info
-func (c *AuthUsersBuilder) WithRole(roles ...string) *AuthUsersBuilder {
+func (c *UsersBuilder) WithRole(roles ...string) *UsersBuilder {
 	c.current.Roles = append(c.current.Roles, roles...)
 	return c
 }
 
 // Build default users struct
-func (c *AuthUsersBuilder) Build() *AuthUsers {
+func (c *UsersBuilder) Build() Users {
 	if c.current != nil {
 		c.Users[c.current.Name] = c.current
 	}
-	return c.AuthUsers
+	return c.Users
 }
