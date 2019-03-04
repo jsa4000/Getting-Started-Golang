@@ -1,7 +1,5 @@
 package oauth
 
-import "time"
-
 // Grant Types: OAuth 2 provides several "grant types" for different use cases.
 
 // The grant types defined are:
@@ -12,21 +10,27 @@ import "time"
 
 // CreateTokenRequest request
 type CreateTokenRequest struct {
-	UserName string   `json:"username" validate:"min=0,max=255,required"`
-	Password string   `json:"password" validate:"min=0,max=1024,required"`
-	GranType string   `json:"grant_type" validate:"min=0,max=255,required"`
-	Scope    []string `json:"scope" validate:"min=0,max=1024"`
+	ClientID     string   `json:"client_id" validate:"min=0,max=1024"`
+	ClientSecret string   `json:"client_secret" validate:"min=0,max=1024"`
+	UserName     string   `json:"username" validate:"min=0,max=255"`
+	Password     string   `json:"password" validate:"min=0,max=1024"`
+	GranType     string   `json:"grant_type" validate:"min=0,max=255"`
+	Scope        []string `json:"scope" validate:"min=0,max=4096"`
+	RedirectURI  string   `json:"redirect_uri" validate:"min=0,max=4096"`
+	ResponseType string   `json:"response_type" validate:"min=0,max=255"`
 }
 
 // CreateTokenResponse Response
 type CreateTokenResponse struct {
-	Token          string
-	ExpirationTime time.Time
+	AccessToken    string `json:"access_token"`
+	RefreshToken   string `json:"refresh_token,omitempty"`
+	TokenType      string `json:"token_type,omitempty"`
+	ExpirationTime int    `json:"expires_in"`
 }
 
 // CheckTokenRequest struct request
 type CheckTokenRequest struct {
-	Token string
+	Token string `json:"token" validate:",required"`
 }
 
 // CheckTokenResponse struct Response

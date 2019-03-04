@@ -22,7 +22,7 @@ func (c *RestController) JSON(w http.ResponseWriter, body interface{}, code int)
 }
 
 // Decode decode and validates. Also it sets the error for upper layers
-func (c *RestController) Decode(w http.ResponseWriter, r *http.Request, body interface{}) error {
+func (c *RestController) Decode(r *http.Request, body interface{}) error {
 	decoder := json.NewDecoder(r.Body)
 	err := decoder.Decode(body)
 	if err != nil {

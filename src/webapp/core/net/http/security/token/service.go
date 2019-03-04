@@ -2,18 +2,19 @@ package token
 
 import (
 	"context"
-	"time"
 )
 
 // CreateTokenRequest request
 type CreateTokenRequest struct {
-	UserName string `json:"username"`
+	UserName string `json:"username,required"`
 }
 
 // CreateTokenResponse Response
 type CreateTokenResponse struct {
-	Token          string
-	ExpirationTime time.Duration
+	AccessToken    string
+	RefreshToken   string
+	TokenType      string
+	ExpirationTime int
 }
 
 // CheckTokenRequest struct request

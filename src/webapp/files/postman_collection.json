@@ -1,12 +1,13 @@
 {
 	"info": {
-		"_postman_id": "f4d7a5d7-fa25-416e-91f4-a7f1b8547aae",
+		"_postman_id": "ea70de80-ab87-4ac0-98b8-89cccec9beed",
 		"name": "GoWebApp",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
 		{
 			"name": "OAuth",
+			"description": null,
 			"item": [
 				{
 					"name": "CheckToken",
@@ -16,7 +17,7 @@
 							"basic": [
 								{
 									"key": "username",
-									"value": "client-readonly",
+									"value": "user-trusted",
 									"type": "string"
 								},
 								{
@@ -33,20 +34,20 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "http://{{url}}:8080/oauth/check_token?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NTE1NDM2NDYsImlhdCI6MTU1MTQ1NzI0NiwiaXNzIjoid2ViYXBwLmRvbWFpbi5jb20iLCJqdGkiOiJjZDI5M2JhNS1hODI0LTRmYzUtYjZkMy1jZDgwMjg0M2UxNzQiLCJuYW1lIjoidXNlcl90ZXN0Iiwicm9sZXMiOm51bGwsInN1YiI6IjVjNjdiZjQyYjM5NjNkZGI4NmY5ZGFiNyJ9.ZkYf8gYJeh7FL__CL2dyMMV55ubcvqOT7awq6V7IrcU",
+							"raw": "http://{{url}}:8080/auth/check_token?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NTE3OTk5ODYsImlhdCI6MTU1MTcxMzU4NiwiaXNzIjoid2ViYXBwLmRvbWFpbi5jb20iLCJqdGkiOiIyMjg0MjVmMi1mODhjLTQ4ZTQtODAwZS00YmUzNGQ4NGZlYjAiLCJuYW1lIjoidXNlcl90ZXN0IiwicmVnaW9uIjoiZXUtd2VzdC0xIiwicm9sZXMiOm51bGwsInN1YiI6IjVjN2NlOWI5ZmVmYWU4OGFkMzg4ZTI1OCIsInRhZ3MiOlsid2ViYXBwIiwic2VjdWl0eSIsInRva2VuIl19.eDb_cPtcZUAGWkK7kYXcuzt2m5YVT5x8eW2SMpthfkk",
 							"protocol": "http",
 							"host": [
 								"{{url}}"
 							],
 							"port": "8080",
 							"path": [
-								"oauth",
+								"auth",
 								"check_token"
 							],
 							"query": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NTE1NDM2NDYsImlhdCI6MTU1MTQ1NzI0NiwiaXNzIjoid2ViYXBwLmRvbWFpbi5jb20iLCJqdGkiOiJjZDI5M2JhNS1hODI0LTRmYzUtYjZkMy1jZDgwMjg0M2UxNzQiLCJuYW1lIjoidXNlcl90ZXN0Iiwicm9sZXMiOm51bGwsInN1YiI6IjVjNjdiZjQyYjM5NjNkZGI4NmY5ZGFiNyJ9.ZkYf8gYJeh7FL__CL2dyMMV55ubcvqOT7awq6V7IrcU"
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NTE3OTk5ODYsImlhdCI6MTU1MTcxMzU4NiwiaXNzIjoid2ViYXBwLmRvbWFpbi5jb20iLCJqdGkiOiIyMjg0MjVmMi1mODhjLTQ4ZTQtODAwZS00YmUzNGQ4NGZlYjAiLCJuYW1lIjoidXNlcl90ZXN0IiwicmVnaW9uIjoiZXUtd2VzdC0xIiwicm9sZXMiOm51bGwsInN1YiI6IjVjN2NlOWI5ZmVmYWU4OGFkMzg4ZTI1OCIsInRhZ3MiOlsid2ViYXBwIiwic2VjdWl0eSIsInRva2VuIl19.eDb_cPtcZUAGWkK7kYXcuzt2m5YVT5x8eW2SMpthfkk"
 								}
 							]
 						}
@@ -61,7 +62,7 @@
 							"basic": [
 								{
 									"key": "username",
-									"value": "client-trusted",
+									"value": "user-readonly",
 									"type": "string"
 								},
 								{
@@ -83,15 +84,25 @@
 							"raw": "{\n\t\"username\": \"user.test@example.com\",\n\t\"password\": \"password\",\n\t\"grant_type\": \"password\"\n}"
 						},
 						"url": {
-							"raw": "http://{{url}}:8080/oauth/token",
+							"raw": "http://{{url}}:8080/auth/token?redirect_uri=http://localhost:8080/callback&scope=read write",
 							"protocol": "http",
 							"host": [
 								"{{url}}"
 							],
 							"port": "8080",
 							"path": [
-								"oauth",
+								"auth",
 								"token"
+							],
+							"query": [
+								{
+									"key": "redirect_uri",
+									"value": "http://localhost:8080/callback"
+								},
+								{
+									"key": "scope",
+									"value": "read write"
+								}
 							]
 						}
 					},
@@ -101,6 +112,7 @@
 		},
 		{
 			"name": "Roles",
+			"description": null,
 			"item": [
 				{
 					"name": "GetAll",
@@ -137,7 +149,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"name\" : \"ROLE_ADMIN\"\n}"
+							"raw": "{\n\t\"name\" : \"ROLE_CUSTOM\"\n}"
 						},
 						"url": {
 							"raw": "http://{{url}}:8080/roles",
@@ -217,6 +229,7 @@
 		},
 		{
 			"name": "Users",
+			"description": null,
 			"item": [
 				{
 					"name": "GetAll",
@@ -253,7 +266,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": \"user_test\",\n    \"email\": \"user.test@example.com\",\n    \"password\": \"1234\"\n}"
+							"raw": "{\n    \"name\": \"user_test3\",\n    \"email\": \"user.test3@example.com\",\n    \"password\": \"1234\"\n}"
 						},
 						"url": {
 							"raw": "http://{{url}}:8080/users",
@@ -292,7 +305,7 @@
 							"variable": [
 								{
 									"key": "user",
-									"value": "5c67bf49b3963ddb86f9dab8"
+									"value": "5c7d45789291a40982a3dbc3"
 								}
 							]
 						}
@@ -359,7 +372,7 @@
 		"bearer": [
 			{
 				"key": "token",
-				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NTA5NDY1MjAsImlhdCI6MTU1MDg2MDEyMCwiaXNzIjoic2VydmVyLW9hdXRoIiwianRpIjoiZTcxZjJjNDgtMjNmYS00ZTk4LTg2M2UtOTU3ZjdlNWFhYTA3IiwibmFtZSI6InVzZXJfdGVzdCIsInJvbGVzIjpudWxsLCJzdWIiOiI1YzY3YmY0MmIzOTYzZGRiODZmOWRhYjcifQ.tDR32FHhvMrz3T3yV3ivFbCpJQ39q7r8iAF2pbvZT9w",
+				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NTE3NzY2NjMsImlhdCI6MTU1MTY5MDI2MywiaXNzIjoid2ViYXBwLmRvbWFpbi5jb20iLCJqdGkiOiI5ZTdjN2M3OC02MWQyLTRmZWMtYWRiMi00YWNkYzM2NmEzOTYiLCJuYW1lIjoidXNlcl90ZXN0Iiwicm9sZXMiOm51bGwsInN1YiI6IjVjN2NlOWI5ZmVmYWU4OGFkMzg4ZTI1OCJ9.ZpA5gu2r6I-qpHml-AA0Og4JKq1hmMjzOQ9WH00fE28",
 				"type": "string"
 			}
 		]

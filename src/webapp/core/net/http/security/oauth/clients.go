@@ -21,11 +21,11 @@ type ClientService interface {
 }
 
 // ValidateClient compares the name and secret to be the same as the client
-func ValidateClient(user *Client, name, secret string) bool {
-	return name == user.Name && pcrypt.Compare(user.Secret, secret)
+func ValidateClient(client *Client, name, secret string) bool {
+	return name == client.Name && pcrypt.Compare(client.Secret, secret)
 }
 
-// Clients to implement the UserinfoProvider
+// Clients to implement the Client
 type Clients map[string]*Client
 
 // Fetch implements ClientService interface

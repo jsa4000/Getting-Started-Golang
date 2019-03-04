@@ -70,7 +70,7 @@ func (c *RestController) GetByID(w http.ResponseWriter, r *http.Request) {
 // Create handler to request the
 func (c *RestController) Create(w http.ResponseWriter, r *http.Request) {
 	var req CreateRequest
-	if err := c.Decode(w, r, &req); err != nil {
+	if err := c.Decode(r, &req); err != nil {
 		c.Error(w, err)
 		return
 	}

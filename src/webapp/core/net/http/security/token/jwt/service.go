@@ -3,6 +3,7 @@ package jwt
 import (
 	"context"
 	"fmt"
+	"strings"
 	"time"
 	cerr "webapp/core/errors"
 	net "webapp/core/net/http"
@@ -55,8 +56,9 @@ func (s *Service) Create(ctx context.Context, req *service.CreateTokenRequest) (
 		return nil, net.ErrInternalServer.From(err)
 	}
 	return &service.CreateTokenResponse{
-		Token:          tokenString,
-		ExpirationTime: expirationTime.Sub(issueAt),
+		AccessToken:    tokenString,
+		TokenType:      strings.TrimSpace(strings.ToLower(bearerPreffix)),
+		ExpirationTime: s.ExpirationTime,
 	}, nil
 }
 
