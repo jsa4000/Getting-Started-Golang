@@ -29,10 +29,7 @@ func ReadData(parser Parser, data interface{}) {
 	for i := 0; i < v.Elem().NumField(); i++ {
 		fv := v.Elem().Field(i)
 		ft := t.Field(i)
-		tag, ok := ft.Tag.Lookup(Tag)
-		if ok {
-			//log.Debug(log.Fields{"Name": ft.Name, "Kind": fv.Kind(), "Type": fv.Type(), "Tag": tag},
-			//	fmt.Sprintf("Read Default Configuration from '%s/%s'", t.PkgPath(), t.Name()))
+		if tag, ok := ft.Tag.Lookup(Tag); ok {
 			switch fv.Kind() {
 			case reflect.String:
 				fv.SetString(parser.GetString(tag))
@@ -42,9 +39,6 @@ func ReadData(parser Parser, data interface{}) {
 				fv.SetFloat(parser.GetFloat64(tag))
 			case reflect.Bool:
 				fv.SetBool(parser.GetBool(tag))
-			default:
-				//	log.Warning(log.Fields{"Name": ft.Name, "Kind": fv.Kind(), "Type": fv.Type(), "Tag": tag},
-				//		"Kind is not supported")
 			}
 		}
 	}

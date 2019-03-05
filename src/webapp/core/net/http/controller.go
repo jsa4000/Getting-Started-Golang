@@ -2,6 +2,7 @@ package http
 
 import (
 	"encoding/json"
+	"io"
 	"net/http"
 
 	valid "webapp/core/validation"
@@ -25,7 +26,7 @@ func (c *RestController) JSON(w http.ResponseWriter, body interface{}, code int)
 func (c *RestController) Decode(r *http.Request, body interface{}) error {
 	decoder := json.NewDecoder(r.Body)
 	err := decoder.Decode(body)
-	if err != nil {
+	if err != nil && err != io.EOF {
 		return ErrBadRequest.From(err)
 	}
 	valid, err := valid.Validate(body)
@@ -33,4 +34,9 @@ func (c *RestController) Decode(r *http.Request, body interface{}) error {
 		return ErrBadRequest.From(err)
 	}
 	return nil
+}
+
+// DecodeParams decode the form params form the request
+func (c *RestController) DecodeParams(r *http.Request, body interface{}, tag string) error {
+	return DecodeParams(r, body, tag)
 }

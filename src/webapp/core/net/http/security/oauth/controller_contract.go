@@ -10,14 +10,14 @@ package oauth
 
 // CreateTokenRequest request
 type CreateTokenRequest struct {
-	ClientID     string   `json:"client_id" validate:"min=0,max=1024"`
-	ClientSecret string   `json:"client_secret" validate:"min=0,max=1024"`
-	UserName     string   `json:"username" validate:"min=0,max=255"`
-	Password     string   `json:"password" validate:"min=0,max=1024"`
-	GranType     string   `json:"grant_type" validate:"min=0,max=255"`
-	Scope        []string `json:"scope" validate:"min=0,max=4096"`
-	RedirectURI  string   `json:"redirect_uri" validate:"min=0,max=4096"`
-	ResponseType string   `json:"response_type" validate:"min=0,max=255"`
+	ClientID     string `json:"client_id" validate:"min=0,max=1024"`
+	ClientSecret string `json:"client_secret" validate:"min=0,max=1024"`
+	UserName     string `json:"username" validate:"min=0,max=255"`
+	Password     string `json:"password" validate:"min=0,max=1024"`
+	GranType     string `json:"grant_type" validate:"min=0,max=255"`
+	Scope        string `json:"scope" validate:"min=0,max=4096"`
+	RedirectURI  string `json:"redirect_uri" validate:"min=0,max=4096"`
+	ResponseType string `json:"response_type" validate:"min=0,max=255"`
 }
 
 // CreateTokenResponse Response

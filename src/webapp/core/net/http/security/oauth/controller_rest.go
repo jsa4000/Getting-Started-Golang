@@ -42,9 +42,13 @@ func (c *RestController) CreateToken(w http.ResponseWriter, r *http.Request) {
 		c.Error(w, err)
 		return
 	}
-	if err := Decode(r, &req); err != nil {
+	if err := c.DecodeParams(r, &req, "json"); err != nil {
 		c.Error(w, err)
 		return
+	}
+	if client, secret, hasAuth := r.BasicAuth(); hasAuth {
+		req.ClientID = client
+		req.ClientSecret = secret
 	}
 	res, err := Create(r.Context(), c.Service, &req)
 	if err != nil {
