@@ -11,17 +11,20 @@ import (
 // environment variables, etc..
 type ServiceImpl struct {
 	metrics         bool
+	runtime         bool
 	health          bool
 	metricsSnapshot Metrics
+	runtimeSnapshot *Runtime
 	healthSnapshot  *GlobalHealth
 	lastSnapshot    time.Time
 	refreshTime     time.Duration
 }
 
 // NewServiceImpl creates new service impl
-func NewServiceImpl(health bool, metrics bool, seconds int) *ServiceImpl {
+func NewServiceImpl(health bool, runtime bool, metrics bool, seconds int) *ServiceImpl {
 	return &ServiceImpl{
 		metrics:      metrics,
+		runtime:      runtime,
 		health:       health,
 		lastSnapshot: time.Time{},
 		refreshTime:  time.Duration(seconds) * time.Second,
@@ -53,6 +56,9 @@ func (s *ServiceImpl) Snapshot() {
 		}
 		s.healthSnapshot = health
 	}
+	if s.runtime {
+		s.runtimeSnapshot = NewRuntime()
+	}
 	if s.metrics {
 		metrics := make([]*Value, 0)
 
@@ -65,6 +71,14 @@ func (s *ServiceImpl) Health(ctx context.Context, req *HealthRequest) (*HealthRe
 	s.Snapshot()
 	return &HealthResponse{
 		Health: s.healthSnapshot,
+	}, nil
+}
+
+// Runtime to retrieve the runtime of the system
+func (s *ServiceImpl) Runtime(ctx context.Context, req *RuntimeRequest) (*RuntimeResponse, error) {
+	s.Snapshot()
+	return &RuntimeResponse{
+		Runtime: s.runtimeSnapshot,
 	}, nil
 }
 

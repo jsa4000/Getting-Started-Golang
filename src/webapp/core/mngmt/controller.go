@@ -29,6 +29,11 @@ func (c *RestController) GetRoutes() []net.Route {
 			Handler: c.Health,
 		},
 		net.Route{
+			Path:    c.path + "/runtime",
+			Method:  "GET",
+			Handler: c.Runtime,
+		},
+		net.Route{
 			Path:    c.path + "/metrics",
 			Method:  "GET",
 			Handler: c.Metrics,
@@ -44,6 +49,16 @@ func (c *RestController) Health(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	c.JSON(w, res.Health, http.StatusOK)
+}
+
+// Runtime handler to request the runtime
+func (c *RestController) Runtime(w http.ResponseWriter, r *http.Request) {
+	res, err := c.service.Runtime(r.Context(), &RuntimeRequest{})
+	if err != nil {
+		c.Error(w, err)
+		return
+	}
+	c.JSON(w, res.Runtime, http.StatusOK)
 }
 
 // Metrics handler to request the metrics

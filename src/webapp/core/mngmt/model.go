@@ -1,6 +1,8 @@
 package mngmt
 
-import "time"
+import (
+	"time"
+)
 
 const (
 	// StatusOk status is ok
@@ -37,4 +39,21 @@ type Metrics []*Value
 // Value struct with the info ragarding the health of the system
 type Value struct {
 	value interface{}
+}
+
+// Runtime struct with memory information
+type Runtime struct {
+	// Misc memory stats
+	Alloc,
+	TotalAlloc,
+	Sys,
+	Mallocs,
+	Frees,
+	// Live objects = Mallocs - Frees
+	LiveObjects,
+	PauseTotalNs uint64
+	// GC Stats
+	NumGC uint32
+	// Number of goroutines
+	NumGoroutine int
 }

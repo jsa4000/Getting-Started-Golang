@@ -16,6 +16,7 @@ type Manager struct {
 	controller  net.Controller
 	path        string
 	metrics     bool
+	runtime     bool
 	health      bool
 	refreshTime int
 	service     Service
@@ -37,6 +38,7 @@ func NewManagerBuilder() *ManagerBuilder {
 		Manager: &Manager{
 			path:        DefaultRootPath,
 			metrics:     false,
+			runtime:     true,
 			health:      true,
 			refreshTime: DefaultRefreshTime,
 		},
@@ -46,6 +48,12 @@ func NewManagerBuilder() *ManagerBuilder {
 // WithHealth changes the root path
 func (b *ManagerBuilder) WithHealth(enabled bool) *ManagerBuilder {
 	b.health = enabled
+	return b
+}
+
+// WithRuntime enables the metrics
+func (b *ManagerBuilder) WithRuntime(enabled bool) *ManagerBuilder {
+	b.runtime = enabled
 	return b
 }
 
@@ -69,7 +77,7 @@ func (b *ManagerBuilder) WithRefreshTime(seconds int) *ManagerBuilder {
 
 // Build Add user service
 func (b *ManagerBuilder) Build() *Manager {
-	service := NewServiceImpl(b.health, b.metrics, b.refreshTime)
+	service := NewServiceImpl(b.health, b.metrics, b.runtime, b.refreshTime)
 	b.controller = NewRestController(service, b.path)
 	return b.Manager
 }
