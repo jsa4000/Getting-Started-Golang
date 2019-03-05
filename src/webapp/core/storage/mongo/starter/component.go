@@ -2,6 +2,7 @@ package starter
 
 import (
 	"context"
+	"webapp/core/mngmt"
 	"webapp/core/starter"
 	"webapp/core/storage/mongo"
 )
@@ -38,4 +39,16 @@ func (c *Component) Close(ctx context.Context) {
 // Priority Get the priority to be initialized
 func (c *Component) Priority() int {
 	return starter.PriorityStorage
+}
+
+// Status Load config from file
+func (c *Component) Status() *mngmt.Health {
+	status := mngmt.StatusOk
+	if !c.wrapper.Connected() {
+		status = mngmt.StatusError
+	}
+	return &mngmt.Health{
+		Name:   "MongoDB",
+		Status: status,
+	}
 }

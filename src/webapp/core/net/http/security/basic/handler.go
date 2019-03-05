@@ -27,6 +27,7 @@ func (s *AuthHandler) Handle(w http.ResponseWriter, r *http.Request, target secu
 	log.Debugf("Handle Basic Auth Request for %s", net.RemoveURLParams(r.RequestURI))
 	username, password, hasAuth := r.BasicAuth()
 	if !hasAuth {
+		w.Header().Set("WWW-Authenticate", "Basic realm=Restricted")
 		return net.ErrUnauthorized.From(errors.New("Authorization is required"))
 	}
 	var err error

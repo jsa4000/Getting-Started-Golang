@@ -83,10 +83,22 @@ func (w *Wrapper) Unsubscribe(id string) error {
 	return nil
 }
 
+// Connected check the connection to Mongodb database
+func (w *Wrapper) Connected() bool {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	err := w.Client.Ping(ctx, nil)
+	if err != nil {
+		cancel()
+		return false
+	}
+	return true
+}
+
 // check the connection to Mongodb database
 func (w *Wrapper) check(ctx context.Context) {
 	for {
-		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 		defer cancel()
 		err := w.Client.Ping(ctx, nil)
 		if err != nil {
@@ -98,7 +110,6 @@ func (w *Wrapper) check(ctx context.Context) {
 		w.onConnectEvent()
 		break
 	}
-
 }
 
 // Connect to Mongodb database

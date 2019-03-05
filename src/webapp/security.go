@@ -24,7 +24,8 @@ func basicAuthHandler(usersManager *users.Manager) security.AuthHandler {
 	return basic.NewBuilder().
 		WithUserInfoService(usersManager).
 		WithTargets().
-		WithURL("/auth/*").
+		WithURL("/management/*").
+		WithURL("/swaggerui/*").
 		WithAuthority("ADMIN", "WRITE", "READ").
 		And().
 		WithPriority(1).
@@ -34,8 +35,8 @@ func basicAuthHandler(usersManager *users.Manager) security.AuthHandler {
 func openAuthHandler() security.AuthHandler {
 	return open.NewBuilder().
 		WithTargets().
-		WithURL("/swaggerui/*").
-		WithURL("/debug/pprof/").
+		//WithURL("/debug/pprof/").
+		WithURL("/auth/*").
 		And().
 		WithPriority(0).
 		Build()

@@ -25,7 +25,7 @@ func (s *AuthHandler) Handle(w http.ResponseWriter, r *http.Request, target secu
 	log.Debugf("Handle JWT Request for %s", net.RemoveURLParams(r.RequestURI))
 	basicAuth, ok := r.Header[authHeader]
 	if !ok {
-		return net.ErrUnauthorized.From(errors.New("Authorization has not been found"))
+		return net.ErrUnauthorized.From(errors.New("Authorization is required"))
 	}
 	token, err := s.verify(r.Context(), strings.TrimPrefix(basicAuth[0], bearerPreffix))
 	if err != nil {

@@ -3,6 +3,8 @@ package main
 import (
 	"context"
 	log "webapp/core/logging"
+
+	mngmt "webapp/core/mngmt"
 	net "webapp/core/net/http"
 	pprof "webapp/core/net/http/pprof"
 
@@ -34,8 +36,15 @@ func (a *App) Startup(ctx context.Context) {
 	rolesService := roles.NewServiceImpl(rolesRepository)
 	usersService := users.NewServiceImpl(usersRepository)
 
+	// Create Management for health, metrics, etc..
+	mngmt := mngmt.NewManagerBuilder().
+		WithMetrics(true).
+		WithRootPath("/management").
+		Build()
+
 	// Create The HTTP Server
 	a.httpServer = net.NewServer().
+		WithControllers(mngmt.Controller()).
 		WithControllers(pprof.NewController()).                 // Add Controller for Profiling
 		WithControllers(roles.NewRestController(rolesService)). // Add roles controller
 		WithControllers(users.NewRestController(usersService)). // Add users controller
