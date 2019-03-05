@@ -3,19 +3,18 @@ package oauth
 import (
 	"net/http"
 	net "webapp/core/net/http"
-	"webapp/core/net/http/security/token"
 )
 
 // RestController for http transport
 type RestController struct {
 	net.RestController
-	Service token.Service
+	service Service
 }
 
 // NewRestController create new RestController
-func NewRestController(service token.Service) net.Controller {
+func NewRestController(s Service) net.Controller {
 	return &RestController{
-		Service: service,
+		service: s,
 	}
 }
 
@@ -50,7 +49,7 @@ func (c *RestController) CreateToken(w http.ResponseWriter, r *http.Request) {
 		req.ClientID = client
 		req.ClientSecret = secret
 	}
-	res, err := Create(r.Context(), c.Service, &req)
+	res, err := c.service.Create(r.Context(), &req)
 	if err != nil {
 		c.Error(w, err)
 		return
@@ -66,9 +65,7 @@ func (c *RestController) CreateToken(w http.ResponseWriter, r *http.Request) {
 // CheckToken handler to request the
 func (c *RestController) CheckToken(w http.ResponseWriter, r *http.Request) {
 	req := CheckTokenRequest{Token: r.FormValue("token")}
-	res, err := c.Service.Check(r.Context(), &token.CheckTokenRequest{
-		Token: req.Token,
-	})
+	res, err := c.service.Check(r.Context(), &req)
 	if err != nil {
 		c.Error(w, err)
 		return
