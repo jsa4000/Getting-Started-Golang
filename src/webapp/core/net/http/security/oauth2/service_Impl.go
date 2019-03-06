@@ -50,7 +50,7 @@ func (s *ServiceImpl) Token(ctx context.Context, req *BasicOauth2Request) (*Basi
 		TokenType:      res.TokenType,
 		RefreshToken:   res.RefreshToken,
 		ExpirationTime: res.ExpirationTime,
-		State:          req.Scope,
+		State:          req.State,
 	}, nil
 }
 
@@ -77,7 +77,7 @@ func (s *ServiceImpl) Authorize(ctx context.Context, req *BasicOauth2Request) (*
 		TokenType:      res.TokenType,
 		RefreshToken:   res.RefreshToken,
 		ExpirationTime: res.ExpirationTime,
-		State:          req.Scope,
+		State:          req.State,
 	}, nil
 }
 

@@ -51,12 +51,7 @@ func (c *RestController) Token(w http.ResponseWriter, r *http.Request) {
 		c.Error(w, err)
 		return
 	}
-	c.JSON(w, &BasicOauth2Response{
-		AccessToken:    res.AccessToken,
-		TokenType:      res.TokenType,
-		RefreshToken:   res.RefreshToken,
-		ExpirationTime: res.ExpirationTime,
-	}, http.StatusOK)
+	c.JSON(w, res, http.StatusOK)
 }
 
 // Authorize handler to request the
@@ -71,12 +66,7 @@ func (c *RestController) Authorize(w http.ResponseWriter, r *http.Request) {
 		c.Error(w, err)
 		return
 	}
-	c.JSON(w, &BasicOauth2Response{
-		AccessToken:    res.AccessToken,
-		TokenType:      res.TokenType,
-		RefreshToken:   res.RefreshToken,
-		ExpirationTime: res.ExpirationTime,
-	}, http.StatusOK)
+	c.JSON(w, res, http.StatusOK)
 }
 
 // CheckToken handler to request the
