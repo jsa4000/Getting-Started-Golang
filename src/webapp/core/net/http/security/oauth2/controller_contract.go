@@ -32,6 +32,12 @@ const (
 	ResponseTypeImplicit = "token" // response_type
 )
 
+// ClientRequest Interface to implements Client Request Base
+type ClientRequest interface {
+	SetClientID(id string)
+	SetClientSecret(secret string)
+}
+
 // BasicOauth2Request request
 type BasicOauth2Request struct {
 	ClientID     string `json:"client_id" validate:"min=0,max=1024"`
@@ -44,6 +50,16 @@ type BasicOauth2Request struct {
 	ResponseType string `json:"response_type" validate:"min=0,max=255"`
 	State        string `json:"state" validate:"min=0,max=2048"`
 	Code         string `json:"code,omitempty" validate:"min=0,max=2048"`
+}
+
+// SetClientID set the client ID
+func (r *BasicOauth2Request) SetClientID(id string) {
+	r.ClientID = id
+}
+
+// SetClientSecret set the client secret
+func (r *BasicOauth2Request) SetClientSecret(secret string) {
+	r.ClientSecret = secret
 }
 
 // BasicOauth2Response Response
@@ -61,6 +77,16 @@ type CheckTokenRequest struct {
 	ClientID     string `json:"client_id" validate:"min=0,max=1024"`
 	ClientSecret string `json:"client_secret" validate:"min=0,max=1024"`
 	Token        string `json:"token"`
+}
+
+// SetClientID set the client ID
+func (r *CheckTokenRequest) SetClientID(id string) {
+	r.ClientID = id
+}
+
+// SetClientSecret set the client secret
+func (r *CheckTokenRequest) SetClientSecret(secret string) {
+	r.ClientSecret = secret
 }
 
 // CheckTokenResponse struct Response

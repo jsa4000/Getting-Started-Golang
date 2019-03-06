@@ -42,17 +42,9 @@ func (c *RestController) GetRoutes() []net.Route {
 // Token handler to request the
 func (c *RestController) Token(w http.ResponseWriter, r *http.Request) {
 	var req BasicOauth2Request
-	if err := c.Decode(r, &req); err != nil {
+	if err := c.decode(r, &req); err != nil {
 		c.Error(w, err)
 		return
-	}
-	if err := c.DecodeParams(r, &req, "json"); err != nil {
-		c.Error(w, err)
-		return
-	}
-	if client, secret, hasAuth := r.BasicAuth(); hasAuth {
-		req.ClientID = client
-		req.ClientSecret = secret
 	}
 	res, err := c.service.Token(r.Context(), &req)
 	if err != nil {
@@ -70,17 +62,9 @@ func (c *RestController) Token(w http.ResponseWriter, r *http.Request) {
 // Authorize handler to request the
 func (c *RestController) Authorize(w http.ResponseWriter, r *http.Request) {
 	var req BasicOauth2Request
-	if err := c.Decode(r, &req); err != nil {
+	if err := c.decode(r, &req); err != nil {
 		c.Error(w, err)
 		return
-	}
-	if err := c.DecodeParams(r, &req, "json"); err != nil {
-		c.Error(w, err)
-		return
-	}
-	if client, secret, hasAuth := r.BasicAuth(); hasAuth {
-		req.ClientID = client
-		req.ClientSecret = secret
 	}
 	res, err := c.service.Authorize(r.Context(), &req)
 	if err != nil {
@@ -98,17 +82,9 @@ func (c *RestController) Authorize(w http.ResponseWriter, r *http.Request) {
 // CheckToken handler to request the
 func (c *RestController) CheckToken(w http.ResponseWriter, r *http.Request) {
 	var req CheckTokenRequest
-	if err := c.Decode(r, &req); err != nil {
+	if err := c.decode(r, &req); err != nil {
 		c.Error(w, err)
 		return
-	}
-	if err := c.DecodeParams(r, &req, "json"); err != nil {
-		c.Error(w, err)
-		return
-	}
-	if client, secret, hasAuth := r.BasicAuth(); hasAuth {
-		req.ClientID = client
-		req.ClientSecret = secret
 	}
 	res, err := c.service.Check(r.Context(), &req)
 	if err != nil {
@@ -116,4 +92,20 @@ func (c *RestController) CheckToken(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	c.JSON(w, res.Data, http.StatusOK)
+}
+
+func (c *RestController) decode(r *http.Request, data interface{}) error {
+	if err := c.Decode(r, data); err != nil {
+		return err
+	}
+	if err := c.DecodeParams(r, data, "json"); err != nil {
+		return err
+	}
+	if id, secret, hasAuth := r.BasicAuth(); hasAuth {
+		if req, ok := data.(ClientRequest); ok {
+			req.SetClientID(id)
+			req.SetClientSecret(secret)
+		}
+	}
+	return nil
 }
