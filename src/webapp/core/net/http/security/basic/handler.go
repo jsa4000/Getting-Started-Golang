@@ -10,19 +10,19 @@ import (
 )
 
 const (
-	// AuthKey Key to get data from context in basicAuth
-	AuthKey security.ContextKey = "basic-auth-key"
+	// ContextValue Key to get data from context in basicAuth
+	ContextValue string = "basic-auth-key"
 )
 
-// AuthHandler struct to handle basic authentication
-type AuthHandler struct {
+// Handler struct to handle basic authentication
+type Handler struct {
 	security.BaseHandler
 	*Config
 	service security.UserInfoService
 }
 
 // Handle handler to manage basic authentication method
-func (s *AuthHandler) Handle(w http.ResponseWriter, r *http.Request, target security.Target) error {
+func (s *Handler) Handle(w http.ResponseWriter, r *http.Request, target security.Target) error {
 	log.Debugf("Handle Basic Auth Request for %s", net.RemoveURLParams(r.RequestURI))
 	username, password, hasAuth := r.BasicAuth()
 	if !hasAuth {
@@ -40,7 +40,7 @@ func (s *AuthHandler) Handle(w http.ResponseWriter, r *http.Request, target secu
 	if !target.Any(user.Roles) {
 		return net.ErrForbidden.From(fmt.Errorf("User %s has not enough privileges", user))
 	}
-	security.SetContextValue(r, AuthKey, new(security.ContextValue))
+	security.SetAuthKey(r, ContextValue)
 	security.SetUserName(r, username)
 	security.SetUserID(r, user.ID)
 	security.SetUserRoles(r, user.Roles)

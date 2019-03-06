@@ -1,4 +1,4 @@
-package basic
+package roles
 
 import "webapp/core/net/http/security"
 
@@ -47,12 +47,6 @@ func (c *Builder) WithPriority(priority int) *Builder {
 func (c *Builder) WithTargets() *NestedTargetsBuilder {
 	c.targetsBuilder = newNestedTargetsBuilder(c)
 	return c.targetsBuilder
-}
-
-// WithUserInfoService set the interface to use for fetching user info
-func (c *Builder) WithUserInfoService(s security.UserInfoService) *Builder {
-	c.service = s
-	return c
 }
 
 // Build set User Callback

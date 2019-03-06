@@ -1,4 +1,4 @@
-package open
+package roles
 
 import (
 	"net/http"
@@ -15,6 +15,10 @@ type Handler struct {
 
 // Handle handler to manage basic authenticaiton method
 func (s *Handler) Handle(w http.ResponseWriter, r *http.Request, target security.Target) error {
-	log.Debugf("Handle Open Request for %s", net.RemoveURLParams(r.RequestURI))
+	auth, err := security.ContextValue(r)
+	if err != nil {
+		return nil
+	}
+	log.Debugf("Handle Roles Request for %s and auth type %s", net.RemoveURLParams(r.RequestURI), auth)
 	return nil
 }

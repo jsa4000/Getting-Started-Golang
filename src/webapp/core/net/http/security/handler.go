@@ -7,8 +7,8 @@ import (
 	net "webapp/core/net/http"
 )
 
-// AuthHandler type redefinition
-type AuthHandler = FilterHandler
+// Handler type redefinition
+type Handler = FilterHandler
 
 // FilterHandler interface to manage the authorization method
 type FilterHandler interface {

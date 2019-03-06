@@ -1,12 +1,8 @@
 package jwt
 
-import (
-	"webapp/core/net/http/security"
-)
-
 const (
-	// AuthKey Key to get data from context in basicAuth
-	AuthKey security.ContextKey = "jwt-auth-key"
+	// ContextValue Key to get data from context in basicAuth
+	ContextValue string = "jwt-auth-key"
 
 	// BearerPreffix that comes with the Authorization Header
 	BearerPreffix = "Bearer "

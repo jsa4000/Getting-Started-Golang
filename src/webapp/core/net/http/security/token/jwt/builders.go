@@ -4,14 +4,14 @@ import "webapp/core/net/http/security"
 
 // Builder main app configuration
 type Builder struct {
-	*AuthHandler
+	*Handler
 	targetsBuilder *NestedTargetsBuilder
 }
 
 // NewBuilder Create a new ServiceImpl
 func NewBuilder() *Builder {
 	return &Builder{
-		AuthHandler: &AuthHandler{
+		Handler: &Handler{
 			Config: NewConfig(),
 		},
 	}
@@ -56,9 +56,9 @@ func (c *Builder) WithUserInfoService(provider security.UserInfoService) *Builde
 }
 
 // Build set User Callback
-func (c *Builder) Build() *AuthHandler {
+func (c *Builder) Build() *Handler {
 	c.Targets = c.targetsBuilder.Build()
-	return c.AuthHandler
+	return c.Handler
 }
 
 // WithURL set the interface to use for fetching user info

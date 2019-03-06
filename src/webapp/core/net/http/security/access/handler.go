@@ -9,14 +9,14 @@ import (
 	"webapp/core/net/http/security"
 )
 
-// AuthHandler struct to handle access control methods
-type AuthHandler struct {
+// Handler struct to handle access control methods
+type Handler struct {
 	security.BaseHandler
 	*Config
 }
 
 // Handle handler to manage access control methods
-func (s *AuthHandler) Handle(w http.ResponseWriter, r *http.Request, target security.Target) error {
+func (s *Handler) Handle(w http.ResponseWriter, r *http.Request, target security.Target) error {
 	log.Debugf("Handle Access Request for %s", net.RemoveURLParams(r.RequestURI))
 	if access, ok := target.(*Target); ok && access.Allow {
 		cors(w, access.Origin)

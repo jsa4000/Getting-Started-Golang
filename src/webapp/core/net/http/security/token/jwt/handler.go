@@ -13,15 +13,15 @@ import (
 	jwt "github.com/dgrijalva/jwt-go"
 )
 
-// AuthHandler Implementation used for the service
-type AuthHandler struct {
+// Handler Implementation used for the service
+type Handler struct {
 	security.BaseHandler
 	*Config
 	provider security.UserInfoService
 }
 
 // Handle handler to authorize the JWT method
-func (s *AuthHandler) Handle(w http.ResponseWriter, r *http.Request, target security.Target) error {
+func (s *Handler) Handle(w http.ResponseWriter, r *http.Request, target security.Target) error {
 	log.Debugf("Handle JWT Request for %s", net.RemoveURLParams(r.RequestURI))
 	basicAuth, ok := r.Header[HeaderAuthorization]
 	if !ok {
@@ -31,7 +31,7 @@ func (s *AuthHandler) Handle(w http.ResponseWriter, r *http.Request, target secu
 	if err != nil {
 		return err
 	}
-	security.SetContextValue(r, AuthKey, new(security.ContextValue))
+	security.SetAuthKey(r, ContextValue)
 	claims := token.Claims.(jwt.MapClaims)
 	if username, exist := claims[UserNameField]; exist {
 		security.SetUserName(r, username.(string))
@@ -52,7 +52,7 @@ func (s *AuthHandler) Handle(w http.ResponseWriter, r *http.Request, target secu
 }
 
 // Check returns deserialized token
-func (s *AuthHandler) verify(ctx context.Context, val string) (*jwt.Token, error) {
+func (s *Handler) verify(ctx context.Context, val string) (*jwt.Token, error) {
 	token, err := jwt.Parse(val, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])

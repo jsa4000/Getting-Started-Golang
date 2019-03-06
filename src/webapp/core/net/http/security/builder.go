@@ -7,7 +7,7 @@ import (
 // ManagerBuilder returns struct
 type ManagerBuilder struct {
 	*Manager
-	authHndls   []AuthHandler
+	authHndls   []Handler
 	filterHndls []FilterHandler
 }
 
@@ -18,7 +18,7 @@ func NewBuilder() *ManagerBuilder {
 			Config:  NewConfig(),
 			facades: make([]Facade, 0),
 		},
-		authHndls:   make([]AuthHandler, 0),
+		authHndls:   make([]Handler, 0),
 		filterHndls: make([]FilterHandler, 0),
 	}
 }
@@ -36,7 +36,7 @@ func (c *ManagerBuilder) WithAuthentication(facades ...Facade) *ManagerBuilder {
 }
 
 // WithAuthorization set middleware to use for authorization
-func (c *ManagerBuilder) WithAuthorization(method ...AuthHandler) *ManagerBuilder {
+func (c *ManagerBuilder) WithAuthorization(method ...Handler) *ManagerBuilder {
 	c.authHndls = append(c.authHndls, method...)
 	return c
 }

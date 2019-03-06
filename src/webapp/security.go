@@ -7,11 +7,12 @@ import (
 	"webapp/core/net/http/security/basic"
 	"webapp/core/net/http/security/oauth2"
 	"webapp/core/net/http/security/open"
+	"webapp/core/net/http/security/roles"
 	"webapp/core/net/http/security/token/jwt"
 	"webapp/core/net/http/security/users"
 )
 
-func jwtHandler() security.AuthHandler {
+func jwtHandler() security.Handler {
 	return jwt.NewBuilder().
 		WithTargets().
 		WithURL("/*").
@@ -20,7 +21,7 @@ func jwtHandler() security.AuthHandler {
 		Build()
 }
 
-func basicAuthHandler(usersManager *users.Manager) security.AuthHandler {
+func basicHandler(usersManager *users.Manager) security.Handler {
 	return basic.NewBuilder().
 		WithUserInfoService(usersManager).
 		WithTargets().
@@ -32,7 +33,7 @@ func basicAuthHandler(usersManager *users.Manager) security.AuthHandler {
 		Build()
 }
 
-func openAuthHandler() security.AuthHandler {
+func openHandler() security.Handler {
 	return open.NewBuilder().
 		WithTargets().
 		//WithURL("/debug/pprof/").
@@ -42,7 +43,15 @@ func openAuthHandler() security.AuthHandler {
 		Build()
 }
 
-func corsAuthFilter() security.AuthHandler {
+func rolesHandler() security.Handler {
+	return roles.NewBuilder().
+		WithTargets().
+		WithURL("/*").
+		And().
+		Build()
+}
+
+func corsAuthFilter() security.Handler {
 	return access.NewBuilder().
 		WithTargets().
 		WithURL("/oauth/*").WithOrigin("example.domain.com").WithCredentials(true).Allow().
@@ -92,7 +101,7 @@ func Security(us security.UserInfoService) http.Security {
 	jwtService := jwtService(usersManager)
 	return security.NewBuilder().
 		WithAuthentication(oAuthManager(jwtService)).
-		WithAuthorization(openAuthHandler(), basicAuthHandler(usersManager), jwtHandler()).
-		WithFilter(corsAuthFilter()).
+		WithAuthorization(openHandler(), basicHandler(usersManager), jwtHandler()).
+		WithFilter(rolesHandler(), corsAuthFilter()).
 		Build()
 }
