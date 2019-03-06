@@ -6,8 +6,9 @@ import (
 
 // CreateTokenRequest request
 type CreateTokenRequest struct {
-	UserName string `json:"username,required"`
-	Scope    string `json:"scope"`
+	UserName        string   `json:"username,required"`
+	Scopes          []string `json:"scopes"`
+	RequestedScopes []string `json:"requested_scopes"`
 }
 
 // CreateTokenResponse Response

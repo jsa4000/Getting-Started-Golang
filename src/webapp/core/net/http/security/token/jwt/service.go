@@ -33,17 +33,18 @@ func (s *Service) Create(ctx context.Context, req *service.CreateTokenRequest) (
 	}
 	expirationTime := global.Now().Add(time.Second * time.Duration(s.ExpirationTime))
 	issueAt := global.Now()
+	inheritedScopes := toLower(req.Scopes)
 	claims := jwt.MapClaims{
 		JsontokenIDfield:    uuid.NewV4().String(),
 		IssuerField:         s.Issuer,
 		ExpirationTimeField: expirationTime.Unix(),
-		ScopesField:         req.Scope,
+		RolesField:          inheritedScopes,
 		IssuedAtField:       issueAt.Unix(),
 	}
 	if user != nil {
 		claims[SubjectField] = user.ID
 		claims[UserNameField] = user.Name
-		claims[RolesField] = user.Roles
+		claims[RolesField] = unique(inheritedScopes, user.Matches(req.RequestedScopes))
 	}
 	if s.enhancer != nil {
 		s.enhancer.Write(Claims(claims), user)

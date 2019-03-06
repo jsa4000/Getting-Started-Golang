@@ -65,7 +65,7 @@ func oAuthManager(jwt *jwt.Service) *oauth2.Manager {
 func usersManager(service security.UserInfoService) *users.Manager {
 	return users.NewManagerBuilder().
 		WithInMemoryUsers().
-		WithUser("user-trusted").WithPassword("mypassword$").WithRole("ADMIN", "WRITE", "READ").
+		WithUser("user-trusted").WithPassword("mypassword$").WithRole("ADMIN", "WRITE", "READ", "TRUSTED").
 		WithUser("user-readonly").WithPassword("mypassword$").WithRole("READ").
 		And().
 		WithUserService(service).

@@ -111,14 +111,10 @@ func (s *ServiceImpl) grantTypePassword(ctx context.Context, req *BasicOauth2Req
 	if !ValidateClient(client, req.ClientID, req.ClientSecret) {
 		return nil, net.ErrUnauthorized.From(fmt.Errorf("Invalid credentials for client %s", req.ClientID))
 	}
-	scopes := strings.Split(req.Scope, " ")
-	if matches := ClientScopes(client, scopes); len(matches) != len(scopes) {
-		return nil, net.ErrForbidden.From(fmt.Errorf("Client %s is not allowed; scopes: '%s'",
-			req.ClientID, strings.Join(matches, " ")))
-	}
 	return s.tokenService.Create(ctx, &token.CreateTokenRequest{
-		UserName: req.UserName,
-		Scope:    req.Scope,
+		UserName:        req.UserName,
+		Scopes:          client.Scopes,
+		RequestedScopes: strings.Split(req.Scope, " "),
 	})
 }
 
@@ -131,12 +127,7 @@ func (s *ServiceImpl) grantTypeClientCredentials(ctx context.Context, req *Basic
 	if !ValidateClient(client, req.ClientID, req.ClientSecret) {
 		return nil, net.ErrUnauthorized.From(fmt.Errorf("Invalid credentials for client %s", req.ClientID))
 	}
-	scopes := strings.Split(req.Scope, " ")
-	if matches := ClientScopes(client, scopes); len(matches) != len(scopes) {
-		return nil, net.ErrForbidden.From(fmt.Errorf("Client %s is not allowed; scopes: '%s'",
-			req.ClientID, strings.Join(matches, " ")))
-	}
 	return s.tokenService.Create(ctx, &token.CreateTokenRequest{
-		Scope: req.Scope,
+		Scopes: client.Scopes,
 	})
 }

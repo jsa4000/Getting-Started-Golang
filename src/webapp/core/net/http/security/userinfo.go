@@ -3,6 +3,7 @@ package security
 import (
 	"context"
 	"fmt"
+	"strings"
 	pcrypt "webapp/core/crypto/password"
 	net "webapp/core/net/http"
 )
@@ -15,6 +16,24 @@ type UserInfo struct {
 	Password  string                 `json:"password"`
 	Roles     []string               `json:"roles"`
 	Resources map[string]interface{} `json:"resources"`
+}
+
+// Matches retrieves the roles of the user with the requested scopes
+func (user *UserInfo) Matches(roles []string) []string {
+	result := make([]string, 0)
+	if len(user.Roles) == 0 {
+		return result
+	}
+	for _, s := range roles {
+		s = strings.ToLower(s)
+		for _, cs := range user.Roles {
+			if s == strings.ToLower(cs) {
+				result = append(result, s)
+				continue
+			}
+		}
+	}
+	return result
 }
 
 // UserInfoService Interface
