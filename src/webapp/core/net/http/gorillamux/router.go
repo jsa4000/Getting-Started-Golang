@@ -33,6 +33,7 @@ func (r *Router) Handler() http.Handler {
 // HandleRoute set the router
 func (r *Router) HandleRoute(routes ...wrapper.Route) {
 	for _, route := range routes {
+		//handler := wrapHandler(route.Handler, route)
 		r.router.HandleFunc(route.Path, route.Handler).Methods(route.Method)
 	}
 }

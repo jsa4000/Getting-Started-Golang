@@ -1,6 +1,7 @@
 package roles
 
 import (
+	"fmt"
 	"net/http"
 	log "webapp/core/logging"
 	net "webapp/core/net/http"
@@ -20,5 +21,14 @@ func (s *Handler) Handle(w http.ResponseWriter, r *http.Request, target security
 		return nil
 	}
 	log.Debugf("Handle Roles Request for %s and auth type %s", net.RemoveURLParams(r.RequestURI), auth)
+
+	const routekey = "route"
+	route, ok := r.Context().Value(routekey).(net.Route)
+	if !ok {
+		fmt.Println("There is no key")
+		return nil
+	}
+	fmt.Println(route)
+
 	return nil
 }

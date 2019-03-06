@@ -22,11 +22,11 @@ const (
 
 // ContextValue set user name into Context
 func ContextValue(r *http.Request) (string, error) {
-	result := r.Context().Value(AuthKey)
-	if result == nil {
+	result, ok := r.Context().Value(AuthKey).(string)
+	if !ok {
 		return "", errors.New("Error Getting the value from context")
 	}
-	return result.(string), nil
+	return result, nil
 }
 
 // SetContextValue set user name into Context
