@@ -7,6 +7,7 @@ import (
 	mngmt "webapp/core/mngmt"
 	net "webapp/core/net/http"
 	pprof "webapp/core/net/http/pprof"
+	"webapp/core/net/http/security"
 
 	// Go-Core Starters
 	_ "webapp/core/config/viper/starter"
@@ -42,6 +43,14 @@ func (a *App) Startup(ctx context.Context) {
 		WithRootPath("/management").
 		Build()
 
+	// Create Security for HTTP
+	usersManager := usersManager(usersService)
+	recurity := security.NewBuilder().
+		WithAuthentication(oAuthManager(jwtService(usersManager))).
+		WithAuthorization(openHandler(), basicHandler(usersManager), jwtHandler()).
+		WithFilter(rolesHandler(), corsAuthFilter()).
+		Build()
+
 	// Create The HTTP Server
 	a.httpServer = net.NewServer().
 		WithControllers(mngmt.Controller()).
@@ -50,7 +59,7 @@ func (a *App) Startup(ctx context.Context) {
 		WithControllers(users.NewRestController(usersService)). // Add users controller
 		WithStatic("/swaggerui/", "./static/swaggerui/").       // Create swagger static content '/swagger/index.html'
 		WithMiddleware(net.NewLoggingMiddleware()).             // Add global middlewares
-		WithSecurity(Security(usersService)).                   // Add security to HTTP Requests
+		WithSecurity(recurity).                                 // Add security to HTTP Requests
 		Start()                                                 // Start the HTTP server
 }
 

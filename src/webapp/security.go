@@ -1,7 +1,6 @@
 package main
 
 import (
-	"webapp/core/net/http"
 	"webapp/core/net/http/security"
 	"webapp/core/net/http/security/access"
 	"webapp/core/net/http/security/basic"
@@ -11,6 +10,20 @@ import (
 	"webapp/core/net/http/security/token/jwt"
 	"webapp/core/net/http/security/users"
 )
+
+type tags struct{}
+
+func (t *tags) Write(c jwt.Claims, u *security.UserInfo) {
+	c["region"] = "eu-west-1"
+	c["tags"] = []string{"webapp", "secuity", "token"}
+}
+
+func jwtService(provider security.UserInfoService) *jwt.Service {
+	return jwt.NewServiceBuilder().
+		WithUserInfoService(provider).
+		WithClaimsEnhancer(&tags{}).
+		Build()
+}
 
 func jwtHandler() security.Handler {
 	return jwt.NewBuilder().
@@ -78,30 +91,5 @@ func usersManager(service security.UserInfoService) *users.Manager {
 		WithUser("user-readonly").WithPassword("mypassword$").WithRole("READ").
 		And().
 		WithUserService(service).
-		Build()
-}
-
-type tags struct{}
-
-func (t *tags) Write(c jwt.Claims, u *security.UserInfo) {
-	c["region"] = "eu-west-1"
-	c["tags"] = []string{"webapp", "secuity", "token"}
-}
-
-func jwtService(provider security.UserInfoService) *jwt.Service {
-	return jwt.NewServiceBuilder().
-		WithUserInfoService(provider).
-		WithClaimsEnhancer(&tags{}).
-		Build()
-}
-
-// Security creates the security model
-func Security(us security.UserInfoService) http.Security {
-	usersManager := usersManager(us)
-	jwtService := jwtService(usersManager)
-	return security.NewBuilder().
-		WithAuthentication(oAuthManager(jwtService)).
-		WithAuthorization(openHandler(), basicHandler(usersManager), jwtHandler()).
-		WithFilter(rolesHandler(), corsAuthFilter()).
 		Build()
 }
