@@ -1,4 +1,4 @@
-package oauth
+package oauth2
 
 import (
 	"net/http"
@@ -22,21 +22,26 @@ func NewRestController(s Service) net.Controller {
 func (c *RestController) GetRoutes() []net.Route {
 	return []net.Route{
 		net.Route{
-			Path:    "/auth/token",
+			Path:    "/oauth/token",
 			Method:  "POST",
-			Handler: c.CreateToken,
+			Handler: c.Token,
 		},
 		net.Route{
-			Path:    "/auth/check_token",
+			Path:    "/oauth/authorize",
+			Method:  "POST",
+			Handler: c.Authorize,
+		},
+		net.Route{
+			Path:    "/oauth/check_token",
 			Method:  "GET",
 			Handler: c.CheckToken,
 		},
 	}
 }
 
-// CreateToken handler to request the
-func (c *RestController) CreateToken(w http.ResponseWriter, r *http.Request) {
-	var req CreateTokenRequest
+// Token handler to request the
+func (c *RestController) Token(w http.ResponseWriter, r *http.Request) {
+	var req BasicOauth2Request
 	if err := c.Decode(r, &req); err != nil {
 		c.Error(w, err)
 		return
@@ -49,12 +54,40 @@ func (c *RestController) CreateToken(w http.ResponseWriter, r *http.Request) {
 		req.ClientID = client
 		req.ClientSecret = secret
 	}
-	res, err := c.service.Create(r.Context(), &req)
+	res, err := c.service.Token(r.Context(), &req)
 	if err != nil {
 		c.Error(w, err)
 		return
 	}
-	c.JSON(w, &CreateTokenResponse{
+	c.JSON(w, &BasicOauth2Response{
+		AccessToken:    res.AccessToken,
+		TokenType:      res.TokenType,
+		RefreshToken:   res.RefreshToken,
+		ExpirationTime: res.ExpirationTime,
+	}, http.StatusOK)
+}
+
+// Authorize handler to request the
+func (c *RestController) Authorize(w http.ResponseWriter, r *http.Request) {
+	var req BasicOauth2Request
+	if err := c.Decode(r, &req); err != nil {
+		c.Error(w, err)
+		return
+	}
+	if err := c.DecodeParams(r, &req, "json"); err != nil {
+		c.Error(w, err)
+		return
+	}
+	if client, secret, hasAuth := r.BasicAuth(); hasAuth {
+		req.ClientID = client
+		req.ClientSecret = secret
+	}
+	res, err := c.service.Authorize(r.Context(), &req)
+	if err != nil {
+		c.Error(w, err)
+		return
+	}
+	c.JSON(w, &BasicOauth2Response{
 		AccessToken:    res.AccessToken,
 		TokenType:      res.TokenType,
 		RefreshToken:   res.RefreshToken,

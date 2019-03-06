@@ -1,4 +1,4 @@
-package oauth
+package oauth2
 
 import (
 	"webapp/core/net/http/security/token"

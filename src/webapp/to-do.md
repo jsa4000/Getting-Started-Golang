@@ -13,6 +13,7 @@
 
 ## Backlog
 
+- Way to centralize timeouts per context (by configuration per item)
 - Messaging Systems: NATs, Kafka, RabbitMQ, etc..
 - GRPC abstraction
 - Metrics and health-checks endpoints

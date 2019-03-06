@@ -5,7 +5,7 @@ import (
 	"webapp/core/net/http/security"
 	"webapp/core/net/http/security/access"
 	"webapp/core/net/http/security/basic"
-	"webapp/core/net/http/security/oauth"
+	"webapp/core/net/http/security/oauth2"
 	"webapp/core/net/http/security/open"
 	"webapp/core/net/http/security/token/jwt"
 	"webapp/core/net/http/security/users"
@@ -36,7 +36,7 @@ func openAuthHandler() security.AuthHandler {
 	return open.NewBuilder().
 		WithTargets().
 		//WithURL("/debug/pprof/").
-		WithURL("/auth/*").
+		WithURL("/oauth/*").
 		And().
 		WithPriority(0).
 		Build()
@@ -45,15 +45,15 @@ func openAuthHandler() security.AuthHandler {
 func corsAuthFilter() security.AuthHandler {
 	return access.NewBuilder().
 		WithTargets().
-		WithURL("/auth/*").WithOrigin("example.domain.com").WithCredentials(true).Allow().
+		WithURL("/oauth/*").WithOrigin("example.domain.com").WithCredentials(true).Allow().
 		WithURL("/users").WithOrigin("*").WithMethods("POST", "GET", "OPTIONS", "PUT", "DELETE").Allow().
 		WithURL("/roles").WithCredentials(false).Allow().
 		And().
 		Build()
 }
 
-func oAuthManager(jwt *jwt.Service) *oauth.Manager {
-	return oauth.NewManagerBuilder().
+func oAuthManager(jwt *jwt.Service) *oauth2.Manager {
+	return oauth2.NewManagerBuilder().
 		WithInMemoryClients().
 		WithClient("client-trusted").WithSecret("mypassword$").WithScope("admin", "roles", "users").
 		WithClient("client-readonly").WithSecret("mypassword$").WithScope("read").

@@ -65,3 +65,7 @@ Resource Servers basically performs the following information per request:
 - Depending on the previous step, it looks for the proper header. i.e  `Authorization: Basic ..`
 - Verify if current request has access to that particular resource. Checks for scopes, roles, userinfo etc.. Depending on the `authorization` method it would be needed to access to the authorization server in order to validate the token, expiration, user, etc.. It depends also, if the token is `self-contained`, `id_token`,  (OpenID Connect), no secret-key (HMAC with SHA-256) or public-key (RSA Signature with SHA-256)) in resource server to verify the token, audience, client_id, etc...
 - Finally, resource server must `allows` or `forbid` current request.
+
+## Resources
+
+[Guide to OAauth2 Grants](https://alexbilbie.com/guide-to-oauth-2-grants/)
