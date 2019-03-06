@@ -55,7 +55,7 @@ func corsAuthFilter() security.AuthHandler {
 func oAuthManager(jwt *jwt.Service) *oauth2.Manager {
 	return oauth2.NewManagerBuilder().
 		WithInMemoryClients().
-		WithClient("client-trusted").WithSecret("mypassword$").WithScope("admin", "roles", "users").
+		WithClient("client-trusted").WithSecret("mypassword$").WithScope("read", "write", "admin").
 		WithClient("client-readonly").WithSecret("mypassword$").WithScope("read").
 		And().
 		WithTokenService(jwt).

@@ -25,6 +25,23 @@ func ValidateClient(client *Client, name, secret string) bool {
 	return name == client.Name && pcrypt.Compare(client.Secret, secret)
 }
 
+// ClientScopes compares the name and secret to be the same as the client
+func ClientScopes(client *Client, scopes []string) []string {
+	result := make([]string, 0)
+	if len(client.Scopes) == 0 {
+		return result
+	}
+	for _, s := range scopes {
+		for _, cs := range client.Scopes {
+			if cs == s {
+				result = append(result, s)
+				continue
+			}
+		}
+	}
+	return result
+}
+
 // Clients to implement the Client
 type Clients map[string]*Client
 
