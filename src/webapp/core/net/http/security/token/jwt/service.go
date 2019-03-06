@@ -3,9 +3,7 @@ package jwt
 import (
 	"context"
 	"fmt"
-	"strings"
 	"time"
-	cerr "webapp/core/errors"
 	net "webapp/core/net/http"
 	"webapp/core/net/http/security"
 	service "webapp/core/net/http/security/token"
@@ -26,26 +24,26 @@ type Service struct {
 // Check https://github.com/dgrijalva/jwt-go and 'Signing Methods and Key Types'
 func (s *Service) Create(ctx context.Context, req *service.CreateTokenRequest) (*service.CreateTokenResponse, error) {
 	var err error
-	user, err := s.provider.Fetch(ctx, req.UserName)
-	if err != nil {
-		herr, ok := err.(*cerr.Error)
-		if !ok {
-			herr = net.ErrInternalServer.From(err)
+	var user *security.UserInfo
+	if len(req.UserName) > 0 {
+		user, err = s.provider.Fetch(ctx, req.UserName)
+		if err != nil {
+			return nil, err
 		}
-		return nil, herr
 	}
-
 	expirationTime := global.Now().Add(time.Second * time.Duration(s.ExpirationTime))
 	issueAt := global.Now()
-
 	claims := jwt.MapClaims{
-		jsontokenIDfield:    uuid.NewV4().String(),
-		issuerField:         s.Issuer,
-		subjectField:        user.ID,
-		userNameField:       user.Name,
-		rolesField:          user.Roles,
-		expirationDateField: expirationTime.Unix(),
-		issuedAtField:       issueAt.Unix(),
+		JsontokenIDfield:    uuid.NewV4().String(),
+		IssuerField:         s.Issuer,
+		ExpirationTimeField: expirationTime.Unix(),
+		ScopesField:         req.Scope,
+		IssuedAtField:       issueAt.Unix(),
+	}
+	if user != nil {
+		claims[SubjectField] = user.ID
+		claims[UserNameField] = user.Name
+		claims[RolesField] = user.Roles
 	}
 	if s.enhancer != nil {
 		s.enhancer.Write(Claims(claims), user)
@@ -57,7 +55,7 @@ func (s *Service) Create(ctx context.Context, req *service.CreateTokenRequest) (
 	}
 	return &service.CreateTokenResponse{
 		AccessToken:    tokenString,
-		TokenType:      strings.TrimSpace(strings.ToLower(bearerPreffix)),
+		TokenType:      TokenType,
 		ExpirationTime: s.ExpirationTime,
 	}, nil
 }

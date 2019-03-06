@@ -58,7 +58,9 @@ type BasicOauth2Response struct {
 
 // CheckTokenRequest struct request
 type CheckTokenRequest struct {
-	Token string `json:"token" validate:",required"`
+	ClientID     string `json:"client_id" validate:"min=0,max=1024"`
+	ClientSecret string `json:"client_secret" validate:"min=0,max=1024"`
+	Token        string `json:"token"`
 }
 
 // CheckTokenResponse struct Response

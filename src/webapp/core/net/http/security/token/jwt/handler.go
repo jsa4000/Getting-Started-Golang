@@ -23,20 +23,24 @@ type AuthHandler struct {
 // Handle handler to authorize the JWT method
 func (s *AuthHandler) Handle(w http.ResponseWriter, r *http.Request, target security.Target) error {
 	log.Debugf("Handle JWT Request for %s", net.RemoveURLParams(r.RequestURI))
-	basicAuth, ok := r.Header[authHeader]
+	basicAuth, ok := r.Header[HeaderAuthorization]
 	if !ok {
 		return net.ErrUnauthorized.From(errors.New("Authorization is required"))
 	}
-	token, err := s.verify(r.Context(), strings.TrimPrefix(basicAuth[0], bearerPreffix))
+	token, err := s.verify(r.Context(), strings.TrimPrefix(basicAuth[0], BearerPreffix))
 	if err != nil {
 		return err
 	}
 	security.SetContextValue(r, AuthKey, new(security.ContextValue))
 	claims := token.Claims.(jwt.MapClaims)
-	security.SetUserName(r, claims[userNameField].(string))
-	security.SetUserID(r, claims[subjectField].(string))
-	if val, ok := claims[rolesField]; ok {
-		if iroles, err := val.([]interface{}); !err {
+	if username, exist := claims[UserNameField]; exist {
+		security.SetUserName(r, username.(string))
+	}
+	if userID, exist := claims[SubjectField]; exist {
+		security.SetUserID(r, userID.(string))
+	}
+	if rolesVal, exist := claims[RolesField]; exist {
+		if iroles, err := rolesVal.([]interface{}); !err {
 			roles := make([]string, len(iroles))
 			for _, role := range iroles {
 				roles = append(roles, role.(string))

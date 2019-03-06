@@ -2,7 +2,7 @@ package http
 
 import (
 	"net/http"
-	ex "webapp/core/errors"
+	cerror "webapp/core/errors"
 )
 
 // Link With HTTP errors in net/http
@@ -10,17 +10,17 @@ import (
 
 var (
 	// ErrInternalServer Internal Server Error
-	ErrInternalServer = ex.New(http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+	ErrInternalServer = cerror.New(http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 
 	// ErrBadRequest Bad Request
-	ErrBadRequest = ex.New(http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+	ErrBadRequest = cerror.New(http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 
 	// ErrNotFound Resource not found
-	ErrNotFound = ex.New(http.StatusText(http.StatusNotFound), http.StatusNotFound)
+	ErrNotFound = cerror.New(http.StatusText(http.StatusNotFound), http.StatusNotFound)
 
 	// ErrUnauthorized request Unauthorized
-	ErrUnauthorized = ex.New(http.StatusText(http.StatusUnauthorized), http.StatusUnauthorized)
+	ErrUnauthorized = cerror.New(http.StatusText(http.StatusUnauthorized), http.StatusUnauthorized)
 
 	// ErrForbidden Forbidden for resource
-	ErrForbidden = ex.New(http.StatusText(http.StatusForbidden), http.StatusForbidden)
+	ErrForbidden = cerror.New(http.StatusText(http.StatusForbidden), http.StatusForbidden)
 )

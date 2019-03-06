@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+
 	net "webapp/core/net/http"
 	"webapp/core/net/http/security/token"
 )
@@ -33,12 +34,9 @@ func (s *ServiceImpl) Token(ctx context.Context, req *BasicOauth2Request) (*Basi
 	case GrantTypeAuthorizationCode:
 		err = net.ErrBadRequest.From(fmt.Errorf("response_type %s not supported yet", req.GranType))
 	case GrantTypeClientCredentials:
-		err = net.ErrBadRequest.From(fmt.Errorf("response_type %s not supported yet", req.GranType))
+		res, err = s.grantTypeClientCredentials(ctx, req)
 	case GrantTypePassword:
-		res, err = s.tokenService.Create(ctx, &token.CreateTokenRequest{
-			UserName: req.UserName,
-			Scope:    req.Scope,
-		})
+		res, err = s.grantTypePassword(ctx, req)
 	case GrantTypeRefreshToken:
 		err = net.ErrBadRequest.From(fmt.Errorf("response_type %s not supported yet", req.GranType))
 	default:
@@ -85,6 +83,13 @@ func (s *ServiceImpl) Authorize(ctx context.Context, req *BasicOauth2Request) (*
 
 // Check the token passed by parameter
 func (s *ServiceImpl) Check(ctx context.Context, req *CheckTokenRequest) (*CheckTokenResponse, error) {
+	client, err := s.clientService.Fetch(ctx, req.ClientID)
+	if err != nil {
+		return nil, err
+	}
+	if !ValidateClient(client, req.ClientID, req.ClientSecret) {
+		return nil, net.ErrUnauthorized.From(fmt.Errorf("Invalid credentials for client %s", req.ClientID))
+	}
 	res, err := s.tokenService.Check(ctx, &token.CheckTokenRequest{
 		Token: req.Token,
 	})
@@ -94,4 +99,33 @@ func (s *ServiceImpl) Check(ctx context.Context, req *CheckTokenRequest) (*Check
 	return &CheckTokenResponse{
 		Data: res.Data,
 	}, nil
+}
+
+// Token return a token response or error depending on the parameters
+func (s *ServiceImpl) grantTypePassword(ctx context.Context, req *BasicOauth2Request) (*token.CreateTokenResponse, error) {
+	client, err := s.clientService.Fetch(ctx, req.ClientID)
+	if err != nil {
+		return nil, err
+	}
+	if !ValidateClient(client, req.ClientID, req.ClientSecret) {
+		return nil, net.ErrUnauthorized.From(fmt.Errorf("Invalid credentials for client %s", req.ClientID))
+	}
+	return s.tokenService.Create(ctx, &token.CreateTokenRequest{
+		UserName: req.UserName,
+		Scope:    req.Scope,
+	})
+}
+
+// Token return a token response or error depending on the parameters
+func (s *ServiceImpl) grantTypeClientCredentials(ctx context.Context, req *BasicOauth2Request) (*token.CreateTokenResponse, error) {
+	client, err := s.clientService.Fetch(ctx, req.ClientID)
+	if err != nil {
+		return nil, err
+	}
+	if !ValidateClient(client, req.ClientID, req.ClientSecret) {
+		return nil, net.ErrUnauthorized.From(fmt.Errorf("Invalid credentials for client %s", req.ClientID))
+	}
+	return s.tokenService.Create(ctx, &token.CreateTokenRequest{
+		Scope: req.Scope,
+	})
 }

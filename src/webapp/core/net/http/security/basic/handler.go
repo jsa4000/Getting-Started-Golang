@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
-	cerr "webapp/core/errors"
 	log "webapp/core/logging"
 	net "webapp/core/net/http"
 	"webapp/core/net/http/security"
@@ -33,11 +32,7 @@ func (s *AuthHandler) Handle(w http.ResponseWriter, r *http.Request, target secu
 	var err error
 	user, err := s.service.Fetch(r.Context(), username)
 	if err != nil {
-		herr, ok := err.(*cerr.Error)
-		if !ok {
-			herr = net.ErrInternalServer.From(err)
-		}
-		return herr
+		return err
 	}
 	if !security.ValidateUser(user, username, password) {
 		return net.ErrUnauthorized.From(fmt.Errorf("Invalid credentials for user %s", user))

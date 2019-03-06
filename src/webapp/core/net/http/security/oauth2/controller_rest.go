@@ -97,7 +97,19 @@ func (c *RestController) Authorize(w http.ResponseWriter, r *http.Request) {
 
 // CheckToken handler to request the
 func (c *RestController) CheckToken(w http.ResponseWriter, r *http.Request) {
-	req := CheckTokenRequest{Token: r.FormValue("token")}
+	var req CheckTokenRequest
+	if err := c.Decode(r, &req); err != nil {
+		c.Error(w, err)
+		return
+	}
+	if err := c.DecodeParams(r, &req, "json"); err != nil {
+		c.Error(w, err)
+		return
+	}
+	if client, secret, hasAuth := r.BasicAuth(); hasAuth {
+		req.ClientID = client
+		req.ClientSecret = secret
+	}
 	res, err := c.service.Check(r.Context(), &req)
 	if err != nil {
 		c.Error(w, err)
