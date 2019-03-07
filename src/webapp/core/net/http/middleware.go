@@ -5,6 +5,9 @@ import (
 	"sort"
 )
 
+// RouteInfoKey Key used to extract rout information for filters
+const RouteInfoKey = "route"
+
 // HandlerMid for handle the requests
 type HandlerMid func(http.Handler) http.Handler
 
@@ -66,4 +69,18 @@ func SortMiddleware(m []Middleware, asc bool) []Middleware {
 	}
 	sort.Sort(byPriority(result))
 	return result
+}
+
+// SplitMiddleware Splits the middleware into  global and filter depending on the priority
+func SplitMiddleware(middleware []Middleware) ([]Middleware, []Middleware) {
+	global := make([]Middleware, 0)
+	filters := make([]Middleware, 0)
+	for _, m := range SortMiddleware(middleware, true) {
+		if m.Priority() >= PriorityFilters {
+			filters = append(filters, m)
+			continue
+		}
+		global = append(global, m)
+	}
+	return global, filters
 }
