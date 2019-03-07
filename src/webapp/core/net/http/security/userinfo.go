@@ -20,20 +20,7 @@ type UserInfo struct {
 
 // Matches retrieves the roles of the user with the requested scopes
 func (user *UserInfo) Matches(roles []string) []string {
-	result := make([]string, 0)
-	if len(user.Roles) == 0 {
-		return result
-	}
-	for _, s := range roles {
-		s = strings.ToLower(s)
-		for _, cs := range user.Roles {
-			if s == strings.ToLower(cs) {
-				result = append(result, s)
-				continue
-			}
-		}
-	}
-	return result
+	return RolesMatches(user.Roles, roles)
 }
 
 // UserInfoService Interface
@@ -101,4 +88,22 @@ func (c *UsersBuilder) Build() Users {
 		c.Users[c.current.Name] = c.current
 	}
 	return c.Users
+}
+
+// RolesMatches retrieves the roles of the user with the requested scopes
+func RolesMatches(roles []string, required []string) []string {
+	result := make([]string, 0)
+	if len(roles) == 0 {
+		return result
+	}
+	for _, s := range required {
+		s = strings.ToLower(s)
+		for _, cs := range roles {
+			if s == strings.ToLower(cs) {
+				result = append(result, s)
+				continue
+			}
+		}
+	}
+	return result
 }

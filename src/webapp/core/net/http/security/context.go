@@ -2,7 +2,6 @@ package security
 
 import (
 	"context"
-	"errors"
 	"net/http"
 )
 
@@ -20,23 +19,32 @@ const (
 	UserRolesKey ContextKey = "user-roles-key"
 )
 
-// ContextValue set user name into Context
-func ContextValue(r *http.Request) (string, error) {
-	result, ok := r.Context().Value(AuthKey).(string)
-	if !ok {
-		return "", errors.New("Error Getting the value from context")
-	}
-	return result, nil
-}
-
 // SetContextValue set user name into Context
 func SetContextValue(r *http.Request, key ContextKey, value interface{}) {
 	*r = *r.WithContext(context.WithValue(r.Context(), key, value))
 }
 
-// SetAuthKey set user name into Context
-func SetAuthKey(r *http.Request, value string) {
+// AuthType set user name into Context
+func AuthType(r *http.Request) (string, bool) {
+	result, ok := r.Context().Value(AuthKey).(string)
+	if !ok {
+		return "", false
+	}
+	return result, true
+}
+
+// SetAuthType set user name into Context
+func SetAuthType(r *http.Request, value string) {
 	*r = *r.WithContext(context.WithValue(r.Context(), AuthKey, value))
+}
+
+// GetUserName set user id into Context
+func GetUserName(r *http.Request) (string, bool) {
+	result, ok := r.Context().Value(UserNameKey).(string)
+	if !ok {
+		return "", false
+	}
+	return result, true
 }
 
 // SetUserName set user name into Context
@@ -49,7 +57,16 @@ func SetUserID(r *http.Request, id string) {
 	*r = *r.WithContext(context.WithValue(r.Context(), UserIDKey, id))
 }
 
-// SettUsersRoles set user id into Context
+// UserRoles set user id into Context
+func UserRoles(r *http.Request) ([]string, bool) {
+	result, ok := r.Context().Value(UserRolesKey).([]string)
+	if !ok {
+		return nil, false
+	}
+	return result, true
+}
+
+// SetUserRoles set user id into Context
 func SetUserRoles(r *http.Request, roles []string) {
 	*r = *r.WithContext(context.WithValue(r.Context(), UserRolesKey, roles))
 }

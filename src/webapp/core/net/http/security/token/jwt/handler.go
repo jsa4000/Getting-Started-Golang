@@ -31,7 +31,7 @@ func (s *Handler) Handle(w http.ResponseWriter, r *http.Request, target security
 	if err != nil {
 		return err
 	}
-	security.SetAuthKey(r, ContextValue)
+	security.SetAuthType(r, ContextValue)
 	claims := token.Claims.(jwt.MapClaims)
 	if username, exist := claims[UserNameField]; exist {
 		security.SetUserName(r, username.(string))
@@ -40,8 +40,8 @@ func (s *Handler) Handle(w http.ResponseWriter, r *http.Request, target security
 		security.SetUserID(r, userID.(string))
 	}
 	if rolesVal, exist := claims[RolesField]; exist {
-		if iroles, err := rolesVal.([]interface{}); !err {
-			roles := make([]string, len(iroles))
+		if iroles, ok := rolesVal.([]interface{}); ok {
+			roles := make([]string, 0, len(iroles))
 			for _, role := range iroles {
 				roles = append(roles, role.(string))
 			}

@@ -86,9 +86,6 @@ const (
 	// EmailField authorized email for this token
 	EmailField = "email"
 
-	// ScopesField allowed scopes for JWT
-	ScopesField = "scopes"
-
 	// RolesField allowed roles for JWT
 	RolesField = "roles"
 )

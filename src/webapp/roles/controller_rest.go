@@ -26,21 +26,25 @@ func (c *RestController) GetRoutes() []net.Route {
 			Path:    "/roles",
 			Method:  "GET",
 			Handler: c.GetAll,
+			Roles:   []string{"ADMIN"},
 		},
 		net.Route{
 			Path:    "/roles/{id}",
 			Method:  "GET",
 			Handler: c.GetByID,
+			Roles:   []string{"READ"},
 		},
 		net.Route{
 			Path:    "/roles",
 			Method:  "POST",
 			Handler: c.Create,
+			Roles:   []string{"ADMIN", "WRITE"},
 		},
 		net.Route{
 			Path:    "/roles/{id}",
 			Method:  "DELETE",
 			Handler: c.DeleteByID,
+			Roles:   []string{"ADMIN", "WRITE"},
 		},
 	}
 }

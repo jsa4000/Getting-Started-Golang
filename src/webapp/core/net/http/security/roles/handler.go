@@ -16,19 +16,20 @@ type Handler struct {
 
 // Handle handler to manage basic authenticaiton method
 func (s *Handler) Handle(w http.ResponseWriter, r *http.Request, target security.Target) error {
-	auth, err := security.ContextValue(r)
-	if err != nil {
+	auth, exist := security.AuthType(r)
+	if !exist {
 		return nil
 	}
 	log.Debugf("Handle Roles Request for %s and auth type %s", net.RemoveURLParams(r.RequestURI), auth)
-
-	const routekey = "route"
-	route, ok := r.Context().Value(routekey).(net.Route)
-	if !ok {
-		fmt.Println("There is no key")
+	route, exist := net.RouteInfo(r)
+	if !exist || len(route.Roles) == 0 {
 		return nil
 	}
-	fmt.Println(route)
-
+	userRoles, hasRoles := security.UserRoles(r)
+	username, _ := security.GetUserName(r)
+	if (!hasRoles || len(userRoles) == 0) && len(route.Roles) > 0 ||
+		len(security.RolesMatches(userRoles, route.Roles)) != len(route.Roles) {
+		return net.ErrForbidden.From(fmt.Errorf("User %s has not enough privileges", username))
+	}
 	return nil
 }

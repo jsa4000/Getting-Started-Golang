@@ -2,7 +2,6 @@ package security
 
 import (
 	"net/http"
-	log "webapp/core/logging"
 	net "webapp/core/net/http"
 )
 
@@ -36,11 +35,8 @@ func (a *Middleware) handler(next http.Handler) http.Handler {
 		for _, handler := range a.handlers {
 			if t, ok := handler.Matches(r.RequestURI); ok {
 				if err := handler.Handle(w, r, t); err != nil {
-					if a.exitOnMatch {
-						a.Error(w, err)
-						return
-					}
-					log.Error(err)
+					a.Error(w, err)
+					return
 				}
 				if a.exitOnMatch {
 					break

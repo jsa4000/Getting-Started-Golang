@@ -40,7 +40,7 @@ func (s *Handler) Handle(w http.ResponseWriter, r *http.Request, target security
 	if !target.Any(user.Roles) {
 		return net.ErrForbidden.From(fmt.Errorf("User %s has not enough privileges", user))
 	}
-	security.SetAuthKey(r, ContextValue)
+	security.SetAuthType(r, ContextValue)
 	security.SetUserName(r, username)
 	security.SetUserID(r, user.ID)
 	security.SetUserRoles(r, user.Roles)

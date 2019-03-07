@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"strings"
 	log "webapp/core/logging"
-	wrapper "webapp/core/net/http"
+	net "webapp/core/net/http"
 
 	"github.com/julienschmidt/httprouter"
 	"github.com/justinas/alice"
@@ -20,22 +20,22 @@ const paramskey ContextTypeKey = "params"
 // Router to handle http requests
 type Router struct {
 	router     *httprouter.Router
-	middleware []wrapper.Middleware
-	routes     []wrapper.Route
+	middleware []net.Middleware
+	routes     []net.Route
 }
 
 // New Creates new Gorilla mux router
 func New() *Router {
 	return &Router{
 		router:     httprouter.New(),
-		middleware: make([]wrapper.Middleware, 0),
-		routes:     make([]wrapper.Route, 0),
+		middleware: make([]net.Middleware, 0),
+		routes:     make([]net.Route, 0),
 	}
 }
 
 // Handler return a handler created
 func (r *Router) Handler() http.Handler {
-	global, filters := wrapper.SplitMiddleware(r.middleware)
+	global, filters := net.SplitMiddleware(r.middleware)
 	// Create chained handler for global middleware
 	gm := make([]alice.Constructor, 0, len(global))
 	for _, m := range global {
@@ -55,7 +55,7 @@ func (r *Router) Handler() http.Handler {
 }
 
 // HandleRoute set the router
-func (r *Router) routeID(route wrapper.Route) string {
+func (r *Router) routeID(route net.Route) string {
 	return fmt.Sprintf("%s:%s", route.Method, route.Path)
 }
 
@@ -64,7 +64,7 @@ func (r *Router) normalize(path string) string {
 }
 
 // HandleRoute set the router
-func (r *Router) HandleRoute(routes ...wrapper.Route) {
+func (r *Router) HandleRoute(routes ...net.Route) {
 	r.routes = append(r.routes, routes...)
 }
 
@@ -74,7 +74,7 @@ func (r *Router) Static(path string, root string) {
 }
 
 // Use set the middleware to use by default
-func (r *Router) Use(mw ...wrapper.Middleware) {
+func (r *Router) Use(mw ...net.Middleware) {
 	r.middleware = append(r.middleware, mw...)
 }
 
@@ -92,11 +92,11 @@ func (r *Router) Vars(req *http.Request) map[string]string {
 	return result
 }
 
-func wrapHandler(h http.Handler, route wrapper.Route) httprouter.Handle {
+func wrapHandler(h http.Handler, route net.Route) httprouter.Handle {
 	return func(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 		ctx := r.Context()
 		ctx = context.WithValue(ctx, paramskey, ps)
-		ctx = context.WithValue(ctx, wrapper.RouteInfoKey, route)
+		ctx = context.WithValue(ctx, net.RouteInfoKey, route)
 		r = r.WithContext(ctx)
 		h.ServeHTTP(w, r)
 	}

@@ -5,9 +5,6 @@ import (
 	"sort"
 )
 
-// RouteInfoKey Key used to extract rout information for filters
-const RouteInfoKey = "route"
-
 // HandlerMid for handle the requests
 type HandlerMid func(http.Handler) http.Handler
 

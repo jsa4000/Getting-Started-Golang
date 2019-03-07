@@ -24,8 +24,7 @@ type Route struct {
 	Path    string
 	Method  string
 	Handler Handler
-	secured bool
-	roles   []string
+	Roles   []string
 }
 
 // Router to handle http requests
