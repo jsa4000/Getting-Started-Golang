@@ -52,7 +52,7 @@ func wrapHandler(h http.Handler, route wrapper.Route) httprouter.Handle {
 	return func(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 		ctx := r.Context()
 		ctx = context.WithValue(ctx, paramskey, ps)
-		//ctx = context.WithValue(ctx, routekey, route)
+		ctx = context.WithValue(ctx, routekey, route)
 		r = r.WithContext(ctx)
 		h.ServeHTTP(w, r)
 	}
@@ -61,19 +61,8 @@ func wrapHandler(h http.Handler, route wrapper.Route) httprouter.Handle {
 // HandleRoute set the router
 func (r *Router) HandleRoute(routes ...wrapper.Route) {
 	for _, route := range routes {
-		route.Path = r.normalize(route.Path)
-		switch strings.ToLower(route.Method) {
-		case "get":
-			r.router.GET(route.Path, wrapHandler(http.HandlerFunc(route.Handler), route))
-		case "post":
-			r.router.POST(route.Path, wrapHandler(http.HandlerFunc(route.Handler), route))
-		case "put":
-			r.router.PUT(route.Path, wrapHandler(http.HandlerFunc(route.Handler), route))
-		case "patch":
-			r.router.PATCH(route.Path, wrapHandler(http.HandlerFunc(route.Handler), route))
-		case "delete":
-			r.router.DELETE(route.Path, wrapHandler(http.HandlerFunc(route.Handler), route))
-		}
+		r.router.Handle(route.Method, r.normalize(route.Path),
+			wrapHandler(http.HandlerFunc(route.Handler), route))
 	}
 }
 
