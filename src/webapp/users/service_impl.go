@@ -46,7 +46,7 @@ func (s *ServiceImpl) GetByID(ctx context.Context, req *GetByIDRequest) (*GetByI
 
 // Create Add user into the repository
 func (s *ServiceImpl) Create(ctx context.Context, req *CreateRequest) (*CreateResponse, error) {
-	user, err := s.Repository.Create(ctx, *New(req.Name, req.Email, req.Password))
+	user, err := s.Repository.Create(ctx, *New(req.Name, req.Email, req.Password, req.Roles))
 	if err != nil {
 		return nil, net.ErrInternalServer.From(err)
 	}

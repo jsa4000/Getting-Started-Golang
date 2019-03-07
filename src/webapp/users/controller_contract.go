@@ -21,9 +21,10 @@ type GetByIDResponse struct {
 
 // CreateRequest request
 type CreateRequest struct {
-	Name     string `json:"name" validate:"min=0,max=255,required"`
-	Email    string `json:"email" validate:"email,required"`
-	Password string `json:"password" validate:"min=0,max=255,required"`
+	Name     string   `json:"name" validate:"min=0,max=255,required"`
+	Email    string   `json:"email" validate:"email,required"`
+	Password string   `json:"password" validate:"min=0,max=255,required"`
+	Roles    []string `json:"roles" validate:"required"`
 }
 
 // CreateResponse Response

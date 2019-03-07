@@ -34,7 +34,7 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "http://{{url}}:8080/oauth/check_token?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NTIwNDA1NDQsImlhdCI6MTU1MTk1NDE0NCwiaXNzIjoid2ViYXBwLmRvbWFpbi5jb20iLCJqdGkiOiIxZTM3ZjViNi03NDBlLTQ4NGItOTU3MS1kZmU5YjA3YTljZGMiLCJyZWdpb24iOiJldS13ZXN0LTEiLCJyb2xlcyI6WyJyZWFkIiwid3JpdGUiLCJhZG1pbiJdLCJzdWIiOiI1YzdlNDM1OWFhM2U4NmY5N2M2MWM4ZTciLCJ0YWdzIjpbIndlYmFwcCIsInNlY3VpdHkiLCJ0b2tlbiJdLCJ1c2VybmFtZSI6InVzZXJfdGVzdCJ9.lb6mKQ0Yf4zB7q4AVIkV0HFLpt5VP583M9OBJ465C0s",
+							"raw": "http://{{url}}:8080/oauth/check_token?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NTIwNDMxNDMsImlhdCI6MTU1MTk1Njc0MywiaXNzIjoid2ViYXBwLmRvbWFpbi5jb20iLCJqdGkiOiI0ODRiNjZlNS01ODUwLTRlYjAtOWIwMy04NjEyZDU4N2QzNmUiLCJyZWdpb24iOiJldS13ZXN0LTEiLCJyb2xlcyI6WyJyZWFkIl0sInN1YiI6IjVjODBmYTBhNmRmZGY2NTZlYWJlNzQ2NSIsInRhZ3MiOlsid2ViYXBwIiwic2VjdWl0eSIsInRva2VuIl0sInVzZXJuYW1lIjoidXNlcl90ZXN0NCJ9.7fuHMSg0s_CoNdbvkkvX-St8_qzw83bNb4G0vDQyi0A",
 							"protocol": "http",
 							"host": [
 								"{{url}}"
@@ -47,7 +47,7 @@
 							"query": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NTIwNDA1NDQsImlhdCI6MTU1MTk1NDE0NCwiaXNzIjoid2ViYXBwLmRvbWFpbi5jb20iLCJqdGkiOiIxZTM3ZjViNi03NDBlLTQ4NGItOTU3MS1kZmU5YjA3YTljZGMiLCJyZWdpb24iOiJldS13ZXN0LTEiLCJyb2xlcyI6WyJyZWFkIiwid3JpdGUiLCJhZG1pbiJdLCJzdWIiOiI1YzdlNDM1OWFhM2U4NmY5N2M2MWM4ZTciLCJ0YWdzIjpbIndlYmFwcCIsInNlY3VpdHkiLCJ0b2tlbiJdLCJ1c2VybmFtZSI6InVzZXJfdGVzdCJ9.lb6mKQ0Yf4zB7q4AVIkV0HFLpt5VP583M9OBJ465C0s"
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NTIwNDMxNDMsImlhdCI6MTU1MTk1Njc0MywiaXNzIjoid2ViYXBwLmRvbWFpbi5jb20iLCJqdGkiOiI0ODRiNjZlNS01ODUwLTRlYjAtOWIwMy04NjEyZDU4N2QzNmUiLCJyZWdpb24iOiJldS13ZXN0LTEiLCJyb2xlcyI6WyJyZWFkIl0sInN1YiI6IjVjODBmYTBhNmRmZGY2NTZlYWJlNzQ2NSIsInRhZ3MiOlsid2ViYXBwIiwic2VjdWl0eSIsInRva2VuIl0sInVzZXJuYW1lIjoidXNlcl90ZXN0NCJ9.7fuHMSg0s_CoNdbvkkvX-St8_qzw83bNb4G0vDQyi0A"
 								}
 							]
 						}
@@ -344,6 +344,69 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "CreateTokenByPasswordNoScopes",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://{{url}}:8080/oauth/token?client_id=client-readonly&client_secret=mypassword$&username=user.test4@example.com&password=1234&grant_type=password&redirect_uri=http://localhost:8080/callback",
+							"protocol": "http",
+							"host": [
+								"{{url}}"
+							],
+							"port": "8080",
+							"path": [
+								"oauth",
+								"token"
+							],
+							"query": [
+								{
+									"key": "client_id",
+									"value": "client-readonly"
+								},
+								{
+									"key": "client_secret",
+									"value": "mypassword$"
+								},
+								{
+									"key": "username",
+									"value": "user.test4@example.com"
+								},
+								{
+									"key": "password",
+									"value": "1234"
+								},
+								{
+									"key": "grant_type",
+									"value": "password"
+								},
+								{
+									"key": "scope",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "redirect_uri",
+									"value": "http://localhost:8080/callback"
+								}
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -508,7 +571,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": \"user_test2\",\n    \"email\": \"user.test2@example.com\",\n    \"password\": \"1234\"\n}"
+							"raw": "{\n    \"name\": \"user_test2\",\n    \"email\": \"user.test2@example.com\",\n    \"password\": \"1234\",\n    \"roles\": [ \"READ\" ]\n}"
 						},
 						"url": {
 							"raw": "http://{{url}}:8080/users",
@@ -547,7 +610,7 @@
 							"variable": [
 								{
 									"key": "user",
-									"value": "5c7d45789291a40982a3dbc3"
+									"value": "5c80fa0a6dfdf656eabe7465"
 								}
 							]
 						}
@@ -614,7 +677,7 @@
 		"bearer": [
 			{
 				"key": "token",
-				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NTIwNDA1NDQsImlhdCI6MTU1MTk1NDE0NCwiaXNzIjoid2ViYXBwLmRvbWFpbi5jb20iLCJqdGkiOiIxZTM3ZjViNi03NDBlLTQ4NGItOTU3MS1kZmU5YjA3YTljZGMiLCJyZWdpb24iOiJldS13ZXN0LTEiLCJyb2xlcyI6WyJyZWFkIiwid3JpdGUiLCJhZG1pbiJdLCJzdWIiOiI1YzdlNDM1OWFhM2U4NmY5N2M2MWM4ZTciLCJ0YWdzIjpbIndlYmFwcCIsInNlY3VpdHkiLCJ0b2tlbiJdLCJ1c2VybmFtZSI6InVzZXJfdGVzdCJ9.lb6mKQ0Yf4zB7q4AVIkV0HFLpt5VP583M9OBJ465C0s",
+				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NTIwNDMxNDMsImlhdCI6MTU1MTk1Njc0MywiaXNzIjoid2ViYXBwLmRvbWFpbi5jb20iLCJqdGkiOiI0ODRiNjZlNS01ODUwLTRlYjAtOWIwMy04NjEyZDU4N2QzNmUiLCJyZWdpb24iOiJldS13ZXN0LTEiLCJyb2xlcyI6WyJyZWFkIl0sInN1YiI6IjVjODBmYTBhNmRmZGY2NTZlYWJlNzQ2NSIsInRhZ3MiOlsid2ViYXBwIiwic2VjdWl0eSIsInRva2VuIl0sInVzZXJuYW1lIjoidXNlcl90ZXN0NCJ9.7fuHMSg0s_CoNdbvkkvX-St8_qzw83bNb4G0vDQyi0A",
 				"type": "string"
 			}
 		]
