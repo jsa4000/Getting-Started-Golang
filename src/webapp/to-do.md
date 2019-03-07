@@ -4,11 +4,16 @@
 
 ### Current
 
+- Create second microservice to interchange messages (http/2, events, etc.)
+- GRPC abstraction between code-generated and logic.
+- Create generic side-car (envoy, nginx, etc.) for service discovery, tracing, logging, metrics, circuit-breaker, load-balancing, fault-tolerance, etc.. to allows lightweight clients.
 - [DONE]Add support for distrbuted cache: Redis, etcd...
-- Centralice distrbiuted cache into a package
+- [DONE] Centralized distrbiuted cache into a package store/cache
 - Messaging Systems: NATs, Kafka, RabbitMQ, etc..
 - [DONE] Add Roles to Users, Model and endpoints.
 - Support for bootstraping
+- Add RedirectUTL support for OAuth
+- Add etcd support for distrbiuted cache
 
 ### 2019/03/07
 
@@ -23,9 +28,15 @@
 
 ## Backlog
 
-- Organize the core packages to allow hexagonal architecture
+- Continue with the OAut implementation, allowing implicit and Authorization Code Grants. (refresh token)
+- Organize the core packages to allow hexagonal architecture. (core, framework, metrics, system, transport, storage, etc..)
 - Way to centralize timeouts per context (by configuration per item)
-- GRPC abstraction
-- Create generic side-car, using envoy for example, to create and ensure lightweight clients.
-- Add necessary unit testing to check and validate the functionality (uses cases and corner cases)
-- Perform benchmark testing.
+- Add necessary unit testing to check and validate the functionality (uses cases and corner cases). Use Tables cases instead.
+- Perform benchmark testing: speed, latency, throughput, memory, etc...
+- Improve log quiality for better understanding: log levels, errors accoracy, etc..
+- Prepare documentation for the Core framework. Cleanup obsolete and wrong comments in code.
+- Thinnk about the usage for Builders, managers, singletone, etc... See other packages and libraries.
+- Code generation using Go Templates. This is also to reduce the boiler plate
+- Create Frontend using any Framework (React, AngularJS, etc..) to start interacting with the API
+- Allow OAuth delegating the Authorization to another system such as Google, Facebook, etc..
+- Mode current core into different git repository. Prepare examples and documentation getting started guide.
