@@ -4,7 +4,8 @@
 
 ### Current
 
-- Add support for distrbuted cache: Redis, etcd...
+- [DONE]Add support for distrbuted cache: Redis, etcd...
+- Centralice distrbiuted cache into a package
 - Messaging Systems: NATs, Kafka, RabbitMQ, etc..
 - [DONE] Add Roles to Users, Model and endpoints.
 - Support for bootstraping

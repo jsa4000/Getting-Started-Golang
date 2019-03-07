@@ -27,7 +27,7 @@ const (
 	// for an access token
 	ResponseTypeCode = "code" // response_type
 	// ResponseTypeImplicit intended to be used for user-agent-based clients (single page web)
-	// that can’t keep a client secret because all of the application code and storage
+	// that can’t keep a client secret because all of the application code and store
 	// is easily accessible.
 	ResponseTypeImplicit = "token" // response_type
 )

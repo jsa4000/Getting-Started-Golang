@@ -4,7 +4,7 @@ import (
 	"context"
 	"webapp/core/mngmt"
 	"webapp/core/starter"
-	"webapp/core/storage/mongo"
+	"webapp/core/store/mongo"
 )
 
 // Wrapper Global Mongo wrapper

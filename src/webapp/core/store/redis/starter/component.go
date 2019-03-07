@@ -4,7 +4,8 @@ import (
 	"context"
 	"webapp/core/mngmt"
 	"webapp/core/starter"
-	"webapp/core/storage/redis"
+	"webapp/core/store/cache"
+	"webapp/core/store/redis"
 )
 
 // Wrapper Global Mongo wrapper
@@ -20,6 +21,7 @@ func New() *Component {
 	result := &Component{
 		wrapper: redis.New(),
 	}
+	cache.SetGlobal(result.wrapper)
 	redis.SetGlobal(result.wrapper)
 	starter.Register("redis", result)
 	return result
@@ -48,7 +50,7 @@ func (c *Component) Status() *mngmt.Health {
 		status = mngmt.StatusError
 	}
 	return &mngmt.Health{
-		Name:   "RedisDB",
+		Name:   "Redis",
 		Status: status,
 	}
 }

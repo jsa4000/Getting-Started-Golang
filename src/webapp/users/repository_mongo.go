@@ -6,7 +6,7 @@ import (
 
 	"webapp/core/config"
 	log "webapp/core/logging"
-	mongow "webapp/core/storage/mongo"
+	mongow "webapp/core/store/mongo"
 
 	"github.com/mongodb/mongo-go-driver/bson"
 	"github.com/mongodb/mongo-go-driver/bson/primitive"

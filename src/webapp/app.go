@@ -13,8 +13,8 @@ import (
 	_ "webapp/core/config/viper/starter"
 	_ "webapp/core/logging/logrus/starter"
 	_ "webapp/core/net/http/gorillamux/starter"
-	_ "webapp/core/storage/mongo/starter"
-	_ "webapp/core/storage/redis/starter"
+	_ "webapp/core/store/mongo/starter"
+	_ "webapp/core/store/redis/starter"
 	_ "webapp/core/validation/goplayground/starter"
 
 	"webapp/roles"
