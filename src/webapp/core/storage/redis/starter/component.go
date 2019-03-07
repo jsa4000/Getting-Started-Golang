@@ -4,30 +4,30 @@ import (
 	"context"
 	"webapp/core/mngmt"
 	"webapp/core/starter"
-	"webapp/core/storage/mongo"
+	"webapp/core/storage/redis"
 )
 
 // Wrapper Global Mongo wrapper
 var component = New()
 
-// Component for mongo
+// Component for ewdis
 type Component struct {
-	wrapper *mongo.Wrapper
+	wrapper *redis.Wrapper
 }
 
 // New creates a new component to register the wrapped
 func New() *Component {
 	result := &Component{
-		wrapper: mongo.New(),
+		wrapper: redis.New(),
 	}
-	mongo.SetGlobal(result.wrapper)
-	starter.Register("mongo", result)
+	redis.SetGlobal(result.wrapper)
+	starter.Register("redis", result)
 	return result
 }
 
 // Init function that will be called after register the component
 func (c *Component) Init(ctx context.Context) {
-	config := mongo.LoadConfig()
+	config := redis.LoadConfig()
 	c.wrapper.Connect(ctx, config)
 }
 
@@ -48,7 +48,7 @@ func (c *Component) Status() *mngmt.Health {
 		status = mngmt.StatusError
 	}
 	return &mngmt.Health{
-		Name:   "MongoDB",
+		Name:   "RedisDB",
 		Status: status,
 	}
 }

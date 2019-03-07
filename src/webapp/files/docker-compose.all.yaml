@@ -2,7 +2,7 @@ version: "3.5"
 services:
 
   mongo:
-    image: mongo
+    image: 3.4.19-jessie
     ports:
     - "27017:27017"
     environment:
@@ -10,6 +10,13 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: root
     networks: 
     - webapp-network
+
+  redis:
+    image: redis:5.0.3-alpine
+    environment:
+      REDIS_PASSWORD: root
+    networks:
+      - webapp-network
 
   webapp-go:
    image: webapp-go

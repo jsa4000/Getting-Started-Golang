@@ -19,6 +19,12 @@ security:
   clientid: trusted-client
   clientsecret: mypassword$
 
+cache:
+  redis:
+    url: dockerhost:6379
+    password: root
+    maxretries: 0
+
 repository:
   mongodb:
     url: mongodb://root:root@dockerhost:27017/admin

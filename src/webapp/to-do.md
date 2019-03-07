@@ -4,6 +4,7 @@
 
 ### Current
 
+- Add support for distrbuted cache: Redis, etcd...
 - Messaging Systems: NATs, Kafka, RabbitMQ, etc..
 - [DONE] Add Roles to Users, Model and endpoints.
 - Support for bootstraping
@@ -21,6 +22,9 @@
 
 ## Backlog
 
+- Organize the core packages to allow hexagonal architecture
 - Way to centralize timeouts per context (by configuration per item)
 - GRPC abstraction
 - Create generic side-car, using envoy for example, to create and ensure lightweight clients.
+- Add necessary unit testing to check and validate the functionality (uses cases and corner cases)
+- Perform benchmark testing.

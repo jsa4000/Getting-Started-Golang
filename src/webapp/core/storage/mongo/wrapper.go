@@ -48,8 +48,8 @@ func Unsubscribe(id string) error {
 }
 
 // Connect to Mongodb database
-func Connect(ctx context.Context, conn string) error {
-	return wrapper.Connect(ctx, conn)
+func Connect(ctx context.Context, config *Config) error {
+	return wrapper.Connect(ctx, config)
 }
 
 // Disconnect to Mongodb database
@@ -113,10 +113,10 @@ func (w *Wrapper) check(ctx context.Context) {
 }
 
 // Connect to Mongodb database
-func (w *Wrapper) Connect(ctx context.Context, conn string) error {
+func (w *Wrapper) Connect(ctx context.Context, config *Config) error {
 	ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
 	defer cancel()
-	client, err := mongo.Connect(ctx, conn)
+	client, err := mongo.Connect(ctx, config.URL)
 	if err != nil {
 		log.Error(fmt.Sprintf("Error Connecting to mongodb: '%s'", err))
 		return err
