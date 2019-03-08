@@ -2,8 +2,8 @@ package roles
 
 import (
 	"context"
+	decode "encoding/json"
 	"time"
-
 	"webapp/core/config"
 	log "webapp/core/logging"
 	mongow "webapp/core/store/mongo"
@@ -13,7 +13,10 @@ import (
 	"github.com/mongodb/mongo-go-driver/mongo/options"
 )
 
-const timeout = 10
+const (
+	timeout      = 10
+	repositoryID = "rolesrepository"
+)
 
 // MongoConfig for mongoDB Repository
 type MongoConfig struct {
@@ -30,9 +33,19 @@ type MongoRepository struct {
 func NewMongoRepository() Repository {
 	c := MongoConfig{}
 	config.ReadFields(&c)
-	return &MongoRepository{
+	result := &MongoRepository{
 		Collection: mongow.Client().Database(c.Database).Collection(c.Collection),
 	}
+	err := mongow.Subscribe(repositoryID, result.onConnect)
+	if err != nil {
+		log.Error(err)
+	}
+	return result
+}
+
+func (c *MongoRepository) onConnect() {
+	log.Debug("Roles Repository received OnConnect event from Mongodb")
+	c.boostrap()
 }
 
 // FindAll fetches all the values form the database
@@ -102,4 +115,39 @@ func (c *MongoRepository) DeleteByID(ctx context.Context, id string) (bool, erro
 		return false, nil
 	}
 	return true, nil
+}
+
+func (c *MongoRepository) boostrap() error {
+
+	data := `[
+{
+	"id": "ADMIN",
+	"name": "ADMIN"
+},
+{
+	"id": "WRITE",
+	"name": "WRITE"
+},
+{
+	"id": "READ",
+	"name": "READ"
+}
+]`
+	var roles []Role
+	err := decode.Unmarshal([]byte(data), &roles)
+	if err != nil {
+		log.Error(err)
+		return err
+	}
+	for _, role := range roles {
+		idDoc := bson.M{"_id": role.ID}
+		if result := c.Collection.FindOne(context.Background(), idDoc); result.Err() == nil {
+			_, err := c.Collection.InsertOne(context.Background(), role)
+			if err != nil {
+				log.Error(err)
+			}
+			log.Debugf("Inserted default role: id: %s, name: %s ", role.ID, role.Name)
+		}
+	}
+	return nil
 }

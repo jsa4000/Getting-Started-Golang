@@ -10,9 +10,10 @@
 - [DONE]Add support for distrbuted cache: Redis, etcd...
 - [DONE] Centralized distrbiuted cache into a package store/cache
 - [DONE] Add Roles to Users, Model and endpoints.
+- [DONE] Add RedirectURL support for OAuth
 - Messaging Systems: NATs, Kafka, RabbitMQ, etc..
 - Support for bootstraping
-- Add RedirectURL support for OAuth
+
 - Add etcd support for distrbiuted cache
 
 ### 2019/03/07

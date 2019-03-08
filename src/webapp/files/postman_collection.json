@@ -34,7 +34,7 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "http://{{url}}:8080/oauth/check_token?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NTIwNDMxNDMsImlhdCI6MTU1MTk1Njc0MywiaXNzIjoid2ViYXBwLmRvbWFpbi5jb20iLCJqdGkiOiI0ODRiNjZlNS01ODUwLTRlYjAtOWIwMy04NjEyZDU4N2QzNmUiLCJyZWdpb24iOiJldS13ZXN0LTEiLCJyb2xlcyI6WyJyZWFkIl0sInN1YiI6IjVjODBmYTBhNmRmZGY2NTZlYWJlNzQ2NSIsInRhZ3MiOlsid2ViYXBwIiwic2VjdWl0eSIsInRva2VuIl0sInVzZXJuYW1lIjoidXNlcl90ZXN0NCJ9.7fuHMSg0s_CoNdbvkkvX-St8_qzw83bNb4G0vDQyi0A",
+							"raw": "http://{{url}}:8080/oauth/check_token?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NTIxMzMwNDQsImlhdCI6MTU1MjA0NjY0NCwiaXNzIjoid2ViYXBwLmRvbWFpbi5jb20iLCJqdGkiOiIyMDgwZDhmMi1jZGZmLTQ5ZTItODM4ZC0zNzIyM2VmYjY1NmUiLCJyZWdpb24iOiJldS13ZXN0LTEiLCJyb2xlcyI6WyJyZWFkIiwid3JpdGUiLCJhZG1pbiJdLCJzdWIiOiI1YzgyNGFkNWVkOTFkNTU4MzIyZmZjNGIiLCJ0YWdzIjpbIndlYmFwcCIsInNlY3VpdHkiLCJ0b2tlbiJdLCJ1c2VybmFtZSI6InVzZXJfdGVzdCJ9.YcKbLVmnkjEQaNEAsfKWukhTVqJ30v0Ffl7Tai2m6Xk",
 							"protocol": "http",
 							"host": [
 								"{{url}}"
@@ -47,7 +47,7 @@
 							"query": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NTIwNDMxNDMsImlhdCI6MTU1MTk1Njc0MywiaXNzIjoid2ViYXBwLmRvbWFpbi5jb20iLCJqdGkiOiI0ODRiNjZlNS01ODUwLTRlYjAtOWIwMy04NjEyZDU4N2QzNmUiLCJyZWdpb24iOiJldS13ZXN0LTEiLCJyb2xlcyI6WyJyZWFkIl0sInN1YiI6IjVjODBmYTBhNmRmZGY2NTZlYWJlNzQ2NSIsInRhZ3MiOlsid2ViYXBwIiwic2VjdWl0eSIsInRva2VuIl0sInVzZXJuYW1lIjoidXNlcl90ZXN0NCJ9.7fuHMSg0s_CoNdbvkkvX-St8_qzw83bNb4G0vDQyi0A"
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NTIxMzMwNDQsImlhdCI6MTU1MjA0NjY0NCwiaXNzIjoid2ViYXBwLmRvbWFpbi5jb20iLCJqdGkiOiIyMDgwZDhmMi1jZGZmLTQ5ZTItODM4ZC0zNzIyM2VmYjY1NmUiLCJyZWdpb24iOiJldS13ZXN0LTEiLCJyb2xlcyI6WyJyZWFkIiwid3JpdGUiLCJhZG1pbiJdLCJzdWIiOiI1YzgyNGFkNWVkOTFkNTU4MzIyZmZjNGIiLCJ0YWdzIjpbIndlYmFwcCIsInNlY3VpdHkiLCJ0b2tlbiJdLCJ1c2VybmFtZSI6InVzZXJfdGVzdCJ9.YcKbLVmnkjEQaNEAsfKWukhTVqJ30v0Ffl7Tai2m6Xk"
 								}
 							]
 						}
@@ -55,7 +55,7 @@
 					"response": []
 				},
 				{
-					"name": "CreateTokenJsonByBodyTrusted",
+					"name": "CreateTokenByBody",
 					"request": {
 						"auth": {
 							"type": "basic",
@@ -81,7 +81,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"username\": \"user.test@example.com\",\n\t\"password\": \"password\",\n\t\"grant_type\": \"password\",\n\t\"redirect_uri\": \"http://localhost:8080/callback\",\n\t\"state\": \"12345\"\n}"
+							"raw": "{\n\t\"username\": \"user.test@example.com\",\n\t\"password\": \"password\",\n\t\"grant_type\": \"password\",\n\t\"state\": \"12345\"\n}"
 						},
 						"url": {
 							"raw": "http://{{url}}:8080/oauth/token?",
@@ -111,7 +111,7 @@
 					"response": []
 				},
 				{
-					"name": "CreateTokenJsonByParams",
+					"name": "CreateTokenByParams",
 					"request": {
 						"auth": {
 							"type": "noauth"
@@ -128,69 +128,7 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "http://{{url}}:8080/oauth/token?client_id=client-trusted&client_secret=mypassword$&username=user.test@example.com&password=password&grant_type=password&scope=read write&redirect_uri=http://localhost:8080/callback",
-							"protocol": "http",
-							"host": [
-								"{{url}}"
-							],
-							"port": "8080",
-							"path": [
-								"oauth",
-								"token"
-							],
-							"query": [
-								{
-									"key": "client_id",
-									"value": "client-trusted"
-								},
-								{
-									"key": "client_secret",
-									"value": "mypassword$"
-								},
-								{
-									"key": "username",
-									"value": "user.test@example.com"
-								},
-								{
-									"key": "password",
-									"value": "password"
-								},
-								{
-									"key": "grant_type",
-									"value": "password"
-								},
-								{
-									"key": "scope",
-									"value": "read write"
-								},
-								{
-									"key": "redirect_uri",
-									"value": "http://localhost:8080/callback"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "CreateTokenByPassword",
-					"request": {
-						"auth": {
-							"type": "noauth"
-						},
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
-						"url": {
-							"raw": "http://{{url}}:8080/oauth/token?client_id=client-trusted&client_secret=mypassword$&username=user.test@example.com&password=password&grant_type=password&scope=read write admin&redirect_uri=http://localhost:8080/callback",
+							"raw": "http://{{url}}:8080/oauth/token?client_id=client-trusted&client_secret=mypassword$&username=user.test@example.com&password=password&grant_type=password&scope=read write admin",
 							"protocol": "http",
 							"host": [
 								"{{url}}"
@@ -227,7 +165,8 @@
 								},
 								{
 									"key": "redirect_uri",
-									"value": "http://localhost:8080/callback"
+									"value": "http://localhost:8080/callback",
+									"disabled": true
 								}
 							]
 						}
@@ -249,7 +188,7 @@
 						],
 						"body": {},
 						"url": {
-							"raw": "http://{{url}}:8080/oauth/token?client_id=client-readonly&client_secret=mypassword$&grant_type=client_credentials&scope=read write&redirect_uri=http://localhost:8080/callback&state=1234",
+							"raw": "http://{{url}}:8080/oauth/token?client_id=client-readonly&client_secret=mypassword$&grant_type=client_credentials&scope=read write admin&state=1234",
 							"protocol": "http",
 							"host": [
 								"{{url}}"
@@ -274,134 +213,16 @@
 								},
 								{
 									"key": "scope",
-									"value": "read write"
-								},
-								{
-									"key": "redirect_uri",
-									"value": "http://localhost:8080/callback"
+									"value": "read write admin"
 								},
 								{
 									"key": "state",
 									"value": "1234"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "CreateTokenJsonByBodyReadonly",
-					"request": {
-						"auth": {
-							"type": "basic",
-							"basic": [
-								{
-									"key": "username",
-									"value": "client-readonly",
-									"type": "string"
 								},
-								{
-									"key": "password",
-									"value": "mypassword$",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\t\"username\": \"user-trusted\",\n\t\"password\": \"mypassword$\",\n\t\"grant_type\": \"password\",\n\t\"scope\": \"read write trusted\",\n\t\"redirect_uri\": \"http://localhost:8080/callback\",\n\t\"state\": \"12345\"\n}"
-						},
-						"url": {
-							"raw": "http://{{url}}:8080/oauth/token?",
-							"protocol": "http",
-							"host": [
-								"{{url}}"
-							],
-							"port": "8080",
-							"path": [
-								"oauth",
-								"token"
-							],
-							"query": [
 								{
 									"key": "redirect_uri",
 									"value": "http://localhost:8080/callback",
 									"disabled": true
-								},
-								{
-									"key": "scope",
-									"value": "read",
-									"disabled": true
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "CreateTokenByPasswordNoScopes",
-					"request": {
-						"auth": {
-							"type": "noauth"
-						},
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
-						"url": {
-							"raw": "http://{{url}}:8080/oauth/token?client_id=client-readonly&client_secret=mypassword$&username=user.test4@example.com&password=1234&grant_type=password&redirect_uri=http://localhost:8080/callback",
-							"protocol": "http",
-							"host": [
-								"{{url}}"
-							],
-							"port": "8080",
-							"path": [
-								"oauth",
-								"token"
-							],
-							"query": [
-								{
-									"key": "client_id",
-									"value": "client-readonly"
-								},
-								{
-									"key": "client_secret",
-									"value": "mypassword$"
-								},
-								{
-									"key": "username",
-									"value": "user.test4@example.com"
-								},
-								{
-									"key": "password",
-									"value": "1234"
-								},
-								{
-									"key": "grant_type",
-									"value": "password"
-								},
-								{
-									"key": "scope",
-									"value": "",
-									"disabled": true
-								},
-								{
-									"key": "redirect_uri",
-									"value": "http://localhost:8080/callback"
 								}
 							]
 						}
@@ -449,7 +270,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"name\" : \"ROLE_CUSTOM\"\n}"
+							"raw": "{\n\t\"name\" : \"READ\"\n}"
 						},
 						"url": {
 							"raw": "http://{{url}}:8080/roles",
@@ -677,7 +498,7 @@
 		"bearer": [
 			{
 				"key": "token",
-				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NTIwNDMxNDMsImlhdCI6MTU1MTk1Njc0MywiaXNzIjoid2ViYXBwLmRvbWFpbi5jb20iLCJqdGkiOiI0ODRiNjZlNS01ODUwLTRlYjAtOWIwMy04NjEyZDU4N2QzNmUiLCJyZWdpb24iOiJldS13ZXN0LTEiLCJyb2xlcyI6WyJyZWFkIl0sInN1YiI6IjVjODBmYTBhNmRmZGY2NTZlYWJlNzQ2NSIsInRhZ3MiOlsid2ViYXBwIiwic2VjdWl0eSIsInRva2VuIl0sInVzZXJuYW1lIjoidXNlcl90ZXN0NCJ9.7fuHMSg0s_CoNdbvkkvX-St8_qzw83bNb4G0vDQyi0A",
+				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NTIxMzMwNDQsImlhdCI6MTU1MjA0NjY0NCwiaXNzIjoid2ViYXBwLmRvbWFpbi5jb20iLCJqdGkiOiIyMDgwZDhmMi1jZGZmLTQ5ZTItODM4ZC0zNzIyM2VmYjY1NmUiLCJyZWdpb24iOiJldS13ZXN0LTEiLCJyb2xlcyI6WyJyZWFkIiwid3JpdGUiLCJhZG1pbiJdLCJzdWIiOiI1YzgyNGFkNWVkOTFkNTU4MzIyZmZjNGIiLCJ0YWdzIjpbIndlYmFwcCIsInNlY3VpdHkiLCJ0b2tlbiJdLCJ1c2VybmFtZSI6InVzZXJfdGVzdCJ9.YcKbLVmnkjEQaNEAsfKWukhTVqJ30v0Ffl7Tai2m6Xk",
 				"type": "string"
 			}
 		]
