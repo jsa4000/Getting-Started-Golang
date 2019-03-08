@@ -266,7 +266,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"name\" : \"READ\"\n}"
+							"raw": "{\n\t\"name\" : \"ADMIN\"\n}"
 						},
 						"url": {
 							"raw": "http://{{url}}:8080/roles",
@@ -305,7 +305,7 @@
 							"variable": [
 								{
 									"key": "role",
-									"value": "ROLE_ADMIN"
+									"value": "ADMIN"
 								}
 							]
 						}
@@ -340,7 +340,7 @@
 							"variable": [
 								{
 									"key": "role",
-									"value": "ROLE_CUSTOM"
+									"value": "ADMIN"
 								}
 							]
 						}

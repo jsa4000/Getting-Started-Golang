@@ -31,7 +31,7 @@ func (a *App) Startup(ctx context.Context) {
 	log.Infof("Starting Services...")
 
 	// Create repositories
-	rolesRepository := roles.NewMongoRepository()
+	rolesRepository := roles.NewCacheRepository(roles.NewMongoRepository())
 	usersRepository := users.NewMongoRepository()
 
 	// Create Services
