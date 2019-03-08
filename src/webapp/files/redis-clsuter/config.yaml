@@ -21,13 +21,14 @@ security:
 
 cache:
   redis:
-    url: redis://:root@dockerhost:6379/0
-    password: root
+    addrs: dockerhost:26379,dockerhost:26378,dockerhost:26377  # sentinels addresses
     database: 0
     maxRetries: 0
     readTimeout: 15
     writeTimeout: 15
-    
+    cluster:
+      masterName: redismaster   # sentinel master name 'sentinel.conf'
+
 repository:
   mongodb:
     url: mongodb://root:root@dockerhost:27017/admin

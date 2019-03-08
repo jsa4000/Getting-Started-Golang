@@ -1,0 +1,52 @@
+version: '3'
+services:
+
+  redis1:
+    image: redis:3.2-alpine
+    expose:
+      - 6379
+    networks:
+      - webapp-network
+
+  sentinel1:
+    build: 
+      context: ./redis-sentinel
+    ports:
+      - "26379:26379"
+    networks:
+      - webapp-network
+
+  redis2:
+    image: redis:3.2-alpine
+    expose:
+      - 6379
+    networks:
+      - webapp-network
+
+  sentinel2:
+    build: 
+      context: ./redis-sentinel
+    ports:
+      - "26378:26379"
+    networks:
+      - webapp-network
+
+  redis3:
+    image: redis:3.2-alpine
+    expose:
+      - 6379
+    networks:
+      - webapp-network
+
+  sentinel3:
+    build: 
+      context: ./redis-sentinel
+    ports:
+      - "26377:26379"
+    networks:
+      - webapp-network
+
+networks:
+  webapp-network:
+    external:
+      name: webapp-network

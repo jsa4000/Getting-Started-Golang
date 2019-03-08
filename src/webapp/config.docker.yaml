@@ -12,6 +12,14 @@ http:
   readTimeout: 15
   idleTimeout: 60
 
+
+cache:
+  redis:
+    url: redis://:root@redis:6379/0
+    maxRetries: 0
+    readTimeout: 15
+    writeTimeout: 15
+
 repository:
   mongodb:
     url: mongodb://root:root@mongo:27017/admin

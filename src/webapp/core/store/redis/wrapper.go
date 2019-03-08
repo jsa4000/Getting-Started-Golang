@@ -3,6 +3,7 @@ package redis
 import (
 	"context"
 	"fmt"
+	"strings"
 	"time"
 	log "webapp/core/logging"
 
@@ -14,7 +15,7 @@ type OnConnect func()
 
 // Wrapper structure for Redis Client
 type Wrapper struct {
-	Client    *redis.Client
+	Client    redis.UniversalClient
 	Config    *Config
 	OnConnect map[string]OnConnect
 }
@@ -34,7 +35,7 @@ func New() *Wrapper {
 }
 
 // Client Returns Redis Client
-func Client() *redis.Client {
+func Client() redis.UniversalClient {
 	return wrapper.Client
 }
 
@@ -56,6 +57,16 @@ func Set(key string, value interface{}, exp time.Duration) error {
 // Get the value for the given key if exists
 func Get(key string) (string, error) {
 	return wrapper.Get(key)
+}
+
+// Delete the value for the given key if exists
+func Delete(key string) error {
+	return wrapper.Delete(key)
+}
+
+// Bytes returns the value for the given key if exists
+func Bytes(key string) ([]byte, error) {
+	return wrapper.Bytes(key)
 }
 
 // Float64 the value for the given key if exists
@@ -86,6 +97,12 @@ func (w *Wrapper) check(ctx context.Context) {
 			time.Sleep(5 * time.Second)
 			continue
 		}
+		if cluster, ok := w.Client.(*redis.ClusterClient); ok {
+			err := cluster.ReloadState()
+			if err != nil {
+				panic(err)
+			}
+		}
 		log.Info(fmt.Sprintf("Connected to redis '%s'", w.Config.URL))
 		break
 	}
@@ -94,12 +111,47 @@ func (w *Wrapper) check(ctx context.Context) {
 // Connect to Redis database
 func (w *Wrapper) Connect(ctx context.Context, config *Config) error {
 	w.Config = config
-	w.Client = redis.NewClient(&redis.Options{
-		Addr:       config.URL,
-		Password:   config.Password,
-		DB:         config.Database,
-		MaxRetries: config.MaxRetries,
-	})
+	var options *redis.UniversalOptions
+	if len(config.Addrs) > 0 {
+		options = &redis.UniversalOptions{
+			Addrs:    strings.Split(config.Addrs, ","),
+			Password: config.Password,
+			DB:       config.Database,
+		}
+	} else {
+		opt, err := redis.ParseURL(config.URL)
+		if err != nil {
+			log.Panic(err)
+		}
+		options = &redis.UniversalOptions{
+			Addrs:    []string{opt.Addr},
+			Password: opt.Password,
+			DB:       opt.DB,
+		}
+	}
+	if config.MaxRetries != -1 {
+		options.MaxRetries = config.MaxRetries
+	}
+	if config.DialTimeout != -1 {
+		options.DialTimeout = config.DialTimeout * time.Second
+	}
+	if config.ReadTimeout != -1 {
+		options.ReadTimeout = config.ReadTimeout * time.Second
+	}
+	if config.WriteTimeout != -1 {
+		options.WriteTimeout = config.WriteTimeout * time.Second
+	}
+	if config.PoolSize != -1 {
+		options.PoolSize = config.PoolSize
+	}
+	if config.MaxConnAge != -1 {
+		options.MaxConnAge = config.MaxConnAge * time.Second
+	}
+	options.ReadOnly = config.ReadOnly
+	options.RouteByLatency = config.RouteByLatency
+	options.RouteRandomly = config.RouteRandomly
+	options.MasterName = config.MasterName
+	w.Client = redis.NewUniversalClient(options)
 	go w.check(ctx)
 	return nil
 }
@@ -112,6 +164,16 @@ func (w *Wrapper) Set(key string, value interface{}, exp time.Duration) error {
 // Get the value for the given key if exists
 func (w *Wrapper) Get(key string) (string, error) {
 	return w.Client.Get(key).Result()
+}
+
+// Delete the value for the given key if exists
+func (w *Wrapper) Delete(key string) error {
+	return w.Client.Del(key).Err()
+}
+
+// Bytes returns the value for the given key if exists
+func (w *Wrapper) Bytes(key string) ([]byte, error) {
+	return w.Client.Get(key).Bytes()
 }
 
 // Float64 the value for the given key if exists
