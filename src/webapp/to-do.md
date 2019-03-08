@@ -6,13 +6,13 @@
 
 - Create second microservice to interchange messages (http/2, events, etc.)
 - GRPC abstraction between code-generated and logic.
-- Create generic side-car (envoy, nginx, etc.) for service discovery, tracing, logging, metrics, circuit-breaker, load-balancing, fault-tolerance, etc.. to allows lightweight clients.
+- Create generic side-car (envoy, nginx, etc.) for service-discovery, tracing, logging, metrics, circuit-breaker, load-balancing, fault-tolerance, etc.. to allows lightweight clients. Support for cilium and BPF
 - [DONE]Add support for distrbuted cache: Redis, etcd...
 - [DONE] Centralized distrbiuted cache into a package store/cache
-- Messaging Systems: NATs, Kafka, RabbitMQ, etc..
 - [DONE] Add Roles to Users, Model and endpoints.
+- Messaging Systems: NATs, Kafka, RabbitMQ, etc..
 - Support for bootstraping
-- Add RedirectUTL support for OAuth
+- Add RedirectURL support for OAuth
 - Add etcd support for distrbiuted cache
 
 ### 2019/03/07

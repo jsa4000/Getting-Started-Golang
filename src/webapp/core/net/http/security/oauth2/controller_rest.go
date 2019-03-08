@@ -51,6 +51,10 @@ func (c *RestController) Token(w http.ResponseWriter, r *http.Request) {
 		c.Error(w, err)
 		return
 	}
+	if len(req.RedirectURI) > 0 {
+		http.Redirect(w, r, req.RedirectURI, http.StatusFound)
+		return
+	}
 	c.JSON(w, res, http.StatusOK)
 }
 
@@ -64,6 +68,10 @@ func (c *RestController) Authorize(w http.ResponseWriter, r *http.Request) {
 	res, err := c.service.Authorize(r.Context(), &req)
 	if err != nil {
 		c.Error(w, err)
+		return
+	}
+	if len(req.RedirectURI) > 0 {
+		http.Redirect(w, r, req.RedirectURI, http.StatusFound)
 		return
 	}
 	c.JSON(w, res, http.StatusOK)
