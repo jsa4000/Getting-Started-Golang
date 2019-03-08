@@ -1,13 +1,12 @@
 {
 	"info": {
-		"_postman_id": "ea70de80-ab87-4ac0-98b8-89cccec9beed",
+		"_postman_id": "cf605389-5f0b-4fe5-ba3e-98f43eb2ab0a",
 		"name": "GoWebApp",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
 		{
 			"name": "OAuth",
-			"description": null,
 			"item": [
 				{
 					"name": "CheckToken",
@@ -34,7 +33,7 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "http://{{url}}:8080/oauth/check_token?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NTIxMzMwNDQsImlhdCI6MTU1MjA0NjY0NCwiaXNzIjoid2ViYXBwLmRvbWFpbi5jb20iLCJqdGkiOiIyMDgwZDhmMi1jZGZmLTQ5ZTItODM4ZC0zNzIyM2VmYjY1NmUiLCJyZWdpb24iOiJldS13ZXN0LTEiLCJyb2xlcyI6WyJyZWFkIiwid3JpdGUiLCJhZG1pbiJdLCJzdWIiOiI1YzgyNGFkNWVkOTFkNTU4MzIyZmZjNGIiLCJ0YWdzIjpbIndlYmFwcCIsInNlY3VpdHkiLCJ0b2tlbiJdLCJ1c2VybmFtZSI6InVzZXJfdGVzdCJ9.YcKbLVmnkjEQaNEAsfKWukhTVqJ30v0Ffl7Tai2m6Xk",
+							"raw": "http://{{url}}:8080/oauth/check_token?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NTIxNjcwODEsImlhdCI6MTU1MjA4MDY4MSwiaXNzIjoid2ViYXBwLmRvbWFpbi5jb20iLCJqdGkiOiI2ZTQ0YjNlNS00NzZhLTQ0YzEtYjY5My1iMjI4NDdjMzk4YWMiLCJyZWdpb24iOiJldS13ZXN0LTEiLCJyb2xlcyI6WyJyZWFkIiwiYWRtaW4iXSwic3ViIjoiNWM4Mjk0M2RlZmY2YTgxNTkyMmE4YThkIiwidGFncyI6WyJ3ZWJhcHAiLCJzZWN1aXR5IiwidG9rZW4iXSwidXNlcm5hbWUiOiJyb290In0.TgELXyd9kGNN2ZFVDyx2Dbf6OOZbBhNj-BlUM8fRDto",
 							"protocol": "http",
 							"host": [
 								"{{url}}"
@@ -47,7 +46,7 @@
 							"query": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NTIxMzMwNDQsImlhdCI6MTU1MjA0NjY0NCwiaXNzIjoid2ViYXBwLmRvbWFpbi5jb20iLCJqdGkiOiIyMDgwZDhmMi1jZGZmLTQ5ZTItODM4ZC0zNzIyM2VmYjY1NmUiLCJyZWdpb24iOiJldS13ZXN0LTEiLCJyb2xlcyI6WyJyZWFkIiwid3JpdGUiLCJhZG1pbiJdLCJzdWIiOiI1YzgyNGFkNWVkOTFkNTU4MzIyZmZjNGIiLCJ0YWdzIjpbIndlYmFwcCIsInNlY3VpdHkiLCJ0b2tlbiJdLCJ1c2VybmFtZSI6InVzZXJfdGVzdCJ9.YcKbLVmnkjEQaNEAsfKWukhTVqJ30v0Ffl7Tai2m6Xk"
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NTIxNjcwODEsImlhdCI6MTU1MjA4MDY4MSwiaXNzIjoid2ViYXBwLmRvbWFpbi5jb20iLCJqdGkiOiI2ZTQ0YjNlNS00NzZhLTQ0YzEtYjY5My1iMjI4NDdjMzk4YWMiLCJyZWdpb24iOiJldS13ZXN0LTEiLCJyb2xlcyI6WyJyZWFkIiwiYWRtaW4iXSwic3ViIjoiNWM4Mjk0M2RlZmY2YTgxNTkyMmE4YThkIiwidGFncyI6WyJ3ZWJhcHAiLCJzZWN1aXR5IiwidG9rZW4iXSwidXNlcm5hbWUiOiJyb290In0.TgELXyd9kGNN2ZFVDyx2Dbf6OOZbBhNj-BlUM8fRDto"
 								}
 							]
 						}
@@ -55,7 +54,7 @@
 					"response": []
 				},
 				{
-					"name": "CreateTokenByBody",
+					"name": "CreateTokenByPassword",
 					"request": {
 						"auth": {
 							"type": "basic",
@@ -81,10 +80,10 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"username\": \"user.test@example.com\",\n\t\"password\": \"password\",\n\t\"grant_type\": \"password\",\n\t\"state\": \"12345\"\n}"
+							"raw": "{\n\t\"username\": \"root@example.com\",\n\t\"password\": \"mypassword$\",\n\t\"grant_type\": \"password\",\n\t\"state\": \"12345\"\n}"
 						},
 						"url": {
-							"raw": "http://{{url}}:8080/oauth/token?",
+							"raw": "http://{{url}}:8080/oauth/token",
 							"protocol": "http",
 							"host": [
 								"{{url}}"
@@ -93,18 +92,6 @@
 							"path": [
 								"oauth",
 								"token"
-							],
-							"query": [
-								{
-									"key": "redirect_uri",
-									"value": "http://localhost:8080/callback",
-									"disabled": true
-								},
-								{
-									"key": "scope",
-									"value": "read",
-									"disabled": true
-								}
 							]
 						}
 					},
@@ -120,15 +107,53 @@
 						"header": [
 							{
 								"key": "Content-Type",
-								"value": "application/json"
+								"name": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
 							}
 						],
 						"body": {
-							"mode": "raw",
-							"raw": ""
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "client_id",
+									"value": "client-readonly",
+									"type": "text"
+								},
+								{
+									"key": "client_secret",
+									"value": "mypassword$",
+									"type": "text"
+								},
+								{
+									"key": "username",
+									"value": "root@example.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "mypassword$",
+									"type": "text"
+								},
+								{
+									"key": "grant_type",
+									"value": "password"
+								},
+								{
+									"key": "scope",
+									"value": "admin",
+									"type": "text"
+								},
+								{
+									"key": "redirect_uri",
+									"value": "http://localhost:8080/callback",
+									"type": "text",
+									"disabled": true
+								}
+							]
 						},
 						"url": {
-							"raw": "http://{{url}}:8080/oauth/token?client_id=client-trusted&client_secret=mypassword$&username=user.test@example.com&password=password&grant_type=password&scope=read write admin",
+							"raw": "http://{{url}}:8080/oauth/token",
 							"protocol": "http",
 							"host": [
 								"{{url}}"
@@ -137,37 +162,6 @@
 							"path": [
 								"oauth",
 								"token"
-							],
-							"query": [
-								{
-									"key": "client_id",
-									"value": "client-trusted"
-								},
-								{
-									"key": "client_secret",
-									"value": "mypassword$"
-								},
-								{
-									"key": "username",
-									"value": "user.test@example.com"
-								},
-								{
-									"key": "password",
-									"value": "password"
-								},
-								{
-									"key": "grant_type",
-									"value": "password"
-								},
-								{
-									"key": "scope",
-									"value": "read write admin"
-								},
-								{
-									"key": "redirect_uri",
-									"value": "http://localhost:8080/callback",
-									"disabled": true
-								}
 							]
 						}
 					},
@@ -186,7 +180,10 @@
 								"value": "application/x-www-form-urlencoded"
 							}
 						],
-						"body": {},
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
 						"url": {
 							"raw": "http://{{url}}:8080/oauth/token?client_id=client-readonly&client_secret=mypassword$&grant_type=client_credentials&scope=read write admin&state=1234",
 							"protocol": "http",
@@ -233,7 +230,6 @@
 		},
 		{
 			"name": "Roles",
-			"description": null,
 			"item": [
 				{
 					"name": "GetAll",
@@ -355,7 +351,6 @@
 		},
 		{
 			"name": "Users",
-			"description": null,
 			"item": [
 				{
 					"name": "GetAll",
@@ -392,7 +387,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": \"user_test2\",\n    \"email\": \"user.test2@example.com\",\n    \"password\": \"1234\",\n    \"roles\": [ \"READ\" ]\n}"
+							"raw": "{\n    \"name\": \"viewer\",\n    \"email\": \"viewer@example.com\",\n    \"password\": \"mypassword$\",\n    \"roles\": [ \"READ\" ]\n}"
 						},
 						"url": {
 							"raw": "http://{{url}}:8080/users",
@@ -431,7 +426,7 @@
 							"variable": [
 								{
 									"key": "user",
-									"value": "5c80fa0a6dfdf656eabe7465"
+									"value": "5c828713b7449fba41e5cd2d"
 								}
 							]
 						}

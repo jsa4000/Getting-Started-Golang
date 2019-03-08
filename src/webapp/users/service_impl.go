@@ -85,5 +85,6 @@ func (s *ServiceImpl) Fetch(ctx context.Context, username string) (*security.Use
 		Name:     user.Name,
 		Email:    user.Email,
 		Password: user.Password,
+		Roles:    user.Roles,
 	}, nil
 }

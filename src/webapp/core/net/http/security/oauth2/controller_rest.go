@@ -93,8 +93,10 @@ func (c *RestController) CheckToken(w http.ResponseWriter, r *http.Request) {
 }
 
 func (c *RestController) decode(r *http.Request, data interface{}) error {
-	if err := c.Decode(r, data); err != nil {
-		return err
+	if r.Header.Get(net.HeaderContentType) == net.JSONMime {
+		if err := c.Decode(r, data); err != nil {
+			return err
+		}
 	}
 	if err := c.DecodeParams(r, data, "json"); err != nil {
 		return err
