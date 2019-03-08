@@ -117,27 +117,13 @@ func (c *MongoRepository) DeleteByID(ctx context.Context, id string) (bool, erro
 }
 
 func (c *MongoRepository) boostrap() {
-	objects, err := BootstrapData()
+	roles, err := BootstrapData()
 	if err != nil {
 		log.Error(err)
 	}
-	oo := make([]interface{}, 0, len(objects))
-	for _, o := range objects {
-		oo = append(oo, o)
+	objects := make([]interface{}, 0, len(roles))
+	for _, o := range roles {
+		objects = append(objects, o)
 	}
-	ordered := false
-	result, err := c.Collection.InsertMany(context.Background(), oo, &options.InsertManyOptions{
-		Ordered: &ordered,
-	})
-	insertedIDs := len(result.InsertedIDs)
-	if err != nil {
-		if errors, ok := err.(mongo.BulkWriteException); ok {
-			errorIDs := len(errors.WriteErrors)
-			if errorIDs != insertedIDs {
-				log.Debugf("Inserted %d new default %s", insertedIDs-errorIDs, c.Collection.Name())
-			}
-		}
-		return
-	}
-	log.Debugf("Inserted %d new default %s", insertedIDs, c.Collection.Name())
+	mongow.Boostrap(c.Collection, objects)
 }

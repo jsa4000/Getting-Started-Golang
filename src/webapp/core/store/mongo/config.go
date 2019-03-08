@@ -1,8 +1,6 @@
 package mongo
 
-import (
-	"webapp/core/config"
-)
+import "webapp/core/config"
 
 // Config main app configuration
 type Config struct {

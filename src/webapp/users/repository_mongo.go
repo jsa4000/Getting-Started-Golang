@@ -167,27 +167,13 @@ func normalize(user *User) *User {
 }
 
 func (c *MongoRepository) boostrap() {
-	objects, err := BootstrapData()
+	users, err := BootstrapData()
 	if err != nil {
 		log.Error(err)
 	}
-	oo := make([]interface{}, 0, len(objects))
-	for _, o := range objects {
-		oo = append(oo, o)
+	objects := make([]interface{}, 0, len(users))
+	for _, o := range users {
+		objects = append(objects, o)
 	}
-	ordered := false
-	result, err := c.Collection.InsertMany(context.Background(), oo, &options.InsertManyOptions{
-		Ordered: &ordered,
-	})
-	insertedIDs := len(result.InsertedIDs)
-	if err != nil {
-		if errors, ok := err.(mongo.BulkWriteException); ok {
-			errorIDs := len(errors.WriteErrors)
-			if errorIDs != insertedIDs {
-				log.Debugf("Inserted %d new default %s", insertedIDs-errorIDs, c.Collection.Name())
-			}
-		}
-		return
-	}
-	log.Debugf("Inserted %d new default %s", insertedIDs, c.Collection.Name())
+	mongow.Boostrap(c.Collection, objects)
 }
