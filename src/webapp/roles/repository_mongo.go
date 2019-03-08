@@ -2,7 +2,6 @@ package roles
 
 import (
 	"context"
-	decode "encoding/json"
 	"time"
 	"webapp/core/config"
 	log "webapp/core/logging"
@@ -117,37 +116,28 @@ func (c *MongoRepository) DeleteByID(ctx context.Context, id string) (bool, erro
 	return true, nil
 }
 
-func (c *MongoRepository) boostrap() error {
-
-	data := `[
-{
-	"id": "ADMIN",
-	"name": "ADMIN"
-},
-{
-	"id": "WRITE",
-	"name": "WRITE"
-},
-{
-	"id": "READ",
-	"name": "READ"
-}
-]`
-	var roles []Role
-	err := decode.Unmarshal([]byte(data), &roles)
+func (c *MongoRepository) boostrap() {
+	objects, err := BootstrapData()
 	if err != nil {
 		log.Error(err)
-		return err
 	}
-	for _, role := range roles {
-		idDoc := bson.M{"_id": role.ID}
-		if result := c.Collection.FindOne(context.Background(), idDoc); result.Err() == nil {
-			_, err := c.Collection.InsertOne(context.Background(), role)
-			if err != nil {
-				log.Error(err)
+	oo := make([]interface{}, 0, len(objects))
+	for _, o := range objects {
+		oo = append(oo, o)
+	}
+	ordered := false
+	result, err := c.Collection.InsertMany(context.Background(), oo, &options.InsertManyOptions{
+		Ordered: &ordered,
+	})
+	insertedIDs := len(result.InsertedIDs)
+	if err != nil {
+		if errors, ok := err.(mongo.BulkWriteException); ok {
+			errorIDs := len(errors.WriteErrors)
+			if errorIDs != insertedIDs {
+				log.Debugf("Inserted %d new default %s", insertedIDs-errorIDs, c.Collection.Name())
 			}
-			log.Debugf("Inserted default role: id: %s, name: %s ", role.ID, role.Name)
 		}
+		return
 	}
-	return nil
+	log.Debugf("Inserted %d new default %s", insertedIDs, c.Collection.Name())
 }

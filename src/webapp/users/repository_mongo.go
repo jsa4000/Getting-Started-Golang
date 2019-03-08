@@ -3,7 +3,6 @@ package users
 import (
 	"context"
 	"time"
-
 	"webapp/core/config"
 	log "webapp/core/logging"
 	mongow "webapp/core/store/mongo"
@@ -51,12 +50,11 @@ func (c *MongoRepository) onConnect() {
 
 // CreateIndexes create index for the collection
 func (c *MongoRepository) CreateIndexes(ctx context.Context) {
-	// Create ascending index (1) for email Set index as unique index
-	indexes := []mongo.IndexModel{
+	mongow.CreateIndex(ctx, c.Collection, []mongo.IndexModel{
 		mongow.UniqueIndex("name", true, false),
 		mongow.UniqueIndex("email", true, true),
-	}
-	mongow.CreateIndex(ctx, c.Collection, indexes...)
+	}...)
+	c.boostrap()
 }
 
 // FindAll fetches all the values form the database
@@ -166,4 +164,30 @@ func normalize(user *User) *User {
 	id, _ := user.ID.(primitive.ObjectID)
 	user.ID = id.Hex()
 	return user
+}
+
+func (c *MongoRepository) boostrap() {
+	objects, err := BootstrapData()
+	if err != nil {
+		log.Error(err)
+	}
+	oo := make([]interface{}, 0, len(objects))
+	for _, o := range objects {
+		oo = append(oo, o)
+	}
+	ordered := false
+	result, err := c.Collection.InsertMany(context.Background(), oo, &options.InsertManyOptions{
+		Ordered: &ordered,
+	})
+	insertedIDs := len(result.InsertedIDs)
+	if err != nil {
+		if errors, ok := err.(mongo.BulkWriteException); ok {
+			errorIDs := len(errors.WriteErrors)
+			if errorIDs != insertedIDs {
+				log.Debugf("Inserted %d new default %s", insertedIDs-errorIDs, c.Collection.Name())
+			}
+		}
+		return
+	}
+	log.Debugf("Inserted %d new default %s", insertedIDs, c.Collection.Name())
 }

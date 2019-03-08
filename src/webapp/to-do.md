@@ -12,8 +12,7 @@
 - [DONE] Add Roles to Users, Model and endpoints.
 - [DONE] Add RedirectURL support for OAuth
 - Messaging Systems: NATs, Kafka, RabbitMQ, etc..
-- Support for bootstraping
-
+- [DONE] Support for bootstraping
 - Add etcd support for distrbiuted cache
 
 ### 2019/03/07
