@@ -25,7 +25,7 @@ type CacheConfig struct {
 
 // CacheRepository to implement the Roles Repository
 type CacheRepository struct {
-	repository Repository
+	Repository
 }
 
 // NewCacheRepository Create a Mock repository
@@ -33,7 +33,7 @@ func NewCacheRepository(repository Repository) Repository {
 	c := CacheConfig{}
 	config.ReadFields(&c)
 	result := &CacheRepository{
-		repository: repository,
+		repository,
 	}
 	return result
 }
@@ -56,7 +56,7 @@ func (c *CacheRepository) FindAll(ctx context.Context) ([]*Role, error) {
 			return result, nil
 		}
 	}
-	result, err := c.repository.FindAll(ctx)
+	result, err := c.Repository.FindAll(ctx)
 	if err == nil {
 		if bytes, err2 := json.Marshal(result); err2 == nil {
 			cache.Set(cachekey, bytes, cacheTTL)
@@ -76,7 +76,7 @@ func (c *CacheRepository) FindByID(ctx context.Context, id string) (*Role, error
 			return &result, nil
 		}
 	}
-	result, err := c.repository.FindByID(ctx, id)
+	result, err := c.Repository.FindByID(ctx, id)
 	if err == nil {
 		if bytes, err2 := json.Marshal(result); err2 == nil {
 			cache.Set(cachekey, bytes, cacheTTL)
@@ -87,7 +87,7 @@ func (c *CacheRepository) FindByID(ctx context.Context, id string) (*Role, error
 
 // Create Add Role into the datbase
 func (c *CacheRepository) Create(ctx context.Context, Role Role) (*Role, error) {
-	result, err := c.repository.Create(ctx, Role)
+	result, err := c.Repository.Create(ctx, Role)
 	if err == nil {
 		cache.Delete(key(cacheFindAll))
 	}
@@ -96,7 +96,7 @@ func (c *CacheRepository) Create(ctx context.Context, Role Role) (*Role, error) 
 
 // DeleteByID Role from the database
 func (c *CacheRepository) DeleteByID(ctx context.Context, id string) (bool, error) {
-	deleted, err := c.repository.DeleteByID(ctx, id)
+	deleted, err := c.Repository.DeleteByID(ctx, id)
 	if deleted {
 		cache.Delete(key(cacheFindAll))
 		cache.Delete(key(cacheFindByID, id))

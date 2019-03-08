@@ -7,8 +7,9 @@
 - Create second micro-service to interchange messages (http/2, events, etc.)
 - GRPC abstraction between code-generated and logic.
 - Create generic side-car (envoy, nginx, etc.) for service-discovery, tracing, logging, metrics, circuit-breaker, load-balancing, fault-tolerance, etc.. to allows lightweight clients. Support for cilium and BPF
-- [DONE]Add support for distributed cache: Redis, etcd...
-- [DONE] Centralized distributed cache into a package store/cache
+- [DONE] Add support for distributed cache: Redis, etcd...
+- [DONE] Create cache layer (decorator) between repositories and services
+- [DONE] Centralize distributed cache into a package store/cache
 - [DONE] Add Roles to Users, Model and endpoints.
 - [DONE] Add RedirectURL support for OAuth
 - Messaging Systems: NATs, Kafka, RabbitMQ, etc..
