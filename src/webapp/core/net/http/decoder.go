@@ -1,6 +1,7 @@
 package http
 
 import (
+	"fmt"
 	"net/http"
 	"reflect"
 	"strconv"
@@ -36,5 +37,23 @@ func DecodeParams(r *http.Request, data interface{}, tag string) error {
 			}
 		}
 	}
+	return nil
+}
+
+// EncodeParams decode the form params form the request
+func EncodeParams(r *http.Request, data interface{}, tag string) error {
+	q := r.URL.Query()
+	v := reflect.ValueOf(data)
+	t := v.Elem().Type()
+	for i := 0; i < v.Elem().NumField(); i++ {
+		fv := v.Elem().Field(i)
+		if val := fmt.Sprintf("%v", fv); len(val) > 0 {
+			ft := t.Field(i)
+			if name, ok := ft.Tag.Lookup(tag); ok {
+				q.Add(strings.SplitN(name, ",", 2)[0], val)
+			}
+		}
+	}
+	r.URL.RawQuery = q.Encode()
 	return nil
 }

@@ -52,7 +52,9 @@ func (c *RestController) Token(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if len(req.RedirectURI) > 0 {
-		http.Redirect(w, r, req.RedirectURI, http.StatusFound)
+		nr, _ := http.NewRequest("GET", req.RedirectURI, nil)
+		net.EncodeParams(nr, &res, "json")
+		http.Redirect(w, nr, nr.URL.String(), http.StatusFound)
 		return
 	}
 	c.JSON(w, res, http.StatusOK)
@@ -71,7 +73,9 @@ func (c *RestController) Authorize(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if len(req.RedirectURI) > 0 {
-		http.Redirect(w, r, req.RedirectURI, http.StatusFound)
+		nr, _ := http.NewRequest("GET", req.RedirectURI, nil)
+		net.EncodeParams(nr, &res, "json")
+		http.Redirect(w, nr, nr.URL.String(), http.StatusFound)
 		return
 	}
 	c.JSON(w, res, http.StatusOK)
