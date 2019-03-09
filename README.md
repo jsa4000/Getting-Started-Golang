@@ -21,6 +21,22 @@ Repository to learn the basics of the Go language
 
         go version
 
+  > $GOROOT variable is not necessary, just add the go executable into the binary path and set $GOPATH
+
+- Tools to install (by vscode)
+  - gocode
+  - gopkgs
+  - go-outline
+  - go-symbols
+  - guru
+  - gorename
+  - dlv
+  - gocode-gomod
+  - godef
+  - goreturns
+  - golint
+
+
 ## Hello World
 
 - Create your workspace directory, `$HOME/go`. (If you'd like to use a different directory, you will need to set the `GOPATH` environment variable.)
