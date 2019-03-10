@@ -11,7 +11,7 @@ type GetAllResponse struct {
 
 // GetByIDRequest struct request
 type GetByIDRequest struct {
-	ID string
+	ID string `var:"id" validate:"min=0,max=1024,required"`
 }
 
 // GetByIDResponse struct Response
@@ -34,7 +34,7 @@ type CreateResponse struct {
 
 // DeleteByIDRequest struct request
 type DeleteByIDRequest struct {
-	ID string
+	ID string `var:"id" validate:"min=0,max=1024,required"`
 }
 
 // DeleteByIDResponse struct Response

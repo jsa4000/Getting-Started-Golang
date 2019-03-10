@@ -11,17 +11,17 @@ import (
 
 // CreateTokenRequest request
 type TestRequest struct {
-	ClientID       string `json:"client_id" validate:"min=0,max=1024"`
-	ClientSecret   string `json:"client_secret,omitempty" validate:"min=0,max=1024"`
-	UserName       string `json:"username" validate:"min=0,max=255"`
-	RedirectURI    string `json:"redirect_uri" validate:"min=0,max=4096"`
-	ResponseType   string `json:"response_type" validate:"min=0,max=255"`
-	ExpirationTime int    `json:"expires_in,omitempty"`
-	Enabled        bool   `json:"enabled,omitempty"`
+	ClientID       string `param:"client_id" validate:"min=0,max=1024"`
+	ClientSecret   string `param:"client_secret,omitempty" validate:"min=0,max=1024"`
+	UserName       string `param:"username" validate:"min=0,max=255"`
+	RedirectURI    string `param:"redirect_uri" validate:"min=0,max=4096"`
+	ResponseType   string `param:"response_type" validate:"min=0,max=255"`
+	ExpirationTime int    `param:"expires_in,omitempty"`
+	Enabled        bool   `param:"enabled,omitempty"`
 }
 
 func TestDecoder(t *testing.T) {
-	expeted := TestRequest{
+	expected := TestRequest{
 		ClientID:       "my-client-name",
 		ClientSecret:   "my-client-secret",
 		UserName:       "my-user-name",
@@ -29,14 +29,14 @@ func TestDecoder(t *testing.T) {
 		Enabled:        true,
 	}
 	url := fmt.Sprintf("/test?client_id=%s&client_secret=%s&username=%s&expires_in=%d&enabled=%s",
-		expeted.ClientID, expeted.ClientSecret, expeted.UserName,
-		expeted.ExpirationTime, strconv.FormatBool(expeted.Enabled))
+		expected.ClientID, expected.ClientSecret, expected.UserName,
+		expected.ExpirationTime, strconv.FormatBool(expected.Enabled))
 
 	req, _ := http.NewRequest("GET", url, nil)
 	message := TestRequest{}
-	DecodeParams(req, &message, "json")
+	DecodeParams(req, &message)
 
-	if diff := deep.Equal(expeted, message); diff != nil {
+	if diff := deep.Equal(expected, message); diff != nil {
 		t.Error(diff)
 	}
 }

@@ -1,8 +1,6 @@
 package http
 
 import (
-	"encoding/json"
-	"io"
 	"net/http"
 
 	valid "webapp/core/validation"
@@ -17,26 +15,31 @@ func (c *RestController) Error(w http.ResponseWriter, err error) {
 	Error(w, err)
 }
 
-// JSON Sets the error from inner layers
+// JSON Sets the JSON response
 func (c *RestController) JSON(w http.ResponseWriter, body interface{}, code int) {
 	JSON(w, body, code)
 }
 
+// URL Sets the data encoded into the request url
+func (c *RestController) URL(r *http.Request, data interface{}) {
+	URL(r, data)
+}
+
 // Decode decode and validates. Also it sets the error for upper layers
 func (c *RestController) Decode(r *http.Request, body interface{}) error {
-	decoder := json.NewDecoder(r.Body)
-	err := decoder.Decode(body)
-	if err != nil && err != io.EOF {
-		return ErrBadRequest.From(err)
+	if r.Header.Get(HeaderContentType) == JSONMime {
+		if err := DecodeJSON(r, body); err != nil {
+			return ErrBadRequest.From(err)
+		}
 	}
-	valid, err := valid.Validate(body)
-	if !valid && err != nil {
+	if err := DecodeParams(r, body); err != nil {
+		return err
+	}
+	if err := DecodeVars(r, body); err != nil {
+		return err
+	}
+	if valid, err := valid.Validate(body); !valid && err != nil {
 		return ErrBadRequest.From(err)
 	}
 	return nil
-}
-
-// DecodeParams decode the form params form the request
-func (c *RestController) DecodeParams(r *http.Request, body interface{}, tag string) error {
-	return DecodeParams(r, body, tag)
 }

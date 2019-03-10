@@ -4,6 +4,7 @@
 
 ### Current
 
+- Make configurable Decode function on net/http/Controller to increase performance avoid unnecessary decodings.
 - Create second micro-service to interchange messages (http/2, events, etc.)
 - GRPC abstraction between code-generated and logic.
 - Create generic side-car (envoy, nginx, etc.) for service-discovery, tracing, logging, metrics, circuit-breaker, load-balancing, fault-tolerance, etc.. to allows lightweight clients. Support for cilium and BPF

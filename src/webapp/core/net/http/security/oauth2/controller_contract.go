@@ -32,61 +32,35 @@ const (
 	ResponseTypeImplicit = "token" // response_type
 )
 
-// ClientRequest Interface to implements Client Request Base
-type ClientRequest interface {
-	SetClientID(id string)
-	SetClientSecret(secret string)
-}
-
 // BasicOauth2Request request
 type BasicOauth2Request struct {
-	ClientID     string `json:"client_id" validate:"min=0,max=1024"`
-	ClientSecret string `json:"client_secret" validate:"min=0,max=1024"`
-	UserName     string `json:"username" validate:"min=0,max=255"`
-	Password     string `json:"password" validate:"min=0,max=1024"`
-	GranType     string `json:"grant_type" validate:"min=0,max=255"`
-	Scope        string `json:"scope" validate:"min=0,max=4096"`
-	RedirectURI  string `json:"redirect_uri" validate:"min=0,max=4096"`
-	ResponseType string `json:"response_type" validate:"min=0,max=255"`
-	State        string `json:"state" validate:"min=0,max=2048"`
-	Code         string `json:"code,omitempty" validate:"min=0,max=2048"`
-}
-
-// SetClientID set the client ID
-func (r *BasicOauth2Request) SetClientID(id string) {
-	r.ClientID = id
-}
-
-// SetClientSecret set the client secret
-func (r *BasicOauth2Request) SetClientSecret(secret string) {
-	r.ClientSecret = secret
+	ClientID     string `json:"client_id" param:"client_id" validate:"min=0,max=1024"`
+	ClientSecret string `json:"client_secret" param:"client_secret" validate:"min=0,max=1024"`
+	UserName     string `json:"username" param:"username" validate:"min=0,max=255"`
+	Password     string `json:"password" param:"password" validate:"min=0,max=1024"`
+	GranType     string `json:"grant_type" param:"grant_type" validate:"min=0,max=255"`
+	Scope        string `json:"scope" param:"scope" validate:"min=0,max=4096"`
+	RedirectURI  string `json:"redirect_uri" param:"redirect_uri" validate:"min=0,max=4096"`
+	ResponseType string `json:"response_type" param:"response_type" validate:"min=0,max=255"`
+	State        string `json:"state" param:"state" validate:"min=0,max=2048"`
+	Code         string `json:"code,omitempty" param:"code,omitempty" validate:"min=0,max=2048"`
 }
 
 // BasicOauth2Response Response
 type BasicOauth2Response struct {
-	AccessToken    string `json:"access_token"`
-	RefreshToken   string `json:"refresh_token,omitempty"`
-	TokenType      string `json:"token_type,omitempty"`
-	ExpirationTime int    `json:"expires_in"`
-	State          string `json:"state,omitempty"`
-	Code           string `json:"code,omitempty"`
+	AccessToken    string `json:"access_token" param:"access_token"`
+	RefreshToken   string `json:"refresh_token,omitempty" param:"refresh_token,omitempty"`
+	TokenType      string `json:"token_type,omitempty" param:"token_type,omitempty"`
+	ExpirationTime int    `json:"expires_in" param:"expires_in"`
+	State          string `json:"state,omitempty" param:"state,omitempty"`
+	Code           string `json:"code,omitempty" param:"code,omitempty"`
 }
 
 // CheckTokenRequest struct request
 type CheckTokenRequest struct {
-	ClientID     string `json:"client_id" validate:"min=0,max=1024"`
-	ClientSecret string `json:"client_secret" validate:"min=0,max=1024"`
-	Token        string `json:"token"`
-}
-
-// SetClientID set the client ID
-func (r *CheckTokenRequest) SetClientID(id string) {
-	r.ClientID = id
-}
-
-// SetClientSecret set the client secret
-func (r *CheckTokenRequest) SetClientSecret(secret string) {
-	r.ClientSecret = secret
+	ClientID     string `json:"client_id" param:"client_id" validate:"min=0,max=1024"`
+	ClientSecret string `json:"client_secret" param:"client_secret" validate:"min=0,max=1024"`
+	Token        string `json:"token" param:"token"`
 }
 
 // CheckTokenResponse struct Response

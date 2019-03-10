@@ -61,8 +61,11 @@ func (c *RestController) GetAll(w http.ResponseWriter, r *http.Request) {
 
 // GetByID handler to request the
 func (c *RestController) GetByID(w http.ResponseWriter, r *http.Request) {
-	vars := net.Vars(r)
-	req := GetByIDRequest{ID: vars["id"]}
+	var req GetByIDRequest
+	if err := c.Decode(r, &req); err != nil {
+		c.Error(w, err)
+		return
+	}
 	res, err := c.Service.GetByID(r.Context(), &req)
 	if err != nil {
 		c.Error(w, err)
@@ -88,8 +91,11 @@ func (c *RestController) Create(w http.ResponseWriter, r *http.Request) {
 
 // DeleteByID handler to request the
 func (c *RestController) DeleteByID(w http.ResponseWriter, r *http.Request) {
-	vars := net.Vars(r)
-	req := DeleteByIDRequest{ID: vars["id"]}
+	var req DeleteByIDRequest
+	if err := c.Decode(r, &req); err != nil {
+		c.Error(w, err)
+		return
+	}
 	_, err := c.Service.DeleteByID(r.Context(), &req)
 	if err != nil {
 		c.Error(w, err)
