@@ -26,20 +26,31 @@ func (c *RestController) URL(r *http.Request, data interface{}) {
 }
 
 // Decode decode and validates. Also it sets the error for upper layers
-func (c *RestController) Decode(r *http.Request, body interface{}) error {
-	if r.Header.Get(HeaderContentType) == JSONMime {
-		if err := DecodeJSON(r, body); err != nil {
-			return ErrBadRequest.From(err)
+func (c *RestController) Decode(r *http.Request, data interface{}, options *DecodeOptions) error {
+	if options == nil {
+		options = NewDecodeOptions(true, true, true, true)
+	}
+	if options.Body {
+		if r.Header.Get(HeaderContentType) == JSONMime {
+			if err := DecodeJSON(r, data); err != nil {
+				return ErrBadRequest.From(err)
+			}
 		}
 	}
-	if err := DecodeParams(r, body); err != nil {
-		return err
+	if options.Params {
+		if err := DecodeParams(r, data); err != nil {
+			return err
+		}
 	}
-	if err := DecodeVars(r, body); err != nil {
-		return err
+	if options.Vars {
+		if err := DecodeVars(r, data); err != nil {
+			return err
+		}
 	}
-	if valid, err := valid.Validate(body); !valid && err != nil {
-		return ErrBadRequest.From(err)
+	if options.Validate {
+		if valid, err := valid.Validate(data); !valid && err != nil {
+			return ErrBadRequest.From(err)
+		}
 	}
 	return nil
 }

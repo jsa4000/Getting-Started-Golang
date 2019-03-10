@@ -42,7 +42,7 @@ func (c *RestController) GetRoutes() []net.Route {
 // Token handler to request the
 func (c *RestController) Token(w http.ResponseWriter, r *http.Request) {
 	var req BasicOauth2Request
-	if err := c.Decode(r, &req); err != nil {
+	if err := c.Decode(r, &req, net.NewDecodeOptions(true, true, false, true)); err != nil {
 		c.Error(w, err)
 		return
 	}
@@ -67,7 +67,7 @@ func (c *RestController) Token(w http.ResponseWriter, r *http.Request) {
 // Authorize handler to request the
 func (c *RestController) Authorize(w http.ResponseWriter, r *http.Request) {
 	var req BasicOauth2Request
-	if err := c.Decode(r, &req); err != nil {
+	if err := c.Decode(r, &req, net.NewDecodeOptions(true, true, false, true)); err != nil {
 		c.Error(w, err)
 		return
 	}
@@ -92,7 +92,7 @@ func (c *RestController) Authorize(w http.ResponseWriter, r *http.Request) {
 // CheckToken handler to request the
 func (c *RestController) CheckToken(w http.ResponseWriter, r *http.Request) {
 	var req CheckTokenRequest
-	if err := c.Decode(r, &req); err != nil {
+	if err := c.Decode(r, &req, net.NewDecodeOptions(true, true, false, true)); err != nil {
 		c.Error(w, err)
 		return
 	}

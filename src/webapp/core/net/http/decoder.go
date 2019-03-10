@@ -15,6 +15,24 @@ const (
 	omitEmpty = "omitempty"
 )
 
+// DecodeOptions struct to specify the request fields to decode
+type DecodeOptions struct {
+	Body,
+	Params,
+	Vars,
+	Validate bool
+}
+
+// NewDecodeOptions struct to specify the request fields to decode
+func NewDecodeOptions(body, params, vars, validate bool) *DecodeOptions {
+	return &DecodeOptions{
+		Body:     body,
+		Params:   params,
+		Vars:     vars,
+		Validate: validate,
+	}
+}
+
 // DecodeJSON decode the form params form the request
 func DecodeJSON(r *http.Request, data interface{}) error {
 	decoder := json.NewDecoder(r.Body)

@@ -62,7 +62,7 @@ func (c *RestController) GetAll(w http.ResponseWriter, r *http.Request) {
 // GetByID handler to request the
 func (c *RestController) GetByID(w http.ResponseWriter, r *http.Request) {
 	var req GetByIDRequest
-	if err := c.Decode(r, &req); err != nil {
+	if err := c.Decode(r, &req, net.NewDecodeOptions(false, false, true, true)); err != nil {
 		c.Error(w, err)
 		return
 	}
@@ -77,7 +77,7 @@ func (c *RestController) GetByID(w http.ResponseWriter, r *http.Request) {
 // Create handler to request the
 func (c *RestController) Create(w http.ResponseWriter, r *http.Request) {
 	var req CreateRequest
-	if err := c.Decode(r, &req); err != nil {
+	if err := c.Decode(r, &req, net.NewDecodeOptions(true, false, false, true)); err != nil {
 		c.Error(w, err)
 		return
 	}
@@ -92,7 +92,7 @@ func (c *RestController) Create(w http.ResponseWriter, r *http.Request) {
 // DeleteByID handler to request the
 func (c *RestController) DeleteByID(w http.ResponseWriter, r *http.Request) {
 	var req DeleteByIDRequest
-	if err := c.Decode(r, &req); err != nil {
+	if err := c.Decode(r, &req, net.NewDecodeOptions(false, false, true, true)); err != nil {
 		c.Error(w, err)
 		return
 	}
